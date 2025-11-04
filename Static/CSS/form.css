@@ -1,191 +1,302 @@
-/* =====================================================
-   🌙 MODO OSCURO (por defecto)
-   ===================================================== */
+/* ====================================
+   📝 FORMULARIOS - Modo oscuro (por defecto)
+   ==================================== */
 .form {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Courier New', Courier, monospace;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: rgba(37, 43, 59, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de brillo de fondo */
+.form::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 /* Colores base de formularios */
 .form.gris {
-    background-color: #e7f1ff00;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(108, 117, 125, 0.5);
 }
 
 .form.azul {
-    background-color: #e7f1ff00;
-    color: #a4d7fb;
-    border: 1px solid #0275d8;
+    border: 2px solid rgba(79, 172, 254, 0.5);
+    box-shadow: 0 8px 32px rgba(79, 172, 254, 0.2);
 }
 
 .form.verde {
-    background-color: #e7f1ff00;
-    color: #a4fbc9;
-    border: 1px solid #5cb85c;
+    border: 2px solid rgba(67, 227, 123, 0.5);
+    box-shadow: 0 8px 32px rgba(67, 227, 123, 0.2);
 }
 
 .form.rojo {
-    background-color: #e7f1ff00;
-    color: #fba4a4;
-    border: 1px solid #d9534f;
+    border: 2px solid rgba(245, 87, 108, 0.5);
+    box-shadow: 0 8px 32px rgba(245, 87, 108, 0.2);
 }
 
-/* Inputs, selects, textareas */
+/* ====================================
+   🔤 INPUTS, SELECTS, TEXTAREAS
+   ==================================== */
 .form input,
 .form select,
 .form textarea {
     width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    background-color: transparent;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(30, 35, 50, 0.5);
+    backdrop-filter: blur(5px);
     color: #fff;
     font-size: 15px;
     transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
 .form input::placeholder,
 .form textarea::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .form input:focus,
 .form select:focus,
 .form textarea:focus {
-    border-color: #fff;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    border-color: #667eea;
+    background: rgba(30, 35, 50, 0.7);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
     outline: none;
+    transform: translateY(-2px);
 }
 
-/* Botón A */
+/* ====================================
+   🔘 BOTONES DE FORMULARIO
+   ==================================== */
 .buttonformA {
-    background-color: transparent;
-    border: 2px solid white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
     color: white;
-    padding: 10px 20px;
-    font-size: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+    padding: 16px 32px;
+    font-size: 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 80%;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 85%;
     text-align: center;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.buttonformA::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.buttonformA:hover::before {
+    width: 400px;
+    height: 400px;
 }
 
 .buttonformA:hover {
-    background-color: white;
-    color: #333;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
 }
 
 .buttonformA:active {
-    transform: scale(0.98);
+    transform: translateY(-1px) scale(1);
 }
 
 .buttonformA:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
 }
 
-/* Botón B */
+/* Botón B (variante) */
 .buttonformB {
-    background-color: transparent;
-    border: 2px solid white;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
-    font-size: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+    font-size: 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
-    font-weight: bold;
-    margin: 10px auto;
+    font-weight: 600;
+    margin: 15px auto;
     width: 100%;
-    padding: 10px;
+    padding: 16px;
     box-sizing: border-box;
     text-align: center;
     display: block;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.buttonformB::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.buttonformB:hover::before {
+    width: 400px;
+    height: 400px;
 }
 
 .buttonformB:hover {
-    background-color: white;
-    color: #333;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
 .buttonformB:active {
-    transform: scale(0.98);
+    transform: translateY(-1px) scale(1);
 }
 
 .buttonformB:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
 }
 
-/* Inputs genéricos */
+/* ====================================
+   🎨 INPUTS GENÉRICOS
+   ==================================== */
 .input {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    margin-bottom: 15px;
+    padding: 14px 18px;
+    font-size: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    margin-bottom: 20px;
     transition: all 0.3s ease;
     outline: none;
     box-sizing: border-box;
+    background: rgba(30, 35, 50, 0.5);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .input:focus {
     border-width: 2px;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Colores disponibles (modo oscuro) */
-.input.gris { border-color: #6c757d; }
-.input.gris:focus { border-color: #adb5bd; }
-
-.input.azul { border-color: #0275d8; }
-.input.azul:focus { border-color: #66b2ff; }
-
-.input.verde { border-color: #28a745; }
-.input.verde:focus { border-color: #5cd65c; }
-
-.input.rojo { border-color: #d9534f; }
-.input.rojo:focus { border-color: #f28b82; }
-
-/* Labels */
-.label {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    transition: color 0.3s ease;
-    color: #ffffff;
+.input.gris { 
+    border-color: rgba(108, 117, 125, 0.5);
+}
+.input.gris:focus { 
+    border-color: #6c757d;
+    box-shadow: 0 0 0 4px rgba(108, 117, 125, 0.2);
 }
 
-/* =====================================================
+.input.azul { 
+    border-color: rgba(79, 172, 254, 0.5);
+}
+.input.azul:focus { 
+    border-color: #4facfe;
+    box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.2);
+}
+
+.input.verde { 
+    border-color: rgba(67, 227, 123, 0.5);
+}
+.input.verde:focus { 
+    border-color: #43e97b;
+    box-shadow: 0 0 0 4px rgba(67, 227, 123, 0.2);
+}
+
+.input.rojo { 
+    border-color: rgba(245, 87, 108, 0.5);
+}
+.input.rojo:focus { 
+    border-color: #f5576c;
+    box-shadow: 0 0 0 4px rgba(245, 87, 108, 0.2);
+}
+
+/* ====================================
+   🏷️ LABELS
+   ==================================== */
+.label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    transition: color 0.3s ease;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+}
+
+/* ====================================
    🌞 MODO CLARO
-   ===================================================== */
+   ==================================== */
 body.light-mode .form {
-    background-color: #fdfdfd;
-    color: #333;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    color: #2d3748;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .form::before {
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
 }
 
 body.light-mode .form input,
 body.light-mode .form select,
 body.light-mode .form textarea {
-    background-color: #ffffff;
-    border: 1px solid #aaa;
-    color: #333;
+    background: rgba(248, 249, 250, 0.9);
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    color: #2d3748;
 }
 
 body.light-mode .form input::placeholder,
@@ -196,36 +307,118 @@ body.light-mode .form textarea::placeholder {
 body.light-mode .form input:focus,
 body.light-mode .form select:focus,
 body.light-mode .form textarea:focus {
-    border-color: #333;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
 }
 
 /* Botones en modo claro */
-body.light-mode .buttonformA,
-body.light-mode .buttonformB {
-    background-color: transparent;
-    border: 2px solid #333;
-    color: #333;
+body.light-mode .buttonformA {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-body.light-mode .buttonformA:hover,
+body.light-mode .buttonformA:hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+body.light-mode .buttonformB {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    color: #2d3748;
+}
+
 body.light-mode .buttonformB:hover {
-    background-color: #333;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: #fff;
 }
 
 body.light-mode .buttonformA:focus,
 body.light-mode .buttonformB:focus {
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
 }
 
 /* Inputs de color en modo claro */
-body.light-mode .input.gris { border-color: #6c757d; }
-body.light-mode .input.azul { border-color: #0275d8; }
-body.light-mode .input.verde { border-color: #28a745; }
-body.light-mode .input.rojo { border-color: #d9534f; }
+body.light-mode .input {
+    background: rgba(248, 249, 250, 0.9);
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    color: #2d3748;
+}
+
+body.light-mode .input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+body.light-mode .input.gris:focus { 
+    border-color: #6c757d;
+}
+body.light-mode .input.azul:focus { 
+    border-color: #4facfe;
+}
+body.light-mode .input.verde:focus { 
+    border-color: #43e97b;
+}
+body.light-mode .input.rojo:focus { 
+    border-color: #f5576c;
+}
 
 /* Labels modo claro */
 body.light-mode .label {
-    color: #333;
+    color: #2d3748;
+}
+
+/* ====================================
+   📱 RESPONSIVE
+   ==================================== */
+@media (max-width: 768px) {
+    .form {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .form input,
+    .form select,
+    .form textarea {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+    
+    .buttonformA,
+    .buttonformB {
+        font-size: 16px;
+        padding: 14px 28px;
+    }
+}
+
+/* ====================================
+   ✨ EFECTOS ADICIONALES
+   ==================================== */
+
+/* Animación de error */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.input.error,
+.form input.error {
+    border-color: #f5576c;
+    animation: shake 0.3s ease;
+}
+
+.input.error:focus,
+.form input.error:focus {
+    box-shadow: 0 0 0 4px rgba(245, 87, 108, 0.2);
+}
+
+/* Animación de éxito */
+.input.success,
+.form input.success {
+    border-color: #43e97b;
+}
+
+.input.success:focus,
+.form input.success:focus {
+    box-shadow: 0 0 0 4px rgba(67, 227, 123, 0.2);
 }

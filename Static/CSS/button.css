@@ -1,161 +1,302 @@
-/* ---------- BOTONES (modo oscuro por defecto) ---------- */
+/* ====================================
+   🔘 BOTONES - Modo oscuro (por defecto)
+   ==================================== */
 .button {
-    background-color: transparent;
-    border: 2px solid white;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
-    padding: 10px 20px;
+    padding: 14px 32px;
     font-size: 16px;
     text-decoration: none;
     display: inline-block;
     text-align: center;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    font-weight: bold;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de brillo */
+.button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.button:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 .button:hover {
-    background-color: white;
-    color: #333;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     text-decoration: none;
 }
 
 .button:active {
-    transform: scale(0.98);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .button:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
 }
 
-/* Colores personalizados */
+/* ====================================
+   🎨 COLORES PERSONALIZADOS
+   ==================================== */
+
+/* Verde/Success */
 .button.green {
-    border-color: #a4fbc9;
+    background: linear-gradient(135deg, rgba(67, 227, 123, 0.2), rgba(56, 249, 215, 0.2));
+    border-color: #43e97b;
 }
+
 .button.green:hover {
-    background-color: #a4fbc9;
-    color: #333;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    border-color: #38f9d7;
+    box-shadow: 0 8px 25px rgba(67, 227, 123, 0.4);
 }
 
+.button.green:focus {
+    box-shadow: 0 0 0 4px rgba(67, 227, 123, 0.3);
+}
+
+/* Rojo/Danger */
 .button.red {
-    border-color: #fba4a4;
+    background: linear-gradient(135deg, rgba(240, 147, 251, 0.2), rgba(245, 87, 108, 0.2));
+    border-color: #f5576c;
 }
+
 .button.red:hover {
-    background-color: #f7a8a8;
-    color: #333;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border-color: #f093fb;
+    box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
 }
 
+.button.red:focus {
+    box-shadow: 0 0 0 4px rgba(245, 87, 108, 0.3);
+}
+
+/* Azul/Info */
 .button.blue {
-    border-color: #a4d7fb;
-}
-.button.blue:hover {
-    background-color: #a4d7fb;
-    color: #333;
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.2), rgba(0, 242, 254, 0.2));
+    border-color: #4facfe;
 }
 
-/* ---------- SELECT / FILTROS (modo oscuro) ---------- */
+.button.blue:hover {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border-color: #00f2fe;
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+}
+
+.button.blue:focus {
+    box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.3);
+}
+
+/* ====================================
+   🔽 SELECT / FILTROS
+   ==================================== */
 .filtro-container select {
-    padding: 8px 12px;
+    padding: 12px 16px;
     font-size: 16px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: transparent;
+    border-radius: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(37, 43, 59, 0.6);
+    backdrop-filter: blur(10px);
     color: #ffffff;
     appearance: none;
     transition: all 0.3s ease;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .filtro-container select:focus {
     outline: none;
-    border-color: #777;
-    background-color: transparent;
-    color: #ffffff;
+    border-color: #667eea;
+    background: rgba(37, 43, 59, 0.8);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
 }
 
 .filtro-container select option {
-    background-color: #343f4b;
+    background-color: #252b3b;
     color: #ffffff;
+    padding: 10px;
 }
 
-/* ---------- ENLACES SIMPLES ---------- */
+/* ====================================
+   🔗 ENLACES SIMPLES
+   ==================================== */
 .aSimple {
-    color: white;
+    color: #4facfe;
     text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+}
+
+.aSimple::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    transition: width 0.3s ease;
 }
 
 .aSimple:hover {
-    color: #a4fbc9;
+    color: #00f2fe;
     text-decoration: none;
 }
 
-/* ======================================================
-   🌞 MODO CLARO (aplicado cuando body tiene .light-mode)
-   ====================================================== */
+.aSimple:hover::after {
+    width: 100%;
+}
+
+/* ====================================
+   🌞 MODO CLARO
+   ==================================== */
 body.light-mode .button {
-    background-color: transparent;
-    border: 2px solid #333;
-    color: #333;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    color: #2d3748;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 body.light-mode .button:hover {
-    background-color: #333;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
+    border-color: #667eea;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
 body.light-mode .button:focus {
-    box-shadow: 0 0 0 3px rgba(50, 50, 50, 0.3);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
 }
 
 /* Colores personalizados (modo claro) */
 body.light-mode .button.green {
-    border-color: #1f8a4c;
+    border-color: rgba(31, 138, 76, 0.5);
+    background: linear-gradient(135deg, rgba(67, 227, 123, 0.1), rgba(56, 249, 215, 0.1));
 }
+
 body.light-mode .button.green:hover {
-    background-color: #1f8a4c;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
     color: white;
+    border-color: #43e97b;
 }
 
 body.light-mode .button.red {
-    border-color: #cc3a3a;
+    border-color: rgba(204, 58, 58, 0.5);
+    background: linear-gradient(135deg, rgba(240, 147, 251, 0.1), rgba(245, 87, 108, 0.1));
 }
+
 body.light-mode .button.red:hover {
-    background-color: #cc3a3a;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
     color: white;
+    border-color: #f5576c;
 }
 
 body.light-mode .button.blue {
-    border-color: #357abd;
-}
-body.light-mode .button.blue:hover {
-    background-color: #357abd;
-    color: white;
+    border-color: rgba(53, 122, 189, 0.5);
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
 }
 
-/* ---------- SELECT / FILTROS (modo claro) ---------- */
+body.light-mode .button.blue:hover {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    border-color: #4facfe;
+}
+
+/* Select en modo claro */
 body.light-mode .filtro-container select {
-    background-color: #ffffff;
-    color: #333;
-    border: 1px solid #aaa;
+    background: rgba(255, 255, 255, 0.9);
+    color: #2d3748;
+    border: 2px solid rgba(0, 0, 0, 0.2);
 }
 
 body.light-mode .filtro-container select:focus {
-    border-color: #555;
-    background-color: #f0f0f0;
-    color: #222;
+    border-color: #667eea;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
 }
 
 body.light-mode .filtro-container select option {
     background-color: #ffffff;
-    color: #333;
+    color: #2d3748;
 }
 
-/* ---------- ENLACES SIMPLES (modo claro) ---------- */
+/* Enlaces simples modo claro */
 body.light-mode .aSimple {
-    color: #333;
+    color: #357abd;
 }
 
 body.light-mode .aSimple:hover {
-    color: #1f8a4c;
+    color: #2c5f94;
+}
+
+body.light-mode .aSimple::after {
+    background: linear-gradient(90deg, #357abd, #2c5f94);
+}
+
+/* ====================================
+   ✨ EFECTOS ADICIONALES
+   ==================================== */
+
+/* Botón con animación de pulso */
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(102, 126, 234, 0.6);
+    }
+}
+
+.button.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Botón deshabilitado */
+.button:disabled,
+.button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ====================================
+   📱 RESPONSIVE
+   ==================================== */
+@media (max-width: 768px) {
+    .button {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+    
+    .filtro-container select {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
 }

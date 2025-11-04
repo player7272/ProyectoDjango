@@ -1,91 +1,180 @@
-/* ---------- CONTENEDOR DE TARJETAS ---------- */
+/* ====================================
+   🃏 CONTENEDOR DE TARJETAS
+   ==================================== */
 .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
     justify-content: flex-start;
     align-items: flex-start;
+    padding: 20px 0;
 }
 
-/* ---------- TARJETAS (modo oscuro por defecto) ---------- */
+/* ====================================
+   💎 TARJETAS - Modo oscuro con glassmorphism
+   ==================================== */
 .card {
-    background-color: #2e3945;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-    padding: 20px;
-    width: 300px;
-    min-height: 220px;
+    background: rgba(37, 43, 59, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    min-height: 280px;
     color: #ecf0f1;
-    transition: 
-        transform 0.3s ease, 
-        box-shadow 0.3s ease, 
-        background-color 0.3s ease, 
-        color 0.3s ease, 
-        border-color 0.3s ease;
-    font-family: 'Courier New', Courier, monospace;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de brillo en hover */
+.card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+/* Borde animado */
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.card:hover::after {
+    opacity: 1;
 }
 
 .card img {
     width: 100%;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover img {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
 }
 
-/* ---------- TEXTO DENTRO DE LA TARJETA ---------- */
+/* ====================================
+   📝 TEXTO DENTRO DE LA TARJETA
+   ==================================== */
 .card * {
     transition: color 0.3s ease;
 }
 
 .card-title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
     color: #ffffff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
 }
 
 .card-content {
-    font-size: 16px;
+    font-size: 15px;
     color: #bdc3c7;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    line-height: 1.6;
 }
 
 .card a {
     text-decoration: none;
-    font-size: 16px;
-    color: #00bfff;
-    font-weight: bold;
-    transition: color 0.3s ease;
+    font-size: 15px;
+    color: #4facfe;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.card a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    transition: width 0.3s ease;
+}
+
+.card a:hover::after {
+    width: 100%;
 }
 
 .card a:hover {
-    color: #ffffff;
+    color: #00f2fe;
+    transform: translateX(5px);
 }
 
-/* ---------- MODO CLARO ---------- */
+/* ====================================
+   🌞 MODO CLARO
+   ==================================== */
 body.light-mode .card {
-    background-color: #fdfdfd;
-    color: #222;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    color: #2d3748;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* Aplica a todo el contenido dentro de la tarjeta */
+body.light-mode .card::before {
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+}
+
 body.light-mode .card * {
-    color: #222; /* color base de texto */
+    color: #2d3748;
 }
 
 body.light-mode .card-title {
-    color: #111;
+    color: #2d3748;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 body.light-mode .card-content {
-    color: #444;
+    color: #4a5568;
 }
 
 body.light-mode .card a {
@@ -93,20 +182,23 @@ body.light-mode .card a {
 }
 
 body.light-mode .card a:hover {
-    color: #000;
+    color: #005fa3;
 }
 
 body.light-mode .card:hover {
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
 }
 
-/* ---------- MODO OSCURO ---------- */
+/* ====================================
+   🌙 MODO OSCURO EXPLÍCITO
+   ==================================== */
 body.dark-mode .card,
 body:not(.light-mode) .card {
-    background-color: #2e3945;
+    background: rgba(37, 43, 59, 0.6);
+    backdrop-filter: blur(10px);
     color: #ecf0f1;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .card * {
@@ -115,6 +207,10 @@ body.dark-mode .card * {
 
 body.dark-mode .card-title {
     color: #ffffff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 body.dark-mode .card-content {
@@ -122,9 +218,50 @@ body.dark-mode .card-content {
 }
 
 body.dark-mode .card a {
-    color: #00bfff;
+    color: #4facfe;
 }
 
 body.dark-mode .card a:hover {
-    color: #ffffff;
+    color: #00f2fe;
+}
+
+/* ====================================
+   📱 RESPONSIVE
+   ==================================== */
+@media (max-width: 768px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .card {
+        padding: 25px;
+        min-height: 250px;
+    }
+    
+    .card-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+/* ====================================
+   ✨ VARIANTES DE TARJETAS
+   ==================================== */
+.card.featured {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border: 2px solid rgba(102, 126, 234, 0.5);
+}
+
+.card.featured::after {
+    opacity: 0.5;
+}
+
+body.light-mode .card.featured {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }

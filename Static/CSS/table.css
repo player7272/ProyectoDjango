@@ -1,85 +1,326 @@
-/* ---------- TABLA (modo oscuro por defecto) ---------- */
+/* ====================================
+   📊 TABLA - Modo oscuro (por defecto)
+   ==================================== */
 .table {
     width: 100%;
-    border-collapse: collapse;
-    background-color: transparent;
-    font-family: 'Courier New', Courier, monospace;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(37, 43, 59, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 15px;
     text-align: left;
     color: #f5f5f5;
-    margin-bottom: 20px;
-    border-radius: 8px;
+    margin-bottom: 30px;
+    border-radius: 15px;
     overflow: hidden;
     box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-/* Celdas y cabeceras */
+/* Efecto de brillo de fondo */
+.table::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #4facfe);
+    opacity: 0.7;
+}
+
+/* ====================================
+   📋 CELDAS Y CABECERAS
+   ==================================== */
 .table th,
 .table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
 }
 
 .table th {
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
+    font-size: 13px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    border-bottom: 2px solid rgba(102, 126, 234, 0.5);
+    color: #ffffff;
+    position: relative;
 }
 
-/* Efecto hover general */
-.table tr:hover {
-    background-color: rgba(255, 255, 255, 0.07);
+.table th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
 }
 
-/* Variantes */
-.table--striped tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.05);
+.table th:hover::after {
+    width: 100%;
 }
 
-.table--hover tr:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+/* Primera y última celda */
+.table th:first-child,
+.table td:first-child {
+    padding-left: 25px;
 }
 
+.table th:last-child,
+.table td:last-child {
+    padding-right: 25px;
+}
+
+/* ====================================
+   ✨ EFECTOS HOVER
+   ==================================== */
+.table tbody tr {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.table tbody tr::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateX(5px);
+}
+
+.table tbody tr:hover::before {
+    opacity: 1;
+}
+
+.table tbody tr:hover td {
+    color: #ffffff;
+}
+
+/* ====================================
+   🎨 VARIANTES DE TABLA
+   ==================================== */
+
+/* Tabla con rayas */
+.table--striped tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.table--striped tbody tr:nth-child(odd) {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Tabla con hover mejorado */
+.table--hover tbody tr:hover {
+    background: rgba(102, 126, 234, 0.15);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+/* Tabla con bordes */
 .table--bordered th,
 .table--bordered td {
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ---------- MODO CLARO ---------- */
+.table--bordered {
+    border: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Tabla compacta */
+.table--compact th,
+.table--compact td {
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+/* ====================================
+   🌞 MODO CLARO
+   ==================================== */
 body.light-mode .table {
-    background-color: #f8f9fa;
-    color: #222;
-    border-color: rgba(0, 0, 0, 0.2);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    color: #2d3748;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .table::before {
+    opacity: 0.5;
 }
 
 body.light-mode .table th,
 body.light-mode .table td {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode .table th {
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
-    color: #000;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+    color: #2d3748;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }
 
-body.light-mode .table tr:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+body.light-mode .table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.08);
 }
 
-body.light-mode .table--striped tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.03);
+body.light-mode .table tbody tr:hover td {
+    color: #2d3748;
 }
 
-body.light-mode .table--hover tr:hover {
-    background-color: rgba(0, 0, 0, 0.08);
+body.light-mode .table--striped tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .table--striped tbody tr:nth-child(odd) {
+    background: transparent;
+}
+
+body.light-mode .table--hover tbody tr:hover {
+    background: rgba(102, 126, 234, 0.12);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
 }
 
 body.light-mode .table--bordered th,
 body.light-mode .table--bordered td {
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .table--bordered {
+    border: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+/* ====================================
+   📱 RESPONSIVE
+   ==================================== */
+@media (max-width: 768px) {
+    .table {
+        font-size: 13px;
+        border-radius: 10px;
+    }
+    
+    .table th,
+    .table td {
+        padding: 12px 15px;
+    }
+    
+    .table th:first-child,
+    .table td:first-child {
+        padding-left: 15px;
+    }
+    
+    .table th:last-child,
+    .table td:last-child {
+        padding-right: 15px;
+    }
+    
+    /* Hacer la tabla scrolleable en móvil */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ====================================
+   ✨ EFECTOS ADICIONALES
+   ==================================== */
+
+/* Animación de entrada */
+@keyframes fadeInTable {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.table {
+    animation: fadeInTable 0.6s ease-out;
+}
+
+/* Estado de carga */
+.table.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.table.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 4px solid rgba(102, 126, 234, 0.3);
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Celdas con acciones */
+.table td.actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.table td.actions a,
+.table td.actions button {
+    margin: 0 5px;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Celda destacada */
+.table td.highlight,
+.table th.highlight {
+    background: linear-gradient(135deg, rgba(67, 227, 123, 0.2), rgba(56, 249, 215, 0.2));
+    font-weight: 600;
+}
+
+body.light-mode .table td.highlight,
+body.light-mode .table th.highlight {
+    background: linear-gradient(135deg, rgba(67, 227, 123, 0.1), rgba(56, 249, 215, 0.1));
+}
+
+/* Estados de fila */
+.table tbody tr.success {
+    background: rgba(67, 227, 123, 0.1);
+}
+
+.table tbody tr.warning {
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.table tbody tr.danger {
+    background: rgba(245, 87, 108, 0.1);
+}
+
+.table tbody tr.info {
+    background: rgba(79, 172, 254, 0.1);
 }
