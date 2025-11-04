@@ -1,0 +1,231 @@
+/* =====================================================
+   🌙 MODO OSCURO (por defecto)
+   ===================================================== */
+.form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Colores base de formularios */
+.form.gris {
+    background-color: #e7f1ff00;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.form.azul {
+    background-color: #e7f1ff00;
+    color: #a4d7fb;
+    border: 1px solid #0275d8;
+}
+
+.form.verde {
+    background-color: #e7f1ff00;
+    color: #a4fbc9;
+    border: 1px solid #5cb85c;
+}
+
+.form.rojo {
+    background-color: #e7f1ff00;
+    color: #fba4a4;
+    border: 1px solid #d9534f;
+}
+
+/* Inputs, selects, textareas */
+.form input,
+.form select,
+.form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background-color: transparent;
+    color: #fff;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.form input::placeholder,
+.form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
+    border-color: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    outline: none;
+}
+
+/* Botón A */
+.buttonformA {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 80%;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.buttonformA:hover {
+    background-color: white;
+    color: #333;
+}
+
+.buttonformA:active {
+    transform: scale(0.98);
+}
+
+.buttonformA:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Botón B */
+.buttonformB {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 10px auto;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    display: block;
+}
+
+.buttonformB:hover {
+    background-color: white;
+    color: #333;
+}
+
+.buttonformB:active {
+    transform: scale(0.98);
+}
+
+.buttonformB:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Inputs genéricos */
+.input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input:focus {
+    border-width: 2px;
+}
+
+/* Colores disponibles (modo oscuro) */
+.input.gris { border-color: #6c757d; }
+.input.gris:focus { border-color: #adb5bd; }
+
+.input.azul { border-color: #0275d8; }
+.input.azul:focus { border-color: #66b2ff; }
+
+.input.verde { border-color: #28a745; }
+.input.verde:focus { border-color: #5cd65c; }
+
+.input.rojo { border-color: #d9534f; }
+.input.rojo:focus { border-color: #f28b82; }
+
+/* Labels */
+.label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+    color: #ffffff;
+}
+
+/* =====================================================
+   🌞 MODO CLARO
+   ===================================================== */
+body.light-mode .form {
+    background-color: #fdfdfd;
+    color: #333;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .form input,
+body.light-mode .form select,
+body.light-mode .form textarea {
+    background-color: #ffffff;
+    border: 1px solid #aaa;
+    color: #333;
+}
+
+body.light-mode .form input::placeholder,
+body.light-mode .form textarea::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+body.light-mode .form input:focus,
+body.light-mode .form select:focus,
+body.light-mode .form textarea:focus {
+    border-color: #333;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Botones en modo claro */
+body.light-mode .buttonformA,
+body.light-mode .buttonformB {
+    background-color: transparent;
+    border: 2px solid #333;
+    color: #333;
+}
+
+body.light-mode .buttonformA:hover,
+body.light-mode .buttonformB:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+body.light-mode .buttonformA:focus,
+body.light-mode .buttonformB:focus {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Inputs de color en modo claro */
+body.light-mode .input.gris { border-color: #6c757d; }
+body.light-mode .input.azul { border-color: #0275d8; }
+body.light-mode .input.verde { border-color: #28a745; }
+body.light-mode .input.rojo { border-color: #d9534f; }
+
+/* Labels modo claro */
+body.light-mode .label {
+    color: #333;
+}

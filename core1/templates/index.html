@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - BMS Soluciones Tecnológicas{% endblock %}
+
+{% block content %}
+<main class="main-content">
+
+    <!-- Hero principal -->
+    <section class="seccion">
+        <h1>BMS Soluciones Tecnológicas</h1>
+        <p>
+            Innovamos para impulsar el crecimiento de las empresas a través del desarrollo web, la nube y la gestión de
+            datos.
+        </p>
+        <div>
+            <a href="{% url 'categorias' %}" class="button">Ver servicios</a>
+            <a href="{% url 'aplicar' %}" class="button">Únete a nuestro equipo</a>
+        </div>
+    </section>
+
+    <!-- Sobre nosotros -->
+    <section class="seccion" id="sobre">
+        <h2>Sobre nosotros</h2>
+        <p>
+            En <strong>BMS</strong> creemos que la tecnología debe estar al servicio de las personas.
+            Somos una empresa dedicada al <strong>desarrollo de soluciones web</strong>,
+            la <strong>administración de bases de datos</strong> y los <strong>servicios en la nube</strong>,
+            comprometidos con la calidad, la seguridad y la innovación.
+        </p>
+        <p>
+            Nuestra misión es ayudar a las organizaciones a crecer mediante herramientas digitales confiables,
+            escalables y centradas en el usuario.
+            Nuestra visión es convertirnos en un referente de soluciones tecnológicas integrales en Latinoamérica.
+        </p>
+    </section>
+
+    <!-- Servicios -->
+    <section class="seccion" id="servicios">
+        <h2 class="text-center mb-5">Nuestros servicios</h2>
+        <div>
+            <div>
+                <div>
+                    <h4>Desarrollo Web</h4>
+                    <p>Creamos sitios y sistemas personalizados, adaptados a las necesidades de cada cliente.</p>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <h4>Servicios en la Nube</h4>
+                    <p>Implementamos y gestionamos infraestructuras cloud seguras y escalables.</p>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <h4>Bases de Datos</h4>
+                    <p>Diseñamos, administramos y optimizamos bases de datos para garantizar el rendimiento y la
+                        seguridad.</p>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <h4>Seguridad y Soporte IT</h4>
+                    <p>Protegemos tus sistemas, realizamos auditorías y brindamos soporte técnico integral.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trabaja con nosotros -->
+    <section class="seccion" id="trabaja">
+
+        <h2>Únete a nuestro equipo</h2>
+        <p>
+            En BMS buscamos personas apasionadas por la tecnología, la innovación y el aprendizaje constante.
+            Si quieres formar parte de un equipo que impulsa la transformación digital, te estamos buscando.
+        </p>
+        <a href="{% url 'aplicar' %}" class="aSimple">Postular ahora</a>
+
+    </section>
+
+</main>
+{% endblock %}

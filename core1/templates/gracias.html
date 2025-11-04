@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Inicio {% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>¡Gracias por contactarnos!</h2>
+        <p>Hemos recibido tu mensaje y nos pondremos en contacto contigo pronto.</p>
+        <a href="{% url 'inicio' %}" class="aSimple">Volver al Inicio</a><br><br>
+        <a href="{% url 'estado' %}" class="aSimple">ver el estado de tu solicitud</a>
+    </section>
+</main>
+{% endblock %}

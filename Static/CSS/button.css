@@ -1,0 +1,161 @@
+/* ---------- BOTONES (modo oscuro por defecto) ---------- */
+.button {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: white;
+    color: #333;
+    text-decoration: none;
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+.button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Colores personalizados */
+.button.green {
+    border-color: #a4fbc9;
+}
+.button.green:hover {
+    background-color: #a4fbc9;
+    color: #333;
+}
+
+.button.red {
+    border-color: #fba4a4;
+}
+.button.red:hover {
+    background-color: #f7a8a8;
+    color: #333;
+}
+
+.button.blue {
+    border-color: #a4d7fb;
+}
+.button.blue:hover {
+    background-color: #a4d7fb;
+    color: #333;
+}
+
+/* ---------- SELECT / FILTROS (modo oscuro) ---------- */
+.filtro-container select {
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: transparent;
+    color: #ffffff;
+    appearance: none;
+    transition: all 0.3s ease;
+}
+
+.filtro-container select:focus {
+    outline: none;
+    border-color: #777;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.filtro-container select option {
+    background-color: #343f4b;
+    color: #ffffff;
+}
+
+/* ---------- ENLACES SIMPLES ---------- */
+.aSimple {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.aSimple:hover {
+    color: #a4fbc9;
+    text-decoration: none;
+}
+
+/* ======================================================
+   🌞 MODO CLARO (aplicado cuando body tiene .light-mode)
+   ====================================================== */
+body.light-mode .button {
+    background-color: transparent;
+    border: 2px solid #333;
+    color: #333;
+}
+
+body.light-mode .button:hover {
+    background-color: #333;
+    color: white;
+}
+
+body.light-mode .button:focus {
+    box-shadow: 0 0 0 3px rgba(50, 50, 50, 0.3);
+}
+
+/* Colores personalizados (modo claro) */
+body.light-mode .button.green {
+    border-color: #1f8a4c;
+}
+body.light-mode .button.green:hover {
+    background-color: #1f8a4c;
+    color: white;
+}
+
+body.light-mode .button.red {
+    border-color: #cc3a3a;
+}
+body.light-mode .button.red:hover {
+    background-color: #cc3a3a;
+    color: white;
+}
+
+body.light-mode .button.blue {
+    border-color: #357abd;
+}
+body.light-mode .button.blue:hover {
+    background-color: #357abd;
+    color: white;
+}
+
+/* ---------- SELECT / FILTROS (modo claro) ---------- */
+body.light-mode .filtro-container select {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #aaa;
+}
+
+body.light-mode .filtro-container select:focus {
+    border-color: #555;
+    background-color: #f0f0f0;
+    color: #222;
+}
+
+body.light-mode .filtro-container select option {
+    background-color: #ffffff;
+    color: #333;
+}
+
+/* ---------- ENLACES SIMPLES (modo claro) ---------- */
+body.light-mode .aSimple {
+    color: #333;
+}
+
+body.light-mode .aSimple:hover {
+    color: #1f8a4c;
+}

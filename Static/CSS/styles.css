@@ -1,0 +1,225 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+/* === MODO OSCURO (por defecto) === */
+body {
+    background-color: #343f4b;
+    color: #ffffff;
+    min-height: 100%;
+    margin: 0;
+}
+
+.main-content {
+    flex: 1;
+    display: block;
+    font-family: 'Courier New', Courier, monospace;
+    margin-left: 220px;
+    padding: 20px;
+    width: calc(100% - 220px);
+    box-sizing: border-box;
+}
+
+/* === ELEMENTOS BASE === */
+.logo {
+    height: 50px;
+    margin-right: 15px;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+/* === NAVBAR === */
+.navBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+}
+
+.navBar.gris { background-color: #334456; color: #fff; }
+.navBar.rojo { background-color: #d9534f; color: #fff; }
+.navBar.azul { background-color: #0275d8; color: #fff; }
+.navBar.verde { background-color: #5cb85c; color: #fff; }
+
+/* === SIDEBAR === */
+.sidebar {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #22222200;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.sidebarA {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 3px;
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ddd;
+    display: block;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebarA:hover { background-color: #4d6377; color: white; }
+.sidebarA.active { background-color: #5d7890; color: white; }
+
+.sidebarAfinal {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    padding: 0 10px 20px 10px;
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 1px;
+    text-decoration: none;
+}
+.sidebarAfinal:hover { color: #f0efef; }
+
+/* === SECCIONES === */
+.seccion {
+    margin-bottom: 40px;
+    background-color: #2e3945; /* fondo oscuro */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.seccion h2 {
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.seccion p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #ddd;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* === FOOTER === */
+.footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    border-top: 2px solid #ccc;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    background-color: #00000000;
+    color: #ffffff;
+    flex-shrink: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* === COLORES DEL FOOTER === */
+.footer.gris { background-color: #617589b8; color: #ced5dd; border-color: #dee2e6; }
+.footer.azul { background-color: #0275d8; color: white; border-color: #01549b; }
+.footer.verde { background-color: #5cb85c; color: white; border-color: #3d8b40; }
+.footer.rojo { background-color: #d9534f; color: white; border-color: #a71d2a; }
+
+/* === TEXTOS === */
+.texto-izq { text-align: left; }
+.texto-centro { text-align: center; }
+.texto-der { text-align: right; }
+.texto-just { text-align: justify; }
+
+/* === MODO CLARO === */
+body.light-mode {
+    background-color: #f5f5f5;
+    color: #222;
+}
+
+body.light-mode .sidebar {
+    background-color: #e6e6e6;
+}
+
+body.light-mode .sidebarA {
+    color: #333;
+}
+
+body.light-mode .sidebarA:hover {
+    background-color: #ccc;
+    color: #000;
+}
+
+body.light-mode .sidebarAfinal {
+    color: #555;
+}
+
+body.light-mode .footer {
+    background-color: #e6e6e6;
+    color: #222;
+}
+
+/* 🎨 NUEVO: secciones en modo claro */
+body.light-mode .seccion {
+    background-color: #ffffff;
+    color: #222;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+body.light-mode .seccion h2 {
+    border-bottom: 2px solid #bbb;
+    color: #000;
+}
+
+body.light-mode .seccion p {
+    color: #333;
+}
+
+/* === MODO OSCURO === */
+body.dark-mode .sidebar,
+body:not(.light-mode) .sidebar {
+    background-color: #22222200;
+}
+
+body.dark-mode .sidebarA,
+body:not(.light-mode) .sidebarA {
+    color: #ddd;
+}
+
+body.dark-mode .sidebarA:hover,
+body:not(.light-mode) .sidebarA:hover {
+    background-color: #4d6377;
+    color: white;
+}
+
+body.dark-mode .footer,
+body:not(.light-mode) .footer {
+    background-color: #00000000;
+    color: #ffffff;
+}
+
+/* 🎨 NUEVO: secciones en modo oscuro */
+body.dark-mode .seccion,
+body:not(.light-mode) .seccion {
+    background-color: #2e3945;
+    color: #ddd;
+}
+
+body.dark-mode .seccion h2,
+body:not(.light-mode) .seccion h2 {
+    color: #fff;
+    border-color: #555;
+}
+
+body.dark-mode .seccion p,
+body:not(.light-mode) .seccion p {
+    color: #ccc;
+}

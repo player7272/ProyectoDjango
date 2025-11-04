@@ -1,0 +1,438 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}BMS Soluciones Tecnológicas{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos adicionales para la vista unificada */
+    .hero-section {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, rgba(46, 57, 69, 0.95), rgba(52, 63, 75, 0.95));
+        border-radius: 20px;
+        margin-bottom: 40px;
+    }
+
+    body.light-mode .hero-section {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 245, 245, 0.98));
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .hero-content p {
+        font-size: 1.3rem;
+        margin-bottom: 30px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .section-container {
+        scroll-margin-top: 80px;
+        margin-bottom: 60px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #a4fbc9;
+        display: inline-block;
+        width: 100%;
+    }
+
+    body.light-mode .section-title {
+        border-bottom-color: #1f8a4c;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .service-card {
+        background-color: #2e3945;
+        padding: 30px;
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-mode .service-card {
+        background-color: #ffffff;
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .service-card h4 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: #a4fbc9;
+    }
+
+    body.light-mode .service-card h4 {
+        color: #1f8a4c;
+    }
+
+    .form-section {
+        background-color: rgba(46, 57, 69, 0.5);
+        padding: 40px;
+        border-radius: 15px;
+        max-width: 800px;
+        margin: 0 auto 40px;
+    }
+
+    body.light-mode .form-section {
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+
+    .success-message {
+        background-color: #a4fbc9;
+        color: #333;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 20px 0;
+        font-weight: bold;
+    }
+
+    .error-message {
+        background-color: #fba4a4;
+        color: #333;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin: 20px 0;
+        font-weight: bold;
+    }
+
+    .smooth-scroll {
+        scroll-behavior: smooth;
+    }
+
+    .categorias-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 1000;
+        background-color: rgba(46, 57, 69, 0.9);
+        padding: 15px;
+        border-radius: 30px;
+    }
+
+    body.light-mode .nav-links {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .nav-link {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.3);
+        border: 2px solid white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    body.light-mode .nav-link {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-color: #333;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        background-color: #a4fbc9;
+        transform: scale(1.5);
+    }
+
+    body.light-mode .nav-link:hover,
+    body.light-mode .nav-link.active {
+        background-color: #1f8a4c;
+    }
+
+    @media (max-width: 768px) {
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: none;
+        }
+    }
+</style>
+
+<main class="main-content smooth-scroll">
+    
+    <!-- NAVEGACIÓN FLOTANTE -->
+    <div class="nav-links">
+        <a href="#hero" class="nav-link" title="Inicio"></a>
+        <a href="#sobre" class="nav-link" title="Sobre nosotros"></a>
+        <a href="#servicios" class="nav-link" title="Servicios"></a>
+        <a href="#categorias" class="nav-link" title="Categorías"></a>
+        <a href="#aplicar" class="nav-link" title="Aplicar"></a>
+        <a href="#consultar" class="nav-link" title="Consultar"></a>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="hero-section section-container">
+        <div class="hero-content">
+            <h1>BMS Soluciones Tecnológicas</h1>
+            <p>
+                Innovamos para impulsar el crecimiento de las empresas a través del desarrollo web, 
+                la nube y la gestión de datos.
+            </p>
+            <div class="btn-group">
+                <a href="#servicios" class="button green">Ver servicios</a>
+                <a href="#aplicar" class="button blue">Únete a nuestro equipo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE NOSOTROS -->
+    <section id="sobre" class="seccion section-container">
+        <h2 class="section-title">Sobre nosotros</h2>
+        <p>
+            En <strong>BMS</strong> creemos que la tecnología debe estar al servicio de las personas.
+            Somos una empresa dedicada al <strong>desarrollo de soluciones web</strong>,
+            la <strong>administración de bases de datos</strong> y los <strong>servicios en la nube</strong>,
+            comprometidos con la calidad, la seguridad y la innovación.
+        </p>
+        <p>
+            Nuestra misión es ayudar a las organizaciones a crecer mediante herramientas digitales confiables,
+            escalables y centradas en el usuario.
+            Nuestra visión es convertirnos en un referente de soluciones tecnológicas integrales en Latinoamérica.
+        </p>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="servicios" class="seccion section-container">
+        <h2 class="section-title">Nuestros servicios</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h4>💻 Desarrollo Web</h4>
+                <p>Creamos sitios y sistemas personalizados, adaptados a las necesidades de cada cliente.</p>
+            </div>
+            <div class="service-card">
+                <h4>☁️ Servicios en la Nube</h4>
+                <p>Implementamos y gestionamos infraestructuras cloud seguras y escalables.</p>
+            </div>
+            <div class="service-card">
+                <h4>🗄️ Bases de Datos</h4>
+                <p>Diseñamos, administramos y optimizamos bases de datos para garantizar el rendimiento y la seguridad.</p>
+            </div>
+            <div class="service-card">
+                <h4>🔒 Seguridad y Soporte IT</h4>
+                <p>Protegemos tus sistemas, realizamos auditorías y brindamos soporte técnico integral.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORÍAS -->
+    <section id="categorias" class="seccion section-container">
+        <h2 class="section-title">Categorías disponibles</h2>
+        <p class="texto-centro">Conoce las áreas en las que puedes desarrollarte profesionalmente</p>
+        
+        {% if categorias %}
+        <div class="categorias-grid">
+            {% for categoria in categorias %}
+            <div class="card">
+                <img src="{% static 'img/Logo.jpg' %}" alt="Imagen">
+                <h2 class="card-title">{{ categoria.nombre }}</h2>
+                <p class="card-content">{{ categoria.descripcion }}</p>
+                <p><strong>Salario base:</strong> ${{ categoria.salario_base|floatformat:2 }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="texto-centro">No hay categorías registradas aún.</p>
+        {% endif %}
+    </section>
+
+    <!-- FORMULARIO DE APLICACIÓN -->
+    <section id="aplicar" class="section-container">
+        <div class="seccion">
+            <h2 class="section-title">Postúlate ahora</h2>
+            <p class="texto-centro">
+                En BMS buscamos personas apasionadas por la tecnología, la innovación y el aprendizaje constante.
+                Completa el formulario y forma parte de nuestro equipo.
+            </p>
+
+            <div class="form-section">
+                <form method="POST" action="{% url 'aplicar' %}" class="form">
+                    {% csrf_token %}
+                    
+                    {{ persona_form.non_field_errors }}
+                    {{ solicitud_form.non_field_errors }}
+
+                    <label for="{{ persona_form.nombre.id_for_label }}">Nombre:</label>
+                    {{ persona_form.nombre }}
+
+                    <label for="{{ persona_form.apellido.id_for_label }}">Apellido:</label>
+                    {{ persona_form.apellido }}
+
+                    <label for="{{ persona_form.cedula.id_for_label }}">Cédula:</label>
+                    {{ persona_form.cedula }}
+
+                    <label for="{{ persona_form.correo.id_for_label }}">Correo:</label>
+                    {{ persona_form.correo }}
+
+                    <label for="{{ solicitud_form.mensaje.id_for_label }}">Capacidades y experiencia:</label>
+                    {{ solicitud_form.mensaje }}
+
+                    <button type="submit" class="buttonformB">Enviar solicitud</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONSULTAR ESTADO -->
+    <section id="consultar" class="section-container">
+        <div class="seccion">
+            <h2 class="section-title">Consulta tu solicitud</h2>
+            <p class="texto-centro">Ingresa tus datos para conocer el estado de tu postulación</p>
+
+            <div class="form-section">
+                <form method="POST" action="{% url 'estado' %}" class="form">
+                    {% csrf_token %}
+                    <div>
+                        <label for="email">Correo electrónico:</label>
+                        <input type="email" id="email" name="email" class="input" placeholder="correo@example.com" required>
+                    </div>
+                    <div>
+                        <label for="cedula">Número de Cédula:</label>
+                        <input type="text" id="cedula" name="cedula" class="input" placeholder="123456789" required>
+                    </div>
+                    <button type="submit" class="buttonformB">Consultar estado</button>
+                </form>
+
+                {% if error_estado %}
+                <div class="error-message">
+                    {{ error_estado }}
+                </div>
+                {% endif %}
+
+                {% if persona_estado %}
+                <div class="success-message">
+                    ✅ Solicitud encontrada para: {{ persona_estado.nombre }} {{ persona_estado.apellido }}
+                </div>
+
+                <h3 style="margin-top: 30px;">Tus solicitudes:</h3>
+                {% if solicitudes %}
+                    <table class="table table--striped" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Mensaje</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for solicitud in solicitudes %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ solicitud.mensaje|truncatewords:15 }}</td>
+                                <td><strong>{{ solicitud.estado.nombre }}</strong></td>
+                                <td>{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="texto-centro">No hay solicitudes registradas.</p>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER INFO -->
+    <section class="seccion texto-centro" style="margin-top: 80px;">
+        <h3>¿Listo para dar el siguiente paso?</h3>
+        <p>Contáctanos y descubre cómo podemos ayudarte a transformar digitalmente tu empresa.</p>
+        <div class="btn-group">
+            <a href="#aplicar" class="button green">Postúlate ahora</a>
+            <a href="#consultar" class="button blue">Consulta tu solicitud</a>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    // Activar navegación de puntos según scroll
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('.section-container');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (scrollY >= (sectionTop - 200)) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach((link, index) => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Smooth scroll para los enlaces
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

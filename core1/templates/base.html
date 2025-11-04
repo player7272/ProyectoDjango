@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Base {% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cards.css' %}">
+    <link rel="stylesheet" href="{% static 'css/button.css' %}">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="icon" type="image/png" href="{% static 'img/Logo.jpg' %}">
+</head>
+
+<body class="light-mode">
+    <div class="sidebar">
+        <img src="{% static 'img/Logo.jpg'%}" alt="Logo" class="logo">
+
+
+
+        <a href="#" class="sidebarAfinal"> Hecho por BMS &copy; </a>
+    </div>
+    <main>
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+    <script>
+        // Crear el botón flotante
+        const btnTema = document.createElement("button");
+        btnTema.style.position = "fixed";
+        btnTema.style.bottom = "20px";
+        btnTema.style.right = "20px";
+        btnTema.style.zIndex = "9999";
+        btnTema.style.padding = "10px 14px";
+        btnTema.style.borderRadius = "50%";
+        btnTema.style.border = "none";
+        btnTema.style.cursor = "pointer";
+        btnTema.style.fontSize = "22px";
+        btnTema.style.background = "#555";
+        btnTema.style.color = "#fff";
+        btnTema.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
+        btnTema.style.transition = "transform 0.3s, background 0.3s, color 0.3s";
+        btnTema.innerHTML = "<i class='bx bx-sun'></i>"; 
+        document.body.appendChild(btnTema);
+
+        const icono = btnTema.querySelector("i");
+
+        const temaGuardado = localStorage.getItem("tema");
+
+        if (temaGuardado === "claro") {
+            document.body.classList.add("light-mode");
+            icono.classList.replace("bx-sun", "bx-moon");
+            btnTema.style.background = "#ddd";
+            btnTema.style.color = "#333";
+        } else {
+            document.body.classList.remove("light-mode");
+            icono.classList.replace("bx-moon", "bx-sun");
+            btnTema.style.background = "#555";
+            btnTema.style.color = "#fff";
+        }
+
+        btnTema.addEventListener("click", () => {
+            const modoClaro = document.body.classList.toggle("light-mode");
+
+            if (modoClaro) {
+                // Cambiar a modo claro
+                icono.classList.replace("bx-sun", "bx-moon");
+                btnTema.style.background = "#ddd";
+                btnTema.style.color = "#333";
+                localStorage.setItem("tema", "claro");
+            } else {
+                // Cambiar a modo oscuro
+                icono.classList.replace("bx-moon", "bx-sun");
+                btnTema.style.background = "#555";
+                btnTema.style.color = "#fff";
+                localStorage.setItem("tema", "oscuro");
+            }
+        });
+
+        btnTema.addEventListener("mouseenter", () => btnTema.style.transform = "scale(1.1)");
+        btnTema.addEventListener("mouseleave", () => btnTema.style.transform = "scale(1)");
+    </script>
+
+
+</body>
+
+</html>
