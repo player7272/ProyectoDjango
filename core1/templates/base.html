@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} Base {% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <link rel="stylesheet" href="{% static 'css/cards.css' %}">
@@ -18,7 +18,7 @@
 </head>
 
 <body class="light-mode">
-    <div class="sidebar">
+    <!-- <div class="sidebar">
         <img src="{% static 'img/Logo.jpg'%}" alt="Logo" class="logo">
         <a href="#hero" class="sidebarA">Inicio</a>
         <a href="#sobre" class="sidebarA">Nosotros</a>
@@ -30,7 +30,26 @@
 
 
         <a href="#" class="sidebarAfinal"> Hecho por BMS &copy; </a>
-    </div>
+    </div> -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-logo">
+                <img src="{% static 'img/Logo.jpg' %}" alt="Logo" class="logo">
+                <h1>BMS Soluciones Tecnológicas</h1>
+            </div>
+
+            <nav class="header-nav">
+                <a href="#hero">Inicio</a>
+                <a href="#sobre">Nosotros</a>
+                <a href="#servicios">Servicios</a>
+                <a href="#categorias">Categorías</a>
+                <a href="#aplicar">Aplicar</a>
+                <a href="#consultar">Consultar</a>
+            </nav>
+        </div>
+
+    </header>
+
     <main>
         {% block content %}
 
@@ -53,7 +72,7 @@
         btnTema.style.color = "#fff";
         btnTema.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
         btnTema.style.transition = "transform 0.3s, background 0.3s, color 0.3s";
-        btnTema.innerHTML = "<i class='bx bx-sun'></i>"; 
+        btnTema.innerHTML = "<i class='bx bx-sun'></i>";
         document.body.appendChild(btnTema);
 
         const icono = btnTema.querySelector("i");
@@ -96,4 +115,3 @@
 
 
 </body>
-
