@@ -1,0 +1,29 @@
+# Entorno virtual
+env/
+venv/
+mysite/env/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Base de datos local
+*.sqlite3
+
+# Archivos temporales o de logs
+*.log
+*.pot
+
+# Archivos de configuración local
+*.env
+*.local
+
+# Carpetas de configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
