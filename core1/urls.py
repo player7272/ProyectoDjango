@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     # Vista principal unificada
-    path('', views.inicio, name='inicio_unificado'),
+    path('', views.inicio, name='index'),
+    
     
     # Endpoints para procesar formularios
     path('aplicar/', views.aplicar, name='aplicar'),

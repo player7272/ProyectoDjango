@@ -40,8 +40,9 @@ def aplicar(request):
     if request.method == 'POST':
         persona_form = PersonaForm(request.POST)
         solicitud_form = SolicitudForm(request.POST)
+        categoria_id = request.POST.get('categoria')  # <-- capturamos la categoría seleccionada
 
-        if persona_form.is_valid() and solicitud_form.is_valid():
+        if persona_form.is_valid() and solicitud_form.is_valid() and categoria_id:
             correo = persona_form.cleaned_data['correo']
             cedula = persona_form.cleaned_data['cedula']
 
@@ -49,17 +50,16 @@ def aplicar(request):
             persona = Persona.objects.filter(correo=correo, cedula=cedula).first()
 
             if not persona:
-                # Si no existe, crearla
                 persona = persona_form.save(commit=False)
                 persona.save()
 
             # Crear solicitud asociada
             solicitud = solicitud_form.save(commit=False)
             solicitud.persona = persona
+            solicitud.categoria_id = categoria_id  # <-- asignamos la categoría
             solicitud.save()
 
-            print("✅ Solicitud registrada correctamente")
-            # Redirigir a la sección de gracias con un ancla
+            print("Solicitud registrada correctamente")
             return redirect('index')
     
     return redirect('index')

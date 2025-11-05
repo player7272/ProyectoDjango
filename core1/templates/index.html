@@ -7,7 +7,7 @@
 
 
 <main class="main-content smooth-scroll">
-    
+
     <!-- NAVEGACIÓN FLOTANTE -->
     <!-- <div class="nav-links">
         <a href="#hero" class="nav-link" title="Inicio"></a>
@@ -23,7 +23,7 @@
         <div class="hero-content">
             <h1>BMS Soluciones Tecnológicas</h1>
             <p>
-                Innovamos para impulsar el crecimiento de las empresas a través del desarrollo web, 
+                Innovamos para impulsar el crecimiento de las empresas a través del desarrollo web,
                 la nube y la gestión de datos.
             </p>
             <div class="btn-group">
@@ -38,8 +38,8 @@
         <h2 class="section-title">Sobre nosotros</h2>
         <p>
             En <strong>BMS</strong> creemos que la tecnología debe estar al servicio de las personas.
-            Somos una empresa dedicada al <strong>desarrollo de soluciones web</strong>,
-            la <strong>administración de bases de datos</strong> y los <strong>servicios en la nube</strong>,
+            Somos una empresa dedicada aldesarrollo de soluciones web,
+            la administración de bases de datosy los servicios en la nube,
             comprometidos con la calidad, la seguridad y la innovación.
         </p>
         <p>
@@ -63,7 +63,8 @@
             </div>
             <div class="service-card">
                 <h4>🗄️ Bases de Datos</h4>
-                <p>Diseñamos, administramos y optimizamos bases de datos para garantizar el rendimiento y la seguridad.</p>
+                <p>Diseñamos, administramos y optimizamos bases de datos para garantizar el rendimiento y la seguridad.
+                </p>
             </div>
             <div class="service-card">
                 <h4>🔒 Seguridad y Soporte IT</h4>
@@ -76,7 +77,7 @@
     <section id="categorias" class="seccion section-container">
         <h2 class="section-title">Categorías disponibles</h2>
         <p class="texto-centro">Conoce las áreas en las que puedes desarrollarte profesionalmente</p>
-        
+
         {% if categorias %}
         <div class="categorias-grid">
             {% for categoria in categorias %}
@@ -105,7 +106,7 @@
             <div class="form-section">
                 <form method="POST" action="{% url 'aplicar' %}" class="form">
                     {% csrf_token %}
-                    
+
                     {{ persona_form.non_field_errors }}
                     {{ solicitud_form.non_field_errors }}
 
@@ -124,6 +125,14 @@
                     <label for="{{ solicitud_form.mensaje.id_for_label }}">Capacidades y experiencia:</label>
                     {{ solicitud_form.mensaje }}
 
+                    <label for="categoria">Categoría:</label>
+                    <select name="categoria" id="categoria" required>
+                        <option value="">Selecciona una categoría</option>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                        {% endfor %}
+                    </select>
+
                     <button type="submit" class="buttonformB">Enviar solicitud</button>
                 </form>
             </div>
@@ -141,7 +150,8 @@
                     {% csrf_token %}
                     <div>
                         <label for="email">Correo electrónico:</label>
-                        <input type="email" id="email" name="email" class="input" placeholder="correo@example.com" required>
+                        <input type="email" id="email" name="email" class="input" placeholder="correo@example.com"
+                            required>
                     </div>
                     <div>
                         <label for="cedula">Número de Cédula:</label>
@@ -158,33 +168,39 @@
 
                 {% if persona_estado %}
                 <div class="success-message">
-                    ✅ Solicitud encontrada para: {{ persona_estado.nombre }} {{ persona_estado.apellido }}
+                    Solicitud encontrada para: {{ persona_estado.nombre }} {{ persona_estado.apellido }}
                 </div>
 
                 <h3 style="margin-top: 30px;">Tus solicitudes:</h3>
                 {% if solicitudes %}
-                    <table class="table table--striped" style="margin-top: 20px;">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Mensaje</th>
-                                <th>Estado</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for solicitud in solicitudes %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ solicitud.mensaje|truncatewords:15 }}</td>
-                                <td><strong>{{ solicitud.estado.nombre }}</strong></td>
-                                <td>{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <table class="table table--striped" style="margin-top: 20px;">
+                    <tbody>
+                        <tr>
+                            <th>#</th>
+                            <th>Mensaje</th>
+                            <th>Categoría</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                        </tr>
+                        {% for solicitud in solicitudes %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ solicitud.mensaje|truncatewords:15 }}</td>
+                            <td>
+                                {% if solicitud.categoria %}
+                                {{ solicitud.categoria.nombre }}
+                                {% else %}
+                                <em>Sin categoría</em>
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ solicitud.estado.nombre }}</strong></td>
+                            <td>{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% else %}
-                    <p class="texto-centro">No hay solicitudes registradas.</p>
+                <p class="texto-centro">No hay solicitudes registradas.</p>
                 {% endif %}
                 {% endif %}
             </div>
@@ -208,7 +224,7 @@
     window.addEventListener('scroll', () => {
         const sections = document.querySelectorAll('.section-container');
         const navLinks = document.querySelectorAll('.nav-link');
-        
+
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
