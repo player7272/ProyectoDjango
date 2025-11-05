@@ -32,7 +32,7 @@ def inicio(request):
         'mostrar_resultado_busqueda': mostrar_resultado_busqueda,
     }
     
-    return render(request, 'inicio_unificado.html', context)
+    return render(request, 'index.html', context)
 
 
 def aplicar(request):
@@ -60,9 +60,9 @@ def aplicar(request):
 
             print("✅ Solicitud registrada correctamente")
             # Redirigir a la sección de gracias con un ancla
-            return redirect('inicio_unificado')
+            return redirect('index')
     
-    return redirect('inicio_unificado')
+    return redirect('index')
 
 
 def estado(request):
@@ -89,7 +89,7 @@ def estado(request):
                 'mostrar_resultado_busqueda': True,
             }
             
-            return render(request, 'inicio_unificado.html', context)
+            return render(request, 'index.html', context)
 
         except Persona.DoesNotExist:
             categorias = Categoria.objects.all()
@@ -100,14 +100,14 @@ def estado(request):
                 'error_estado': "No se encontró una persona con esos datos.",
                 'mostrar_resultado_busqueda': True,
             }
-            return render(request, 'inicio_unificado.html', context)
+            return render(request, 'index.html', context)
     
-    return redirect('inicio_unificado')
+    return redirect('index')
 
 
 # Mantener vistas antiguas por compatibilidad (pueden eliminarse después)
 def categorias(request):
-    return redirect('inicio_unificado')
+    return redirect('index')
 
 def gracias(request):
-    return redirect('inicio_unificado')
+    return redirect('index')
