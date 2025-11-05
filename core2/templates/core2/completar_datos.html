@@ -1,0 +1,93 @@
+{% extends 'core2/base.html' %}
+{% load static %}
+
+{% block title %}Completar Datos - Portal Empleados{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>¡Bienvenido al Portal de Empleados!</h2>
+        <p>Por favor, completa tus datos personales para continuar.</p>
+        <p>Esta información es necesaria para gestionar tu nómina y permisos.</p>
+    </section>
+
+    <section class="seccion">
+        <div class="form-section">
+            <form method="POST" class="form azul">
+                {% csrf_token %}
+                
+                <h3 style="text-align: center; margin-bottom: 30px;">Información Personal</h3>
+                
+                <div>
+                    <label for="{{ form.nombre.id_for_label }}">Nombre *</label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}
+                        <span style="color: #f5576c;">{{ form.nombre.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.apellido.id_for_label }}">Apellido *</label>
+                    {{ form.apellido }}
+                    {% if form.apellido.errors %}
+                        <span style="color: #f5576c;">{{ form.apellido.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.cedula.id_for_label }}">Cédula *</label>
+                    {{ form.cedula }}
+                    {% if form.cedula.errors %}
+                        <span style="color: #f5576c;">{{ form.cedula.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.correo.id_for_label }}">Correo Electrónico *</label>
+                    {{ form.correo }}
+                    {% if form.correo.errors %}
+                        <span style="color: #f5576c;">{{ form.correo.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.telefono.id_for_label }}">Teléfono</label>
+                    {{ form.telefono }}
+                    {% if form.telefono.errors %}
+                        <span style="color: #f5576c;">{{ form.telefono.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.direccion.id_for_label }}">Dirección</label>
+                    {{ form.direccion }}
+                    {% if form.direccion.errors %}
+                        <span style="color: #f5576c;">{{ form.direccion.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento</label>
+                    {{ form.fecha_nacimiento }}
+                    {% if form.fecha_nacimiento.errors %}
+                        <span style="color: #f5576c;">{{ form.fecha_nacimiento.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.categoria.id_for_label }}">Categoría</label>
+                    {{ form.categoria }}
+                    {% if form.categoria.errors %}
+                        <span style="color: #f5576c;">{{ form.categoria.errors.0 }}</span>
+                    {% endif %}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Si no conoces tu categoría, déjala en blanco. Será asignada por recursos humanos.
+                    </small>
+                </div>
+
+                <button type="submit" class="buttonformB">Guardar y Continuar</button>
+            </form>
+        </div>
+    </section>
+</main>
+{% endblock %}

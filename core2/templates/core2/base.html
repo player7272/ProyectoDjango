@@ -1,65 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} Base {% endblock %}</title>
+    <title>{% block title %}Portal Empleados - BMS{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <link rel="stylesheet" href="{% static 'css/cards.css' %}">
     <link rel="stylesheet" href="{% static 'css/button.css' %}">
-
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
     <link rel="icon" type="image/png" href="{% static 'img/Logo.jpg' %}">
+    <style>
+        .seccion {
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .seccion.msg-success {
+            background: rgba(67, 227, 123, 0.2);
+        }
+
+        .seccion.msg-error {
+            background: rgba(245, 87, 108, 0.2);
+        }
+
+        .seccion.msg-info {
+            background: rgba(79, 172, 254, 0.2);
+        }
+    </style>
 </head>
 
 <body class="light-mode">
-    <!-- <div class="sidebar">
-        <img src="{% static 'img/Logo.jpg'%}" alt="Logo" class="logo">
-        <a href="#hero" class="sidebarA">Inicio</a>
-        <a href="#sobre" class="sidebarA">Nosotros</a>
-        <a href="#servicios" class="sidebarA">Servicios</a>
-        <a href="#categorias" class="sidebarA">Categorias</a>
-        <a href="#aplicar" class="sidebarA">Aplicar</a>
-        <a href="#consultar" class="sidebarA">Consultar</a>
 
-
-
-        <a href="#" class="sidebarAfinal"> Hecho por BMS &copy; </a>
-    </div> -->
     <header class="header">
         <div class="header-content">
             <div class="header-logo">
                 <img src="{% static 'img/Logo.jpg' %}" alt="Logo" class="logo">
-                <h1>BMS Soluciones Tecnológicas</h1>
+                <h1>Portal de Empleados - BMS</h1>
             </div>
 
             <nav class="header-nav">
-                <a href="#hero">Inicio</a>
-                <a href="#sobre">Nosotros</a>
-                <a href="#servicios">Servicios</a>
-                <a href="#categorias">Categorías</a>
-                <a href="#aplicar">Postúlate</a>
-                <a href="#consultar">Consultar</a>
-                <a href="{% url 'home_core2' %}">Iniciar sesión</a>
-
+                <a href="{% url 'dashboard_empleado' %}">Dashboard</a>
+                <a href="{% url 'mis_nominas' %}">Nóminas</a>
+                <a href="{% url 'mis_permisos' %}">Permisos</a>
+                <a href="{% url 'perfil_empleado' %}">Mi Perfil</a>
+                <a href="{% url 'index' %}">Inicio</a>
             </nav>
         </div>
-
     </header>
 
     <main>
         {% block content %}
-
         {% endblock %}
-
     </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 BMS Soluciones Tecnológicas. Todos los derechos reservados.</p>
+    </footer>
+
     <script>
-        // Crear el botón flotante
+        // Botón de cambio de tema
         const btnTema = document.createElement("button");
         btnTema.style.position = "fixed";
         btnTema.style.bottom = "20px";
@@ -78,7 +81,6 @@
         document.body.appendChild(btnTema);
 
         const icono = btnTema.querySelector("i");
-
         const temaGuardado = localStorage.getItem("tema");
 
         if (temaGuardado === "claro") {
@@ -97,13 +99,11 @@
             const modoClaro = document.body.classList.toggle("light-mode");
 
             if (modoClaro) {
-                // Cambiar a modo claro
                 icono.classList.replace("bx-sun", "bx-moon");
                 btnTema.style.background = "#ddd";
                 btnTema.style.color = "#333";
                 localStorage.setItem("tema", "claro");
             } else {
-                // Cambiar a modo oscuro
                 icono.classList.replace("bx-moon", "bx-sun");
                 btnTema.style.background = "#555";
                 btnTema.style.color = "#fff";
@@ -114,6 +114,6 @@
         btnTema.addEventListener("mouseenter", () => btnTema.style.transform = "scale(1.1)");
         btnTema.addEventListener("mouseleave", () => btnTema.style.transform = "scale(1)");
     </script>
-
-
 </body>
+
+</html>
