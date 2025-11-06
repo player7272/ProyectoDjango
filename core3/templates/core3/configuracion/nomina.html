@@ -1,0 +1,259 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Configuración de Nómina - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>⚙️ Configuración de Nómina</h2>
+        <p>Parámetros generales para el cálculo de nóminas y deducciones</p>
+    </section>
+
+    <!-- Configuración Actual -->
+    {% if config %}
+    <section class="seccion">
+        <h3>📋 Configuración Actual</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">💰 Salario Mínimo Legal</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #43e97b;">
+                    ${{ config.salario_minimo_legal|floatformat:2 }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">🚌 Auxilio de Transporte</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #4facfe;">
+                    ${{ config.valor_auxilio_transporte|floatformat:2 }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Deducciones</h4>
+                <p class="card-content">
+                    <strong>Seguridad Social:</strong> {{ config.porcentaje_seguridad_social }}%<br>
+                    <strong>Salud:</strong> {{ config.porcentaje_salud }}%<br>
+                    <strong>Pensión:</strong> {{ config.porcentaje_pension }}%
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📅 Fecha de Creación</h4>
+                <p class="card-content">
+                    {{ config.fecha_creacion|date:"d/m/Y H:i" }}
+                </p>
+            </div>
+        </div>
+    </section>
+    {% else %}
+    <section class="seccion">
+        <div style="background: rgba(255, 193, 7, 0.2); padding: 20px; border-radius: 12px; text-align: center;">
+            <p><strong>⚠️ No hay configuración activa</strong></p>
+            <p>Crea una configuración inicial para comenzar a procesar nóminas</p>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Formulario de Configuración -->
+    <section class="seccion">
+        <h3>{% if config %}Actualizar Configuración{% else %}Crear Configuración{% endif %}</h3>
+        <div class="form-section">
+            <form method="POST" class="form azul">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>Por favor, corrija los siguientes errores:</strong>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <br>• {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <h4 style="text-align: center; margin-bottom: 30px;">Parámetros de Nómina</h4>
+
+                <!-- Porcentajes de Deducciones -->
+                <fieldset style="border: 2px solid rgba(102, 126, 234, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #667eea;">Porcentajes de Deducciones (%)</legend>
+                    
+                    <div>
+                        <label for="{{ form.porcentaje_seguridad_social.id_for_label }}">Seguridad Social *</label>
+                        {{ form.porcentaje_seguridad_social }}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Porcentaje de deducción por seguridad social (ejemplo: 4.0 para 4%)
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.porcentaje_salud.id_for_label }}">Salud *</label>
+                        {{ form.porcentaje_salud }}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Porcentaje de deducción por salud (ejemplo: 4.0 para 4%)
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.porcentaje_pension.id_for_label }}">Pensión *</label>
+                        {{ form.porcentaje_pension }}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Porcentaje de deducción por pensión (ejemplo: 4.0 para 4%)
+                        </small>
+                    </div>
+                </fieldset>
+
+                <!-- Valores Fijos -->
+                <fieldset style="border: 2px solid rgba(67, 227, 123, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #43e97b;">Valores de Referencia ($)</legend>
+                    
+                    <div>
+                        <label for="{{ form.salario_minimo_legal.id_for_label }}">Salario Mínimo Legal *</label>
+                        {{ form.salario_minimo_legal }}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Salario mínimo legal vigente en el país
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.valor_auxilio_transporte.id_for_label }}">Auxilio de Transporte *</label>
+                        {{ form.valor_auxilio_transporte }}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Valor del auxilio de transporte legal
+                        </small>
+                    </div>
+                </fieldset>
+
+                <!-- Información Importante -->
+                <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>⚠️ Importante:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Esta configuración se aplicará a todas las nóminas nuevas que se generen</li>
+                        <li>Las nóminas ya creadas NO se verán afectadas por estos cambios</li>
+                        <li>Asegúrate de que los valores correspondan a la legislación vigente</li>
+                        <li>Se creará una nueva versión de la configuración, manteniendo el historial</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="buttonformB">Guardar Configuración</button>
+                <a href="{% url 'dashboard_rrhh' %}" 
+                   class="buttonformB" 
+                   style="background: rgba(108, 117, 125, 0.2); border-color: #6c757d; text-decoration: none; display: block;">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </section>
+
+    <!-- Guía de Referencia -->
+    <section class="seccion">
+        <h3>📚 Guía de Referencia</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">💡 Porcentajes Típicos</h4>
+                <p class="card-content">
+                    <strong>Seguridad Social:</strong> 4.0%<br>
+                    <strong>Salud:</strong> 4.0%<br>
+                    <strong>Pensión:</strong> 4.0%<br>
+                    <br>
+                    <small>Estos son valores de referencia. Verifica la legislación actual de tu país.</small>
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Cálculo de Ejemplo</h4>
+                <p class="card-content">
+                    <strong>Salario Base:</strong> $2,000,000<br>
+                    <strong>Deducciones (12%):</strong> $240,000<br>
+                    <strong>Neto a Pagar:</strong> $1,760,000<br>
+                    <br>
+                    <small>Las deducciones se calculan automáticamente según los porcentajes configurados.</small>
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">🔄 Historial</h4>
+                <p class="card-content">
+                    El sistema mantiene un historial de todas las configuraciones. Cada vez que actualizas, se crea una nueva versión y la anterior se desactiva.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">⚖️ Legislación</h4>
+                <p class="card-content">
+                    Asegúrate de consultar la legislación laboral vigente antes de configurar estos valores. Los porcentajes y montos pueden variar según el país y cambiar con el tiempo.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulador de Cálculo -->
+    <section class="seccion">
+        <h3>🧮 Simulador de Cálculo de Nómina</h3>
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 30px; border-radius: 12px;">
+            <div style="max-width: 500px; margin: 0 auto;">
+                <label for="simulador_salario" style="display: block; margin-bottom: 10px; font-weight: bold;">
+                    Ingresa un salario para simular:
+                </label>
+                <input type="number" id="simulador_salario" class="input" placeholder="Ejemplo: 2000000" step="1000">
+                
+                <div id="resultado_simulacion" style="margin-top: 20px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: none;">
+                    <h4 style="margin-top: 0;">Resultado de la Simulación:</h4>
+                    <p><strong>Salario Base:</strong> $<span id="sim_salario_base">0</span></p>
+                    <p><strong>Seguridad Social:</strong> -$<span id="sim_seguridad">0</span></p>
+                    <p><strong>Salud:</strong> -$<span id="sim_salud">0</span></p>
+                    <p><strong>Pensión:</strong> -$<span id="sim_pension">0</span></p>
+                    <hr>
+                    <p><strong>Total Deducciones:</strong> -$<span id="sim_total_ded">0</span></p>
+                    <p style="font-size: 1.3rem; color: #43e97b;"><strong>Neto a Pagar:</strong> $<span id="sim_neto">0</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acciones -->
+    <section class="seccion texto-centro">
+        <a href="{% url 'dashboard_rrhh' %}" class="button">Volver al Dashboard</a>
+        <a href="{% url 'lista_nominas_rrhh' %}" class="button blue">Ver Nóminas</a>
+    </section>
+</main>
+
+<script>
+// Simulador de cálculo
+document.addEventListener('DOMContentLoaded', function() {
+    const simuladorInput = document.getElementById('simulador_salario');
+    const resultado = document.getElementById('resultado_simulacion');
+    
+    // Obtener porcentajes del formulario actual
+    const porcSeguridad = parseFloat(document.querySelector('[name="porcentaje_seguridad_social"]')?.value || 4.0);
+    const porcSalud = parseFloat(document.querySelector('[name="porcentaje_salud"]')?.value || 4.0);
+    const porcPension = parseFloat(document.querySelector('[name="porcentaje_pension"]')?.value || 4.0);
+
+    if (simuladorInput) {
+        simuladorInput.addEventListener('input', function() {
+            const salario = parseFloat(this.value) || 0;
+            
+            if (salario > 0) {
+                const seguridad = (salario * porcSeguridad) / 100;
+                const salud = (salario * porcSalud) / 100;
+                const pension = (salario * porcPension) / 100;
+                const totalDed = seguridad + salud + pension;
+                const neto = salario - totalDed;
+
+                document.getElementById('sim_salario_base').textContent = salario.toLocaleString('es-CO', {minimumFractionDigits: 2});
+                document.getElementById('sim_seguridad').textContent = seguridad.toLocaleString('es-CO', {minimumFractionDigits: 2});
+                document.getElementById('sim_salud').textContent = salud.toLocaleString('es-CO', {minimumFractionDigits: 2});
+                document.getElementById('sim_pension').textContent = pension.toLocaleString('es-CO', {minimumFractionDigits: 2});
+                document.getElementById('sim_total_ded').textContent = totalDed.toLocaleString('es-CO', {minimumFractionDigits: 2});
+                document.getElementById('sim_neto').textContent = neto.toLocaleString('es-CO', {minimumFractionDigits: 2});
+
+                resultado.style.display = 'block';
+            } else {
+                resultado.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,261 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Gestión de Permisos - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>⏰ Gestión de Permisos</h2>
+        <p>Revisión y aprobación de solicitudes de permisos de empleados</p>
+    </section>
+
+    <!-- Filtros -->
+    <section class="seccion">
+        <div class="filtros">
+            <a href="{% url 'lista_permisos_rrhh' %}?estado=todos" 
+               class="button {% if filtro_actual == 'todos' %}green{% endif %}">
+                Todos
+            </a>
+            <a href="{% url 'lista_permisos_rrhh' %}?estado=pendientes" 
+               class="button {% if filtro_actual == 'pendientes' %}blue{% endif %}">
+                Pendientes
+            </a>
+            <a href="{% url 'lista_permisos_rrhh' %}?estado=aprobados" 
+               class="button {% if filtro_actual == 'aprobados' %}{% endif %}">
+                Aprobados
+            </a>
+            <a href="{% url 'lista_permisos_rrhh' %}?estado=rechazados" 
+               class="button {% if filtro_actual == 'rechazados' %}red{% endif %}">
+                Rechazados
+            </a>
+        </div>
+    </section>
+
+    <!-- Estadísticas Rápidas -->
+    <section class="seccion">
+        <div class="cards-container">
+            <div class="card stat-card">
+                <i class='bx bx-time' style="font-size: 3rem; color: #ffc107;"></i>
+                <div class="stat-number" style="color: #ffc107;">
+                    {{ permisos.filter.count }}
+                </div>
+                <div class="stat-label">Permisos en esta Vista</div>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-user-check' style="font-size: 3rem; color: #43e97b;"></i>
+                <div class="stat-number" style="color: #43e97b;">
+                    {% if filtro_actual == 'aprobados' %}
+                        {{ permisos|length }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+                <div class="stat-label">Aprobados</div>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-user-x' style="font-size: 3rem; color: #f5576c;"></i>
+                <div class="stat-number" style="color: #f5576c;">
+                    {% if filtro_actual == 'rechazados' %}
+                        {{ permisos|length }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+                <div class="stat-label">Rechazados</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lista de Permisos -->
+    <section class="seccion">
+        {% if permisos %}
+        <div style="overflow-x: auto;">
+            <table class="table table--striped table--hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Empleado</th>
+                        <th>Tipo de Permiso</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Días Solicitados</th>
+                        <th>Estado</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Motivo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for permiso in permisos %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <strong>{{ permiso.empleado.nombre }} {{ permiso.empleado.apellido }}</strong><br>
+                            <small>{{ permiso.empleado.cedula }}</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-info">{{ permiso.tipo_permiso.nombre }}</span>
+                        </td>
+                        <td>{{ permiso.fecha_inicio|date:"d/m/Y" }}</td>
+                        <td>{{ permiso.fecha_fin|date:"d/m/Y" }}</td>
+                        <td>
+                            <strong>{{ permiso.dias_solicitados }}</strong> día{{ permiso.dias_solicitados|pluralize }}
+                        </td>
+                        <td>
+                            {% if permiso.estado == 'PENDIENTE' %}
+                                <span class="badge badge-warning">⏳ Pendiente</span>
+                            {% elif permiso.estado == 'APROBADO' %}
+                                <span class="badge badge-success">✓ Aprobado</span>
+                            {% elif permiso.estado == 'RECHAZADO' %}
+                                <span class="badge badge-danger">✗ Rechazado</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ permiso.estado }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ permiso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                        <td>{{ permiso.motivo|truncatewords:8 }}</td>
+                        <td>
+                            {% if permiso.estado == 'PENDIENTE' %}
+                                <a href="{% url 'revisar_permiso' permiso.id %}" 
+                                   class="button blue" 
+                                   style="padding: 8px 16px; font-size: 14px;">
+                                    Revisar
+                                </a>
+                            {% else %}
+                                <button class="button" 
+                                        style="padding: 8px 16px; font-size: 14px; opacity: 0.6; cursor: not-allowed;"
+                                        disabled
+                                        title="{% if permiso.estado == 'APROBADO' %}Ya aprobado{% else %}Ya rechazado{% endif %}">
+                                    Revisado
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Resumen -->
+        <div class="cards-container" style="margin-top: 30px;">
+            <div class="card">
+                <h4 class="card-title">📊 Resumen</h4>
+                <p class="card-content">
+                    <strong>Total en esta vista:</strong> {{ permisos|length }}<br>
+                    <strong>Filtro activo:</strong> 
+                    {% if filtro_actual == 'todos' %}
+                        Todos los permisos
+                    {% elif filtro_actual == 'pendientes' %}
+                        Pendientes de revisión
+                    {% elif filtro_actual == 'aprobados' %}
+                        Aprobados
+                    {% elif filtro_actual == 'rechazados' %}
+                        Rechazados
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% else %}
+        <div class="texto-centro">
+            <p>No hay permisos con el filtro seleccionado.</p>
+            {% if filtro_actual == 'pendientes' %}
+                <p>¡Excelente! No hay permisos pendientes de revisión.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Información sobre Tipos de Permisos -->
+    <section class="seccion">
+        <h3>📚 Tipos de Permisos</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">🏥 Permiso Médico</h4>
+                <p class="card-content">
+                    Para citas médicas, procedimientos o recuperación. Puede requerir certificado médico.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">🏖️ Vacaciones</h4>
+                <p class="card-content">
+                    Días de descanso acumulados por el empleado. Se recomienda verificar el saldo disponible.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">👪 Permiso Personal</h4>
+                <p class="card-content">
+                    Para asuntos personales o familiares. Sujeto a la urgencia y disponibilidad operativa.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📚 Permiso de Estudio</h4>
+                <p class="card-content">
+                    Para capacitaciones y desarrollo profesional. Apoya el crecimiento del empleado.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Criterios de Aprobación -->
+    <section class="seccion">
+        <h3>✅ Criterios de Aprobación</h3>
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
+            <h4 style="margin-top: 0;">Al revisar un permiso, considera:</h4>
+            <ul style="line-height: 1.8;">
+                <li><strong>Disponibilidad operativa:</strong> ¿Afectará significativamente las operaciones?</li>
+                <li><strong>Historial del empleado:</strong> ¿Ha tenido ausentismo frecuente?</li>
+                <li><strong>Tipo de permiso:</strong> ¿Es por una razón justificada o urgente?</li>
+                <li><strong>Anticipación:</strong> ¿Se solicitó con suficiente tiempo de anticipación?</li>
+                <li><strong>Documentación:</strong> ¿Incluye los soportes necesarios?</li>
+                <li><strong>Días disponibles:</strong> ¿El empleado tiene días acumulados (para vacaciones)?</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Estadísticas Adicionales -->
+    <section class="seccion">
+        <h3>📈 Estadísticas de Permisos</h3>
+        <table class="table table--bordered">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Cantidad</th>
+                    <th>Porcentaje</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge badge-warning">Pendientes</span></td>
+                    <td>
+                        {{ permisos.filter.count }}
+                        {% comment %}Este filtro debería aplicarse en la vista{% endcomment %}
+                    </td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-success">Aprobados</span></td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-danger">Rechazados</span></td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Acciones -->
+    <section class="seccion texto-centro">
+        <a href="{% url 'dashboard_rrhh' %}" class="button">Volver al Dashboard</a>
+        <a href="{% url 'lista_empleados_rrhh' %}" class="button blue">Ver Empleados</a>
+    </section>
+</main>
+{% endblock %}

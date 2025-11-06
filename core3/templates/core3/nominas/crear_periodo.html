@@ -1,0 +1,178 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Crear Periodo de Nómina - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>Crear Nuevo Periodo de Nómina</h2>
+        <p>Define un nuevo periodo para el procesamiento de nóminas</p>
+    </section>
+
+    <!-- Información Importante -->
+    <section class="seccion">
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
+            <h3 style="margin-top: 0;">ℹ️ Información Importante</h3>
+            <ul style="line-height: 1.8;">
+                <li><strong>Tipo de Periodo:</strong> Selecciona si será quincenal o mensual</li>
+                <li><strong>Fechas:</strong> Asegúrate de que las fechas no se solapen con otros periodos</li>
+                <li><strong>Fecha de Pago:</strong> Debe ser posterior a la fecha de fin del periodo</li>
+                <li><strong>Generación:</strong> Una vez creado el periodo, podrás generar las nóminas para todos los empleados activos</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Formulario -->
+    <section class="seccion">
+        <div class="form-section">
+            <form method="POST" class="form verde">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>Por favor, corrija los siguientes errores:</strong>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <br>• {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <h3 style="text-align: center; margin-bottom: 30px;">Datos del Periodo</h3>
+
+                <div>
+                    <label for="{{ form.tipo.id_for_label }}">Tipo de Periodo *</label>
+                    {{ form.tipo }}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Selecciona si el periodo será quincenal (cada 15 días) o mensual
+                    </small>
+                </div>
+
+                <div>
+                    <label for="{{ form.fecha_inicio.id_for_label }}">Fecha de Inicio *</label>
+                    {{ form.fecha_inicio }}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Primer día del periodo de nómina
+                    </small>
+                </div>
+
+                <div>
+                    <label for="{{ form.fecha_fin.id_for_label }}">Fecha de Fin *</label>
+                    {{ form.fecha_fin }}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Último día del periodo de nómina
+                    </small>
+                </div>
+
+                <div>
+                    <label for="{{ form.fecha_pago.id_for_label }}">Fecha de Pago *</label>
+                    {{ form.fecha_pago }}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Fecha en la que se realizará el pago a los empleados
+                    </small>
+                </div>
+
+                <div style="background: rgba(67, 227, 123, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>✓ Próximos Pasos:</strong>
+                    <ol style="margin-top: 10px; padding-left: 20px;">
+                        <li>Crear el periodo de nómina</li>
+                        <li>Generar las nóminas para todos los empleados activos</li>
+                        <li>Revisar y ajustar cada nómina si es necesario</li>
+                        <li>Marcar como pagadas cuando se realice el pago</li>
+                    </ol>
+                </div>
+
+                <button type="submit" class="buttonformB">Crear Periodo de Nómina</button>
+                <a href="{% url 'lista_nominas_rrhh' %}" 
+                   class="buttonformB" 
+                   style="background: rgba(245, 87, 108, 0.2); border-color: #f5576c; text-decoration: none; display: block;">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </section>
+
+    <!-- Guía de Ejemplos -->
+    <section class="seccion">
+        <h3>📋 Ejemplos de Periodos</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">📅 Periodo Quincenal</h4>
+                <p class="card-content">
+                    <strong>Ejemplo 1:</strong><br>
+                    Fecha Inicio: 01/01/2025<br>
+                    Fecha Fin: 15/01/2025<br>
+                    Fecha Pago: 20/01/2025
+                </p>
+                <p class="card-content">
+                    <strong>Ejemplo 2:</strong><br>
+                    Fecha Inicio: 16/01/2025<br>
+                    Fecha Fin: 31/01/2025<br>
+                    Fecha Pago: 05/02/2025
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📅 Periodo Mensual</h4>
+                <p class="card-content">
+                    <strong>Ejemplo:</strong><br>
+                    Fecha Inicio: 01/01/2025<br>
+                    Fecha Fin: 31/01/2025<br>
+                    Fecha Pago: 05/02/2025
+                </p>
+                <p class="card-content">
+                    Se recomienda dar 3-5 días de margen después del fin del periodo para procesar las nóminas
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">⚠️ Consideraciones</h4>
+                <p class="card-content">
+                    • Verifica que no existan periodos solapados<br>
+                    • La fecha de pago debe ser realista<br>
+                    • Ten en cuenta días festivos y fines de semana<br>
+                    • Coordina con el departamento financiero
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Botones de Acción -->
+    <section class="seccion texto-centro">
+        <a href="{% url 'lista_nominas_rrhh' %}" class="button">Ver Todos los Periodos</a>
+        <a href="{% url 'dashboard_rrhh' %}" class="button blue">Volver al Dashboard</a>
+    </section>
+</main>
+
+<script>
+// Validación de fechas en el cliente
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const fechaInicio = document.querySelector('[name="fecha_inicio"]');
+    const fechaFin = document.querySelector('[name="fecha_fin"]');
+    const fechaPago = document.querySelector('[name="fecha_pago"]');
+
+    if (form && fechaInicio && fechaFin && fechaPago) {
+        form.addEventListener('submit', function(e) {
+            const inicio = new Date(fechaInicio.value);
+            const fin = new Date(fechaFin.value);
+            const pago = new Date(fechaPago.value);
+
+            if (fin < inicio) {
+                e.preventDefault();
+                alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+                return false;
+            }
+
+            if (pago < fin) {
+                e.preventDefault();
+                alert('La fecha de pago debe ser posterior a la fecha de fin del periodo');
+                return false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

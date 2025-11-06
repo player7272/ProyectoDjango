@@ -1,0 +1,351 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Reportes y Estadísticas - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>📊 Reportes y Estadísticas</h2>
+        <p>Dashboard completo de análisis y métricas del sistema de recursos humanos</p>
+    </section>
+
+    <!-- Resumen General de Personal -->
+    <section class="seccion">
+        <h3>👥 Resumen de Personal</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <i class='bx bx-group' style="font-size: 3rem; color: #4facfe;"></i>
+                <div class="stat-number" style="color: #4facfe;">{{ total_empleados }}</div>
+                <div class="stat-label">Total Empleados</div>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-user-check' style="font-size: 3rem; color: #43e97b;"></i>
+                <div class="stat-number" style="color: #43e97b;">{{ empleados_activos }}</div>
+                <div class="stat-label">Empleados Activos</div>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-user-x' style="font-size: 3rem; color: #f5576c;"></i>
+                <div class="stat-number" style="color: #f5576c;">{{ empleados_inactivos }}</div>
+                <div class="stat-label">Empleados Inactivos</div>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-trending-up' style="font-size: 3rem; color: #ffc107;"></i>
+                <div class="stat-number" style="color: #ffc107;">
+                    {% widthratio empleados_activos total_empleados 100 %}%
+                </div>
+                <div class="stat-label">Tasa de Retención</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estadísticas de Solicitudes -->
+    <section class="seccion">
+        <h3>📋 Solicitudes de Empleo</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <div class="stat-number">{{ total_solicitudes }}</div>
+                <div class="stat-label">Total de Solicitudes</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #ffc107;">{{ solicitudes_pendientes }}</div>
+                <div class="stat-label">Pendientes</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #43e97b;">{{ solicitudes_aprobadas }}</div>
+                <div class="stat-label">Aprobadas</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #f5576c;">{{ solicitudes_rechazadas }}</div>
+                <div class="stat-label">Rechazadas</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <table class="table table--bordered">
+                <tbody>
+                    <tr>
+                        <td><strong>Tasa de Aprobación:</strong></td>
+                        <td style="text-align: right;">
+                            {% if total_solicitudes > 0 %}
+                                <strong style="color: #43e97b;">{% widthratio solicitudes_aprobadas total_solicitudes 100 %}%</strong>
+                            {% else %}
+                                <strong>0%</strong>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tasa de Rechazo:</strong></td>
+                        <td style="text-align: right;">
+                            {% if total_solicitudes > 0 %}
+                                <strong style="color: #f5576c;">{% widthratio solicitudes_rechazadas total_solicitudes 100 %}%</strong>
+                            {% else %}
+                                <strong>0%</strong>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Estadísticas de Permisos -->
+    <section class="seccion">
+        <h3>⏰ Gestión de Permisos</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <div class="stat-number">{{ total_permisos }}</div>
+                <div class="stat-label">Total de Permisos</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #ffc107;">{{ permisos_pendientes }}</div>
+                <div class="stat-label">Pendientes de Revisión</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #43e97b;">{{ permisos_aprobados }}</div>
+                <div class="stat-label">Aprobados</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #f5576c;">{{ permisos_rechazados }}</div>
+                <div class="stat-label">Rechazados</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <table class="table table--bordered">
+                <tbody>
+                    <tr>
+                        <td><strong>Tasa de Aprobación de Permisos:</strong></td>
+                        <td style="text-align: right;">
+                            {% if total_permisos > 0 %}
+                                <strong style="color: #43e97b;">{% widthratio permisos_aprobados total_permisos 100 %}%</strong>
+                            {% else %}
+                                <strong>0%</strong>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Estadísticas de Nóminas -->
+    <section class="seccion">
+        <h3>💰 Gestión de Nóminas</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <div class="stat-number">{{ total_nominas }}</div>
+                <div class="stat-label">Total Nóminas Procesadas</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #43e97b;">{{ nominas_pagadas }}</div>
+                <div class="stat-label">Nóminas Pagadas</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #ffc107;">{{ nominas_pendientes }}</div>
+                <div class="stat-label">Pendientes de Pago</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-number" style="color: #4facfe;">${{ total_nomina_mes|floatformat:0 }}</div>
+                <div class="stat-label">Total Nómina Mes Actual</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Distribución por Categoría -->
+    <section class="seccion">
+        <h3>📊 Distribución de Empleados por Categoría</h3>
+        {% if empleados_por_categoria %}
+        <table class="table table--striped table--hover">
+            <thead>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Número de Empleados</th>
+                    <th>Porcentaje</th>
+                    <th>Visual</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in empleados_por_categoria %}
+                <tr>
+                    <td><strong>{{ item.categoria__nombre|default:"Sin Categoría" }}</strong></td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>
+                        {% widthratio item.cantidad empleados_activos 100 %}%
+                    </td>
+                    <td>
+                        <div style="background: rgba(102, 126, 234, 0.2); height: 20px; border-radius: 10px; overflow: hidden;">
+                            {% widthratio item.cantidad empleados_activos 100 as width_percentage %}
+                            <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: {{ width_percentage }}%;"></div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="texto-centro">No hay datos de categorías disponibles.</p>
+        {% endif %}
+    </section>
+
+    <!-- Resumen Financiero -->
+    <section class="seccion">
+        <h3>💵 Resumen Financiero - Mes Actual</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">💰 Total a Pagar</h4>
+                <p class="card-content" style="font-size: 2.5rem; font-weight: bold; color: #43e97b;">
+                    ${{ total_nomina_mes|floatformat:2 }}
+                </p>
+                <p class="card-content">Nómina total del mes en curso</p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Promedio por Empleado</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #4facfe;">
+                    {% if empleados_activos > 0 %}
+                        ${% widthratio total_nomina_mes empleados_activos 1 %}
+                    {% else %}
+                        $0
+                    {% endif %}
+                </p>
+                <p class="card-content">Promedio salarial mensual</p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📈 Estado de Pagos</h4>
+                <p class="card-content">
+                    <strong>Pagadas:</strong> {{ nominas_pagadas }}<br>
+                    <strong>Pendientes:</strong> {{ nominas_pendientes }}<br>
+                    <strong>Total:</strong> {{ total_nominas }}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Indicadores Clave (KPIs) -->
+    <section class="seccion">
+        <h3>🎯 Indicadores Clave de Rendimiento (KPIs)</h3>
+        <div style="overflow-x: auto;">
+            <table class="table table--bordered">
+                <thead>
+                    <tr>
+                        <th>Indicador</th>
+                        <th>Valor</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tasa de Retención de Empleados</strong></td>
+                        <td>
+                            {% if total_empleados > 0 %}
+                                {% widthratio empleados_activos total_empleados 100 %}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if total_empleados > 0 %}
+                                {% widthratio empleados_activos total_empleados 100 as retencion %}
+                                {% if retencion >= 90 %}
+                                    <span class="badge badge-success">Excelente</span>
+                                {% elif retencion >= 75 %}
+                                    <span class="badge badge-info">Bueno</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Mejorable</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tasa de Aprobación de Solicitudes</strong></td>
+                        <td>
+                            {% if total_solicitudes > 0 %}
+                                {% widthratio solicitudes_aprobadas total_solicitudes 100 %}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if total_solicitudes > 0 %}
+                                {% widthratio solicitudes_aprobadas total_solicitudes 100 as aprobacion %}
+                                {% if aprobacion >= 60 %}
+                                    <span class="badge badge-success">Alto</span>
+                                {% elif aprobacion >= 40 %}
+                                    <span class="badge badge-info">Medio</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Bajo</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Solicitudes Pendientes de Revisión</strong></td>
+                        <td>{{ solicitudes_pendientes }}</td>
+                        <td>
+                            {% if solicitudes_pendientes > 10 %}
+                                <span class="badge badge-danger">Alto</span>
+                            {% elif solicitudes_pendientes > 5 %}
+                                <span class="badge badge-warning">Moderado</span>
+                            {% else %}
+                                <span class="badge badge-success">Bajo</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permisos Pendientes de Aprobación</strong></td>
+                        <td>{{ permisos_pendientes }}</td>
+                        <td>
+                            {% if permisos_pendientes > 15 %}
+                                <span class="badge badge-danger">Alto</span>
+                            {% elif permisos_pendientes > 8 %}
+                                <span class="badge badge-warning">Moderado</span>
+                            {% else %}
+                                <span class="badge badge-success">Bajo</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nóminas Pendientes de Pago</strong></td>
+                        <td>{{ nominas_pendientes }}</td>
+                        <td>
+                            {% if nominas_pendientes > 20 %}
+                                <span class="badge badge-danger">Alto</span>
+                            {% elif nominas_pendientes > 10 %}
+                                <span class="badge badge-warning">Moderado</span>
+                            {% else %}
+                                <span class="badge badge-success">Bajo</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Acciones Rápidas -->
+    <section class="seccion texto-centro">
+        <h3>Acciones Rápidas</h3>
+        <div class="btn-group">
+            <a href="{% url 'lista_solicitudes_rrhh' %}" class="button blue">Ver Solicitudes</a>
+            <a href="{% url 'lista_permisos_rrhh' %}" class="button">Ver Permisos</a>
+            <a href="{% url 'lista_empleados_rrhh' %}" class="button green">Ver Empleados</a>
+            <a href="{% url 'lista_nominas_rrhh' %}" class="button">Ver Nóminas</a>
+            <a href="{% url 'dashboard_rrhh' %}" class="button">Volver al Dashboard</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

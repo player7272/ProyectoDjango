@@ -1,0 +1,223 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Detalle Empleado - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>Detalle del Empleado</h2>
+        <p>Información completa y gestión de empleado</p>
+    </section>
+
+    <!-- Información General -->
+    <section class="seccion">
+        <h3>Información Personal y Laboral</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Datos Personales</h4>
+                <p class="card-content">
+                    <strong>Nombre Completo:</strong> {{ empleado.nombre }} {{ empleado.apellido }}<br>
+                    <strong>Cédula:</strong> {{ empleado.cedula }}<br>
+                    <strong>Fecha de Nacimiento:</strong> {{ empleado.fecha_nacimiento|date:"d/m/Y"|default:"No registrada" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📧 Información de Contacto</h4>
+                <p class="card-content">
+                    <strong>Correo:</strong> {{ empleado.correo }}<br>
+                    <strong>Teléfono:</strong> {{ empleado.telefono|default:"No registrado" }}<br>
+                    <strong>Dirección:</strong> {{ empleado.direccion|default:"No registrada" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💼 Información Laboral</h4>
+                <p class="card-content">
+                    <strong>Categoría:</strong> {{ empleado.categoria.nombre|default:"No asignada" }}<br>
+                    <strong>Fecha de Ingreso:</strong> {{ empleado.fecha_ingreso|date:"d/m/Y" }}<br>
+                    <strong>Años en la empresa:</strong> {{ empleado.anos_en_empresa }}<br>
+                    <strong>Días laborados:</strong> {{ empleado.dias_en_empresa }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado</h4>
+                <p class="card-content">
+                    {% if empleado.activo %}
+                        <span style="font-size: 2rem; color: #43e97b;">✓ Activo</span>
+                    {% else %}
+                        <span style="font-size: 2rem; color: #f5576c;">○ Inactivo</span>
+                    {% endif %}
+                </p>
+                <p class="card-content">
+                    <strong>Usuario:</strong> {{ empleado.user.username }}<br>
+                    <strong>Datos completados:</strong> {% if empleado.datos_completados %}Sí{% else %}No{% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Información Salarial -->
+    {% if empleado.categoria %}
+    <section class="seccion">
+        <h3>Información Salarial</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">💰 Salario Base</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #43e97b;">
+                    ${{ empleado.categoria.salario_base|floatformat:2 }}
+                </p>
+                <p class="card-content">{{ empleado.categoria.descripcion|truncatewords:30 }}</p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📋 Categoría</h4>
+                <p class="card-content">
+                    <strong>Nombre:</strong> {{ empleado.categoria.nombre }}<br>
+                    <strong>Descripción:</strong> {{ empleado.categoria.descripcion|truncatewords:20 }}
+                </p>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Nóminas Recientes -->
+    <section class="seccion">
+        <h3>Últimas Nóminas (10 más recientes)</h3>
+        {% if nominas %}
+        <table class="table table--striped table--hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Periodo</th>
+                    <th>Tipo</th>
+                    <th>Fecha Pago</th>
+                    <th>Salario Base</th>
+                    <th>Total Devengado</th>
+                    <th>Deducciones</th>
+                    <th>Neto a Pagar</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nomina in nominas %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ nomina.periodo }}</td>
+                    <td>{{ nomina.periodo.get_tipo_display }}</td>
+                    <td>{{ nomina.periodo.fecha_pago|date:"d/m/Y" }}</td>
+                    <td>${{ nomina.salario_base|floatformat:2 }}</td>
+                    <td>${{ nomina.total_devengado|floatformat:2 }}</td>
+                    <td>${{ nomina.total_deducciones|floatformat:2 }}</td>
+                    <td><strong style="color: #43e97b;">${{ nomina.neto_pagar|floatformat:2 }}</strong></td>
+                    <td>
+                        {% if nomina.pagado %}
+                            <span class="badge badge-success">✓ Pagado</span>
+                        {% else %}
+                            <span class="badge badge-warning">○ Pendiente</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="texto-centro">No hay nóminas registradas para este empleado.</p>
+        {% endif %}
+    </section>
+
+    <!-- Permisos Recientes -->
+    <section class="seccion">
+        <h3>Últimos Permisos Solicitados (10 más recientes)</h3>
+        {% if permisos %}
+        <table class="table table--striped table--hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tipo</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Días</th>
+                    <th>Estado</th>
+                    <th>Fecha Solicitud</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permiso in permisos %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ permiso.tipo_permiso.nombre }}</td>
+                    <td>{{ permiso.fecha_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ permiso.fecha_fin|date:"d/m/Y" }}</td>
+                    <td>{{ permiso.dias_solicitados }}</td>
+                    <td>
+                        {% if permiso.estado == 'PENDIENTE' %}
+                            <span class="badge badge-warning">⏳ Pendiente</span>
+                        {% elif permiso.estado == 'APROBADO' %}
+                            <span class="badge badge-success">✓ Aprobado</span>
+                        {% else %}
+                            <span class="badge badge-danger">✗ Rechazado</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ permiso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                    <td>{{ permiso.observaciones|truncatewords:10|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="texto-centro">No hay permisos registrados para este empleado.</p>
+        {% endif %}
+    </section>
+
+    <!-- Acciones -->
+    <section class="seccion">
+        <h3>Acciones</h3>
+        <div class="btn-group">
+            <a href="{% url 'editar_empleado_rrhh' empleado.id %}" class="button blue">Editar Información</a>
+            
+            {% if empleado.activo %}
+                <a href="{% url 'desactivar_empleado' empleado.id %}" class="button red">Desactivar Empleado</a>
+            {% else %}
+                <a href="{% url 'desactivar_empleado' empleado.id %}" class="button green">Activar Empleado</a>
+            {% endif %}
+            
+            <a href="{% url 'lista_empleados_rrhh' %}" class="button">Volver a Lista de Empleados</a>
+            <a href="{% url 'dashboard_rrhh' %}" class="button">Ir al Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Estadísticas del Empleado -->
+    <section class="seccion">
+        <h3>Estadísticas</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <h4 class="card-title">📊 Nóminas Totales</h4>
+                <div class="stat-number">{{ empleado.nominas.count }}</div>
+                <div class="stat-label">Nóminas procesadas</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">⏰ Permisos Solicitados</h4>
+                <div class="stat-number">{{ empleado.permisos.count }}</div>
+                <div class="stat-label">Total de permisos</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">✓ Permisos Aprobados</h4>
+                <div class="stat-number">{{ empleado.permisos.filter.count }}</div>
+                <div class="stat-label">Permisos aprobados</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">⏱️ Antigüedad</h4>
+                <div class="stat-number">{{ empleado.anos_en_empresa }}</div>
+                <div class="stat-label">Años en la empresa</div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
