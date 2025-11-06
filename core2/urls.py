@@ -22,4 +22,5 @@ urlpatterns = [
     
     # Perfil
     path('perfil/', views.perfil_empleado, name='perfil_empleado'),
+    path('cerrar_sesion/', views.cerrar_sesion, name='cerrar_sesion'),
 ]

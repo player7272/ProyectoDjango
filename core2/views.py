@@ -4,6 +4,12 @@ from django.contrib import messages
 from .models import Empleado, Permiso, Nomina, PeriodoNomina
 from .forms import EmpleadoForm, PermisoForm
 from datetime import date
+from django.contrib.auth import logout
+
+def cerrar_sesion(request):
+    """Cerrar sesión y redirigir al inicio"""
+    logout(request)
+    return redirect('index_core2')
 
 def index(request):
     """Vista de inicio del core2"""
