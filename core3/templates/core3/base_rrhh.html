@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Recursos Humanos - BMS{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cards.css' %}">
+    <link rel="stylesheet" href="{% static 'css/button.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" type="image/png" href="{% static 'img/Logo.jpg' %}">
+    <style>
+        .seccion {
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .seccion.msg-success {
+            background: rgba(67, 227, 123, 0.2);
+        }
+        .seccion.msg-error {
+            background: rgba(245, 87, 108, 0.2);
+        }
+        .seccion.msg-info {
+            background: rgba(79, 172, 254, 0.2);
+        }
+        .seccion.msg-warning {
+            background: rgba(255, 193, 7, 0.2);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-success { background: rgba(67, 227, 123, 0.2); color: #43e97b; }
+        .badge-danger { background: rgba(245, 87, 108, 0.2); color: #f5576c; }
+        .badge-warning { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .badge-info { background: rgba(79, 172, 254, 0.2); color: #4facfe; }
+        .badge-secondary { background: rgba(108, 117, 125, 0.2); color: #6c757d; }
+        
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .decision-radio {
+            margin: 10px 0;
+        }
+        .decision-radio input[type="radio"] {
+            margin-right: 8px;
+        }
+        
+        .filtros {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .busqueda-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .busqueda-form input {
+            flex: 1;
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header class="header">
+        <div class="header-content">
+            <div class="header-logo">
+                <img src="{% static 'img/Logo.jpg' %}" alt="Logo" class="logo">
+                <h1>Recursos Humanos - BMS</h1>
+            </div>
+            <nav class="header-nav">
+                <a href="{% url 'dashboard_rrhh' %}">Dashboard</a>
+                <a href="{% url 'lista_solicitudes_rrhh' %}">Solicitudes</a>
+                <a href="{% url 'lista_permisos_rrhh' %}">Permisos</a>
+                <a href="{% url 'lista_empleados_rrhh' %}">Empleados</a>
+                <a href="{% url 'lista_nominas_rrhh' %}">Nóminas</a>
+                <a href="{% url 'reportes_rrhh' %}">Reportes</a>
+                <a href="{% url 'configuracion_nomina' %}">Configuración</a>
+                <a href="{% url 'index' %}">Inicio</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="logout-btn">Cerrar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% if messages %}
+        {% for message in messages %}
+        <section class="seccion {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% elif message.tags == 'warning' %}msg-warning{% else %}msg-info{% endif %}">
+            {{ message }}
+        </section>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 BMS Soluciones Tecnológicas - Módulo Recursos Humanos</p>
+    </footer>
+
+    <script>
+        // Botón de cambio de tema
+        const btnTema = document.createElement("button");
+        btnTema.style.position = "fixed";
+        btnTema.style.bottom = "20px";
+        btnTema.style.right = "20px";
+        btnTema.style.zIndex = "9999";
+        btnTema.style.padding = "10px 14px";
+        btnTema.style.borderRadius = "50%";
+        btnTema.style.border = "none";
+        btnTema.style.cursor = "pointer";
+        btnTema.style.fontSize = "22px";
+        btnTema.style.background = "#555";
+        btnTema.style.color = "#fff";
+        btnTema.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
+        btnTema.style.transition = "transform 0.3s, background 0.3s, color 0.3s";
+        btnTema.innerHTML = "<i class='bx bx-sun'></i>";
+        document.body.appendChild(btnTema);
+
+        const icono = btnTema.querySelector("i");
+        const temaGuardado = localStorage.getItem("tema");
+
+        if (temaGuardado === "claro") {
+            document.body.classList.add("light-mode");
+            icono.classList.replace("bx-sun", "bx-moon");
+            btnTema.style.background = "#ddd";
+            btnTema.style.color = "#333";
+        } else {
+            document.body.classList.remove("light-mode");
+            icono.classList.replace("bx-moon", "bx-sun");
+            btnTema.style.background = "#555";
+            btnTema.style.color = "#fff";
+        }
+
+        btnTema.addEventListener("click", () => {
+            const modoClaro = document.body.classList.toggle("light-mode");
+            if (modoClaro) {
+                icono.classList.replace("bx-sun", "bx-moon");
+                btnTema.style.background = "#ddd";
+                btnTema.style.color = "#333";
+                localStorage.setItem("tema", "claro");
+            } else {
+                icono.classList.replace("bx-moon", "bx-sun");
+                btnTema.style.background = "#555";
+                btnTema.style.color = "#fff";
+                localStorage.setItem("tema", "oscuro");
+            }
+        });
+
+        btnTema.addEventListener("mouseenter", () => btnTema.style.transform = "scale(1.1)");
+        btnTema.addEventListener("mouseleave", () => btnTema.style.transform = "scale(1)");
+    </script>
+</body>
+</html>

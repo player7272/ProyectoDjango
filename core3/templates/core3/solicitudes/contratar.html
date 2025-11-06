@@ -1,0 +1,49 @@
+{% extends 'core3/base_rrhh.html' %}
+{% block title %}Contratar Empleado{% endblock %}
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>Contratar Nuevo Empleado</h2>
+        <p>Completa la información para crear el usuario y empleado</p>
+    </section>
+
+    <section class="seccion">
+        <h3>Información del Candidato Aprobado</h3>
+        <p><strong>Nombre:</strong> {{ solicitud.persona.nombre }} {{ solicitud.persona.apellido }}</p>
+        <p><strong>Cédula:</strong> {{ solicitud.persona.cedula }}</p>
+        <p><strong>Correo:</strong> {{ solicitud.persona.correo }}</p>
+    </section>
+
+    <section class="seccion">
+        <div class="form-section">
+            <form method="POST" class="form verde">
+                {% csrf_token %}
+                
+                <h3 style="text-align: center; margin-bottom: 30px;">Datos del Empleado</h3>
+                
+                {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <span style="color: #f5576c;">{{ field.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div style="background: rgba(67, 227, 123, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>📋 Credenciales que se crearán:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li><strong>Usuario:</strong> {{ solicitud.persona.correo }} (correo electrónico)</li>
+                        <li><strong>Contraseña:</strong> {{ solicitud.persona.cedula }} (número de cédula)</li>
+                        <li>El empleado debe cambiar su contraseña después del primer inicio de sesión</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="buttonformB">Crear Empleado y Usuario</button>
+                <a href="{% url 'lista_solicitudes_rrhh' %}" class="buttonformB" style="background: rgba(245, 87, 108, 0.2); border-color: #f5576c; text-decoration: none; display: block;">Cancelar</a>
+            </form>
+        </div>
+    </section>
+</main>
+{% endblock %}

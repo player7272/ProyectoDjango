@@ -1,0 +1,221 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>Dashboard de Recursos Humanos</h2>
+        <p>Panel de control y gestión de personal - BMS Soluciones Tecnológicas</p>
+    </section>
+
+    <!-- Estadísticas Rápidas -->
+    <section class="seccion">
+        <h3>Resumen de Pendientes</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <i class='bx bx-file' style="font-size: 3rem; color: #4facfe;"></i>
+                <div class="stat-number" style="color: #4facfe;">{{ solicitudes_pendientes }}</div>
+                <div class="stat-label">Solicitudes Pendientes</div>
+                <a href="{% url 'lista_solicitudes_rrhh' %}?estado=pendientes" class="button blue" style="margin-top: 15px;">Revisar</a>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-time' style="font-size: 3rem; color: #ffc107;"></i>
+                <div class="stat-number" style="color: #ffc107;">{{ permisos_pendientes }}</div>
+                <div class="stat-label">Permisos Pendientes</div>
+                <a href="{% url 'lista_permisos_rrhh' %}?estado=pendientes" class="button" style="margin-top: 15px; background: rgba(255, 193, 7, 0.2); border-color: #ffc107;">Revisar</a>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-user-check' style="font-size: 3rem; color: #43e97b;"></i>
+                <div class="stat-number" style="color: #43e97b;">{{ empleados_activos }}</div>
+                <div class="stat-label">Empleados Activos</div>
+                <a href="{% url 'lista_empleados_rrhh' %}?estado=activos" class="button green" style="margin-top: 15px;">Ver</a>
+            </div>
+
+            <div class="card stat-card">
+                <i class='bx bx-money' style="font-size: 3rem; color: #f5576c;"></i>
+                <div class="stat-number" style="color: #f5576c;">{{ nominas_pendientes }}</div>
+                <div class="stat-label">Nóminas Pendientes de Pago</div>
+                <a href="{% url 'lista_nominas_rrhh' %}" class="button red" style="margin-top: 15px;">Gestionar</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Accesos Rápidos -->
+    <section class="seccion">
+        <h3>Acciones Rápidas</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">📋 Nueva Nómina</h4>
+                <p class="card-content">Crear un nuevo periodo de nómina para procesar pagos</p>
+                <a href="{% url 'crear_periodo_nomina' %}" class="button blue">Crear Periodo</a>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">👥 Ver Empleados</h4>
+                <p class="card-content">Administrar la lista completa de empleados</p>
+                <a href="{% url 'lista_empleados_rrhh' %}" class="button green">Ver Empleados</a>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Reportes</h4>
+                <p class="card-content">Consultar estadísticas y reportes del sistema</p>
+                <a href="{% url 'reportes_rrhh' %}" class="button">Ver Reportes</a>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">⚙️ Configuración</h4>
+                <p class="card-content">Ajustar parámetros de nómina y sistema</p>
+                <a href="{% url 'configuracion_nomina' %}" class="button">Configurar</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Últimas Solicitudes -->
+    <section class="seccion">
+        <h3>Últimas Solicitudes de Empleo</h3>
+        {% if ultimas_solicitudes %}
+        <table class="table table--striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cédula</th>
+                    <th>Correo</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in ultimas_solicitudes %}
+                <tr>
+                    <td>{{ solicitud.persona.nombre }} {{ solicitud.persona.apellido }}</td>
+                    <td>{{ solicitud.persona.cedula }}</td>
+                    <td>{{ solicitud.persona.correo }}</td>
+                    <td>{{ solicitud.categoria.nombre|default:"N/A" }}</td>
+                    <td>
+                        {% if solicitud.estado.nombre == 'Pendiente' %}
+                            <span class="badge badge-warning">Pendiente</span>
+                        {% elif solicitud.estado.nombre == 'Aprobado' %}
+                            <span class="badge badge-success">Aprobado</span>
+                        {% elif solicitud.estado.nombre == 'Rechazado' %}
+                            <span class="badge badge-danger">Rechazado</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ solicitud.estado.nombre }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if solicitud.estado.nombre == 'Pendiente' %}
+                            <a href="{% url 'revisar_solicitud' solicitud.id %}" class="button blue" style="padding: 6px 12px; font-size: 13px;">Revisar</a>
+                        {% elif solicitud.estado.nombre == 'Aprobado' %}
+                            <a href="{% url 'contratar_empleado' solicitud.id %}" class="button green" style="padding: 6px 12px; font-size: 13px;">Contratar</a>
+                        {% else %}
+                            <span style="color: #888; font-size: 13px;">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'lista_solicitudes_rrhh' %}" class="button">Ver Todas las Solicitudes</a>
+        </div>
+        {% else %}
+        <p class="texto-centro">No hay solicitudes recientes.</p>
+        {% endif %}
+    </section>
+
+    <!-- Últimos Permisos -->
+    <section class="seccion">
+        <h3>Últimas Solicitudes de Permisos</h3>
+        {% if ultimos_permisos %}
+        <table class="table table--striped">
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Tipo</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Días</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permiso in ultimos_permisos %}
+                <tr>
+                    <td>{{ permiso.empleado.nombre }} {{ permiso.empleado.apellido }}</td>
+                    <td>{{ permiso.tipo_permiso.nombre }}</td>
+                    <td>{{ permiso.fecha_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ permiso.fecha_fin|date:"d/m/Y" }}</td>
+                    <td>{{ permiso.dias_solicitados }}</td>
+                    <td>
+                        {% if permiso.estado == 'PENDIENTE' %}
+                            <span class="badge badge-warning">Pendiente</span>
+                        {% elif permiso.estado == 'APROBADO' %}
+                            <span class="badge badge-success">Aprobado</span>
+                        {% else %}
+                            <span class="badge badge-danger">Rechazado</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if permiso.estado == 'PENDIENTE' %}
+                            <a href="{% url 'revisar_permiso' permiso.id %}" class="button blue" style="padding: 6px 12px; font-size: 13px;">Revisar</a>
+                        {% else %}
+                            <span style="color: #888; font-size: 13px;">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'lista_permisos_rrhh' %}" class="button">Ver Todos los Permisos</a>
+        </div>
+        {% else %}
+        <p class="texto-centro">No hay permisos recientes.</p>
+        {% endif %}
+    </section>
+
+    <!-- Información General -->
+    <section class="seccion">
+        <h3>Información General</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Personal</h4>
+                <p class="card-content">
+                    <strong>Total Empleados:</strong> {{ empleados_totales }}<br>
+                    <strong>Activos:</strong> {{ empleados_activos }}<br>
+                    <strong>Inactivos:</strong> {{ empleados_totales|add:"-"|add:empleados_activos }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📝 Solicitudes</h4>
+                <p class="card-content">
+                    Tienes <strong>{{ solicitudes_pendientes }}</strong> solicitudes pendientes de revisión
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">⏰ Permisos</h4>
+                <p class="card-content">
+                    Hay <strong>{{ permisos_pendientes }}</strong> permisos esperando aprobación
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💵 Nóminas</h4>
+                <p class="card-content">
+                    <strong>{{ nominas_pendientes }}</strong> nóminas pendientes de pago
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

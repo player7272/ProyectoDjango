@@ -1,0 +1,53 @@
+{% extends 'core3/base_rrhh.html' %}
+{% block title %}Periodos de Nómina{% endblock %}
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>Gestión de Nóminas</h2>
+        <a href="{% url 'crear_periodo_nomina' %}" class="button green">Crear Nuevo Periodo</a>
+    </section>
+
+    <section class="seccion">
+        {% if periodos %}
+        <table class="table table--striped">
+            <thead>
+                <tr>
+                    <th>Periodo</th>
+                    <th>Tipo</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Fecha Pago</th>
+                    <th>Estado</th>
+                    <th>Nóminas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for periodo in periodos %}
+                <tr>
+                    <td><strong>{{ periodo }}</strong></td>
+                    <td>{{ periodo.get_tipo_display }}</td>
+                    <td>{{ periodo.fecha_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ periodo.fecha_fin|date:"d/m/Y" }}</td>
+                    <td>{{ periodo.fecha_pago|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if periodo.cerrado %}
+                            <span class="badge badge-secondary">Cerrado</span>
+                        {% else %}
+                            <span class="badge badge-success">Abierto</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ periodo.nominas.count }}</td>
+                    <td>
+                        <a href="{% url 'detalle_periodo_nomina' periodo.id %}" class="button blue" style="padding: 6px 12px; font-size: 13px;">Ver</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="texto-centro">No hay periodos de nómina creados.</p>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

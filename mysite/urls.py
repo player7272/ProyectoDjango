@@ -26,6 +26,7 @@ urlpatterns = [
     
     # Core2 - Portal de empleados
     path('empleados/', include('core2.urls')),
+    path('rrhh/', include('core3.urls')),
     
     # Sistema de autenticación
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

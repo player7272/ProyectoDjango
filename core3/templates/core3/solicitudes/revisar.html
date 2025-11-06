@@ -1,0 +1,129 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Revisar Solicitud - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>Revisar Solicitud de Empleo</h2>
+        <p>Revisa la información del candidato y toma una decisión</p>
+    </section>
+
+    <!-- Información del Candidato -->
+    <section class="seccion">
+        <h3>Información del Candidato</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Datos Personales</h4>
+                <p class="card-content">
+                    <strong>Nombre:</strong> {{ solicitud.persona.nombre }} {{ solicitud.persona.apellido }}<br>
+                    <strong>Cédula:</strong> {{ solicitud.persona.cedula }}<br>
+                    <strong>Correo:</strong> {{ solicitud.persona.correo }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💼 Información Laboral</h4>
+                <p class="card-content">
+                    <strong>Categoría Solicitada:</strong> 
+                    {% if solicitud.categoria %}
+                        {{ solicitud.categoria.nombre }}<br>
+                        <strong>Salario Base:</strong> ${{ solicitud.categoria.salario_base|floatformat:2 }}
+                    {% else %}
+                        No especificada
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📅 Fecha de Solicitud</h4>
+                <p class="card-content">
+                    {{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado Actual</h4>
+                <p class="card-content">
+                    {% if solicitud.estado.nombre == 'Pendiente' %}
+                        <span style="color: #ffc107; font-size: 1.5rem;">⏳ Pendiente</span>
+                    {% elif solicitud.estado.nombre == 'Aprobado' %}
+                        <span style="color: #43e97b; font-size: 1.5rem;">✓ Aprobado</span>
+                    {% elif solicitud.estado.nombre == 'Rechazado' %}
+                        <span style="color: #f5576c; font-size: 1.5rem;">✗ Rechazado</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mensaje/Capacidades -->
+    <section class="seccion">
+        <h3>Capacidades y Experiencia del Candidato</h3>
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
+            <p style="line-height: 1.8; white-space: pre-wrap;">{{ solicitud.mensaje }}</p>
+        </div>
+    </section>
+
+    <!-- Formulario de Revisión -->
+    {% if solicitud.estado.nombre == 'Pendiente' %}
+    <section class="seccion">
+        <h3>Tomar Decisión</h3>
+        <div class="form-section">
+            <form method="POST" class="form verde">
+                {% csrf_token %}
+
+                <div style="margin-bottom: 25px;">
+                    <label style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; display: block;">
+                        Decisión sobre la Solicitud:
+                    </label>
+                    {{ form.decision }}
+                </div>
+
+                <div>
+                    <label for="{{ form.observaciones_rrhh.id_for_label }}">Observaciones:</label>
+                    {{ form.observaciones_rrhh }}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Describe las razones de tu decisión (opcional pero recomendado)
+                    </small>
+                </div>
+
+                <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>⚠️ Importante:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Si <strong>APROBAS</strong> la solicitud, podrás proceder a crear el empleado en el siguiente paso</li>
+                        <li>Si <strong>RECHAZAS</strong> la solicitud, el candidato será notificado (si está configurado)</li>
+                        <li>Esta decisión puede ser revertida si es necesario</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="buttonformB">Confirmar Decisión</button>
+                <a href="{% url 'lista_solicitudes_rrhh' %}" 
+                   class="buttonformB" 
+                   style="background: rgba(108, 117, 125, 0.2); border-color: #6c757d; text-decoration: none; display: block;">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </section>
+    {% else %}
+    <section class="seccion texto-centro">
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
+            <p><strong>Esta solicitud ya fue revisada.</strong></p>
+            {% if solicitud.estado.nombre == 'Aprobado' %}
+                <p>Puedes proceder a contratar al candidato.</p>
+                <a href="{% url 'contratar_empleado' solicitud.id %}" class="button green" style="margin-top: 15px;">
+                    Contratar Empleado
+                </a>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="seccion texto-centro">
+        <a href="{% url 'lista_solicitudes_rrhh' %}" class="button">Volver a Solicitudes</a>
+        <a href="{% url 'dashboard_rrhh' %}" class="button blue">Ir al Dashboard</a>
+    </section>
+</main>
+{% endblock %}
