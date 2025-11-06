@@ -49,6 +49,12 @@
                 <a href="{% url 'perfil_empleado' %}">Mi Perfil</a>
                 <a href="{% url 'index' %}">Inicio</a>
 
+                {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'dashboard_rrhh' %}">
+                    🔧 Recursos Humanos
+                </a>
+                {% endif %}
+
                 {% if user.is_authenticated %}
                 <a href="{% url 'cerrar_sesion' %}" class="logout-btn">Cerrar sesión</a>
                 {% endif %}

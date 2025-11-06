@@ -19,7 +19,8 @@
                 <p class="card-content">
                     <strong>Nombre Completo:</strong> {{ empleado.nombre }} {{ empleado.apellido }}<br>
                     <strong>Cédula:</strong> {{ empleado.cedula }}<br>
-                    <strong>Fecha de Nacimiento:</strong> {{ empleado.fecha_nacimiento|date:"d/m/Y"|default:"No registrada" }}
+                    <strong>Fecha de Nacimiento:</strong> {{ empleado.fecha_nacimiento|date:"d/m/Y"|default:"No
+                    registrada" }}
                 </p>
             </div>
 
@@ -46,9 +47,9 @@
                 <h4 class="card-title">📊 Estado</h4>
                 <p class="card-content">
                     {% if empleado.activo %}
-                        <span style="font-size: 2rem; color: #43e97b;">✓ Activo</span>
+                    <span style="font-size: 2rem; color: #43e97b;">✓ Activo</span>
                     {% else %}
-                        <span style="font-size: 2rem; color: #f5576c;">○ Inactivo</span>
+                    <span style="font-size: 2rem; color: #f5576c;">○ Inactivo</span>
                     {% endif %}
                 </p>
                 <p class="card-content">
@@ -114,9 +115,9 @@
                     <td><strong style="color: #43e97b;">${{ nomina.neto_pagar|floatformat:2 }}</strong></td>
                     <td>
                         {% if nomina.pagado %}
-                            <span class="badge badge-success">✓ Pagado</span>
+                        <span class="badge badge-success">✓ Pagado</span>
                         {% else %}
-                            <span class="badge badge-warning">○ Pendiente</span>
+                        <span class="badge badge-warning">○ Pendiente</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -133,7 +134,7 @@
         <h3>Últimos Permisos Solicitados (10 más recientes)</h3>
         {% if permisos %}
         <table class="table table--striped table--hover">
-            <thead>
+            <tbody>
                 <tr>
                     <th>#</th>
                     <th>Tipo</th>
@@ -144,8 +145,6 @@
                     <th>Fecha Solicitud</th>
                     <th>Observaciones</th>
                 </tr>
-            </thead>
-            <tbody>
                 {% for permiso in permisos %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
@@ -155,11 +154,11 @@
                     <td>{{ permiso.dias_solicitados }}</td>
                     <td>
                         {% if permiso.estado == 'PENDIENTE' %}
-                            <span class="badge badge-warning">⏳ Pendiente</span>
+                        <span class="badge badge-warning">⏳ Pendiente</span>
                         {% elif permiso.estado == 'APROBADO' %}
-                            <span class="badge badge-success">✓ Aprobado</span>
+                        <span class="badge badge-success">✓ Aprobado</span>
                         {% else %}
-                            <span class="badge badge-danger">✗ Rechazado</span>
+                        <span class="badge badge-danger">✗ Rechazado</span>
                         {% endif %}
                     </td>
                     <td>{{ permiso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
@@ -178,13 +177,13 @@
         <h3>Acciones</h3>
         <div class="btn-group">
             <a href="{% url 'editar_empleado_rrhh' empleado.id %}" class="button blue">Editar Información</a>
-            
+
             {% if empleado.activo %}
-                <a href="{% url 'desactivar_empleado' empleado.id %}" class="button red">Desactivar Empleado</a>
+            <a href="{% url 'desactivar_empleado' empleado.id %}" class="button red">Desactivar Empleado</a>
             {% else %}
-                <a href="{% url 'desactivar_empleado' empleado.id %}" class="button green">Activar Empleado</a>
+            <a href="{% url 'desactivar_empleado' empleado.id %}" class="button green">Activar Empleado</a>
             {% endif %}
-            
+
             <a href="{% url 'lista_empleados_rrhh' %}" class="button">Volver a Lista de Empleados</a>
             <a href="{% url 'dashboard_rrhh' %}" class="button">Ir al Dashboard</a>
         </div>

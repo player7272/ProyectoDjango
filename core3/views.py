@@ -239,10 +239,31 @@ def lista_permisos(request):
         permisos = permisos.filter(estado='RECHAZADO')
     
     permisos = permisos.order_by('-fecha_solicitud')
-    
+
+    # 🔹 Cálculos de estadísticas para la tabla
+    total_permisos = Permiso.objects.count()
+    permisos_pendientes = Permiso.objects.filter(estado='PENDIENTE').count()
+    permisos_aprobados = Permiso.objects.filter(estado='APROBADO').count()
+    permisos_rechazados = Permiso.objects.filter(estado='RECHAZADO').count()
+
+    # 🔹 Evitar división por cero
+    if total_permisos > 0:
+        porcentaje_permisos_pendientes = round((permisos_pendientes / total_permisos) * 100, 2)
+        porcentaje_permisos_aprobados = round((permisos_aprobados / total_permisos) * 100, 2)
+        porcentaje_permisos_rechazados = round((permisos_rechazados / total_permisos) * 100, 2)
+    else:
+        porcentaje_permisos_pendientes = porcentaje_permisos_aprobados = porcentaje_permisos_rechazados = 0
+
     context = {
         'permisos': permisos,
         'filtro_actual': filtro,
+        'total_permisos': total_permisos,
+        'permisos_pendientes': permisos_pendientes,
+        'permisos_aprobados': permisos_aprobados,
+        'permisos_rechazados': permisos_rechazados,
+        'porcentaje_permisos_pendientes': porcentaje_permisos_pendientes,
+        'porcentaje_permisos_aprobados': porcentaje_permisos_aprobados,
+        'porcentaje_permisos_rechazados': porcentaje_permisos_rechazados,
     }
     
     return render(request, 'core3/permisos/lista.html', context)
@@ -627,69 +648,122 @@ def configuracion_nomina(request):
 
 
 # ========== REPORTES ==========
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Count, Sum
+from datetime import date
+
 @login_required
 @user_passes_test(es_rrhh)
 def reportes_rrhh(request):
     """Dashboard de reportes y estadísticas"""
-    # Estadísticas generales
+
+    # ===== Empleados =====
     total_empleados = Empleado.objects.count()
     empleados_activos = Empleado.objects.filter(activo=True).count()
     empleados_inactivos = total_empleados - empleados_activos
-    
-    # Solicitudes
+
+    # ===== Solicitudes =====
     total_solicitudes = Solicitud.objects.count()
     solicitudes_pendientes = Solicitud.objects.filter(estado__nombre='Pendiente').count()
     solicitudes_aprobadas = Solicitud.objects.filter(estado__nombre='Aprobado').count()
     solicitudes_rechazadas = Solicitud.objects.filter(estado__nombre='Rechazado').count()
-    
-    # Permisos
+
+    if total_solicitudes > 0:
+        porcentaje_solicitudes_pendientes = round((solicitudes_pendientes / total_solicitudes) * 100, 2)
+        porcentaje_solicitudes_aprobadas = round((solicitudes_aprobadas / total_solicitudes) * 100, 2)
+        porcentaje_solicitudes_rechazadas = round((solicitudes_rechazadas / total_solicitudes) * 100, 2)
+    else:
+        porcentaje_solicitudes_pendientes = porcentaje_solicitudes_aprobadas = porcentaje_solicitudes_rechazadas = 0
+
+    # ===== Permisos =====
     total_permisos = Permiso.objects.count()
     permisos_pendientes = Permiso.objects.filter(estado='PENDIENTE').count()
     permisos_aprobados = Permiso.objects.filter(estado='APROBADO').count()
     permisos_rechazados = Permiso.objects.filter(estado='RECHAZADO').count()
-    
-    # Nóminas
+
+    if total_permisos > 0:
+        porcentaje_permisos_pendientes = round((permisos_pendientes / total_permisos) * 100, 2)
+        porcentaje_permisos_aprobados = round((permisos_aprobados / total_permisos) * 100, 2)
+        porcentaje_permisos_rechazados = round((permisos_rechazados / total_permisos) * 100, 2)
+    else:
+        porcentaje_permisos_pendientes = porcentaje_permisos_aprobados = porcentaje_permisos_rechazados = 0
+
+    # ===== Nóminas =====
     total_nominas = Nomina.objects.count()
     nominas_pagadas = Nomina.objects.filter(pagado=True).count()
     nominas_pendientes = total_nominas - nominas_pagadas
-    
-    # Distribución por categoría
-    from django.db.models import Count
+
+    if total_nominas > 0:
+        porcentaje_nominas_pagadas = round((nominas_pagadas / total_nominas) * 100, 2)
+        porcentaje_nominas_pendientes = round((nominas_pendientes / total_nominas) * 100, 2)
+    else:
+        porcentaje_nominas_pagadas = porcentaje_nominas_pendientes = 0
+
+    # ===== Últimos registros =====
+    solicitudes_contratadas = ProcesoContratacion.objects.filter(
+        estado_proceso='CONTRATADO'
+    ).values_list('solicitud_id', flat=True)
+
+    ultimas_solicitudes = Solicitud.objects.exclude(
+        id__in=solicitudes_contratadas
+    ).order_by('-fecha_creacion')[:5]
+
+    ultimos_permisos = Permiso.objects.all().order_by('-fecha_solicitud')[:5]
+
+    # ===== Distribución por categoría =====
     empleados_por_categoria = Empleado.objects.filter(activo=True).values(
         'categoria__nombre'
     ).annotate(
         cantidad=Count('id')
     ).order_by('-cantidad')
-    
-    # Nómina total del mes actual
-    from datetime import date
+
+    # ===== Nómina total del mes actual =====
     mes_actual = date.today().month
     ano_actual = date.today().year
-    
+
     nominas_mes = Nomina.objects.filter(
         periodo__fecha_inicio__month=mes_actual,
         periodo__fecha_inicio__year=ano_actual
     )
-    
     total_nomina_mes = nominas_mes.aggregate(Sum('neto_pagar'))['neto_pagar__sum'] or 0
-    
+
+    # ===== Contexto =====
     context = {
+        # Empleados
         'total_empleados': total_empleados,
         'empleados_activos': empleados_activos,
         'empleados_inactivos': empleados_inactivos,
+
+        # Solicitudes
         'total_solicitudes': total_solicitudes,
         'solicitudes_pendientes': solicitudes_pendientes,
         'solicitudes_aprobadas': solicitudes_aprobadas,
         'solicitudes_rechazadas': solicitudes_rechazadas,
+        'porcentaje_solicitudes_pendientes': porcentaje_solicitudes_pendientes,
+        'porcentaje_solicitudes_aprobadas': porcentaje_solicitudes_aprobadas,
+        'porcentaje_solicitudes_rechazadas': porcentaje_solicitudes_rechazadas,
+
+        # Permisos
         'total_permisos': total_permisos,
         'permisos_pendientes': permisos_pendientes,
         'permisos_aprobados': permisos_aprobados,
         'permisos_rechazados': permisos_rechazados,
+        'porcentaje_permisos_pendientes': porcentaje_permisos_pendientes,
+        'porcentaje_permisos_aprobados': porcentaje_permisos_aprobados,
+        'porcentaje_permisos_rechazados': porcentaje_permisos_rechazados,
+
+        # Nóminas
         'total_nominas': total_nominas,
         'nominas_pagadas': nominas_pagadas,
         'nominas_pendientes': nominas_pendientes,
+        'porcentaje_nominas_pagadas': porcentaje_nominas_pagadas,
+        'porcentaje_nominas_pendientes': porcentaje_nominas_pendientes,
+
+        # Otros
         'empleados_por_categoria': empleados_por_categoria,
         'total_nomina_mes': total_nomina_mes,
+        'ultimas_solicitudes': ultimas_solicitudes,
+        'ultimos_permisos': ultimos_permisos,
     }
-    
+
     return render(request, 'core3/reportes/dashboard.html', context)

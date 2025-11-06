@@ -4,6 +4,21 @@
 {% block title %}Reportes y Estadísticas - Recursos Humanos{% endblock %}
 
 {% block content %}
+<style>
+    .barra-contenedor {
+        background: rgba(102, 126, 234, 0.2);
+        height: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .barra-progreso {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+</style>
 <main class="main-content">
     <section class="seccion">
         <h2>📊 Reportes y Estadísticas</h2>
@@ -74,9 +89,9 @@
                         <td><strong>Tasa de Aprobación:</strong></td>
                         <td style="text-align: right;">
                             {% if total_solicitudes > 0 %}
-                                <strong style="color: #43e97b;">{% widthratio solicitudes_aprobadas total_solicitudes 100 %}%</strong>
+                            <strong style="color: #43e97b;">{% widthratio solicitudes_aprobadas total_solicitudes 100%}%</strong>
                             {% else %}
-                                <strong>0%</strong>
+                            <strong>0%</strong>
                             {% endif %}
                         </td>
                     </tr>
@@ -84,9 +99,9 @@
                         <td><strong>Tasa de Rechazo:</strong></td>
                         <td style="text-align: right;">
                             {% if total_solicitudes > 0 %}
-                                <strong style="color: #f5576c;">{% widthratio solicitudes_rechazadas total_solicitudes 100 %}%</strong>
+                            <strong style="color: #f5576c;">{% widthratio solicitudes_rechazadas total_solicitudes 100%}%</strong>
                             {% else %}
-                                <strong>0%</strong>
+                            <strong>0%</strong>
                             {% endif %}
                         </td>
                     </tr>
@@ -127,9 +142,9 @@
                         <td><strong>Tasa de Aprobación de Permisos:</strong></td>
                         <td style="text-align: right;">
                             {% if total_permisos > 0 %}
-                                <strong style="color: #43e97b;">{% widthratio permisos_aprobados total_permisos 100 %}%</strong>
+                            <strong style="color: #43e97b;">{% widthratio permisos_aprobados total_permisos 100%}%</strong>
                             {% else %}
-                                <strong>0%</strong>
+                            <strong>0%</strong>
                             {% endif %}
                         </td>
                     </tr>
@@ -169,15 +184,13 @@
         <h3>📊 Distribución de Empleados por Categoría</h3>
         {% if empleados_por_categoria %}
         <table class="table table--striped table--hover">
-            <thead>
+            <tbody>
                 <tr>
                     <th>Categoría</th>
                     <th>Número de Empleados</th>
                     <th>Porcentaje</th>
                     <th>Visual</th>
                 </tr>
-            </thead>
-            <tbody>
                 {% for item in empleados_por_categoria %}
                 <tr>
                     <td><strong>{{ item.categoria__nombre|default:"Sin Categoría" }}</strong></td>
@@ -186,9 +199,9 @@
                         {% widthratio item.cantidad empleados_activos 100 %}%
                     </td>
                     <td>
-                        <div style="background: rgba(102, 126, 234, 0.2); height: 20px; border-radius: 10px; overflow: hidden;">
-                            {% widthratio item.cantidad empleados_activos 100 as width_percentage %}
-                            <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: {{ width_percentage }}%;"></div>
+                        {% widthratio item.cantidad empleados_activos 100 as width_percentage %}
+                        <div class="barra-contenedor">
+                            <div class="barra-progreso" data-width="{{ width_percentage }}"></div>
                         </div>
                     </td>
                 </tr>
@@ -216,9 +229,9 @@
                 <h4 class="card-title">📊 Promedio por Empleado</h4>
                 <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #4facfe;">
                     {% if empleados_activos > 0 %}
-                        ${% widthratio total_nomina_mes empleados_activos 1 %}
+                    ${% widthratio total_nomina_mes empleados_activos 1 %}
                     {% else %}
-                        $0
+                    $0
                     {% endif %}
                 </p>
                 <p class="card-content">Promedio salarial mensual</p>
@@ -240,33 +253,31 @@
         <h3>🎯 Indicadores Clave de Rendimiento (KPIs)</h3>
         <div style="overflow-x: auto;">
             <table class="table table--bordered">
-                <thead>
+                <tbody>
                     <tr>
                         <th>Indicador</th>
                         <th>Valor</th>
                         <th>Estado</th>
                     </tr>
-                </thead>
-                <tbody>
                     <tr>
                         <td><strong>Tasa de Retención de Empleados</strong></td>
                         <td>
                             {% if total_empleados > 0 %}
-                                {% widthratio empleados_activos total_empleados 100 %}%
+                            {% widthratio empleados_activos total_empleados 100 %}%
                             {% else %}
-                                0%
+                            0%
                             {% endif %}
                         </td>
                         <td>
                             {% if total_empleados > 0 %}
-                                {% widthratio empleados_activos total_empleados 100 as retencion %}
-                                {% if retencion >= 90 %}
-                                    <span class="badge badge-success">Excelente</span>
-                                {% elif retencion >= 75 %}
-                                    <span class="badge badge-info">Bueno</span>
-                                {% else %}
-                                    <span class="badge badge-warning">Mejorable</span>
-                                {% endif %}
+                            {% widthratio empleados_activos total_empleados 100 as retencion %}
+                            {% if retencion >= 90 %}
+                            <span class="badge badge-success">Excelente</span>
+                            {% elif retencion >= 75 %}
+                            <span class="badge badge-info">Bueno</span>
+                            {% else %}
+                            <span class="badge badge-warning">Mejorable</span>
+                            {% endif %}
                             {% endif %}
                         </td>
                     </tr>
@@ -274,21 +285,21 @@
                         <td><strong>Tasa de Aprobación de Solicitudes</strong></td>
                         <td>
                             {% if total_solicitudes > 0 %}
-                                {% widthratio solicitudes_aprobadas total_solicitudes 100 %}%
+                            {% widthratio solicitudes_aprobadas total_solicitudes 100 %}%
                             {% else %}
-                                0%
+                            0%
                             {% endif %}
                         </td>
                         <td>
                             {% if total_solicitudes > 0 %}
-                                {% widthratio solicitudes_aprobadas total_solicitudes 100 as aprobacion %}
-                                {% if aprobacion >= 60 %}
-                                    <span class="badge badge-success">Alto</span>
-                                {% elif aprobacion >= 40 %}
-                                    <span class="badge badge-info">Medio</span>
-                                {% else %}
-                                    <span class="badge badge-warning">Bajo</span>
-                                {% endif %}
+                            {% widthratio solicitudes_aprobadas total_solicitudes 100 as aprobacion %}
+                            {% if aprobacion >= 60 %}
+                            <span class="badge badge-success">Alto</span>
+                            {% elif aprobacion >= 40 %}
+                            <span class="badge badge-info">Medio</span>
+                            {% else %}
+                            <span class="badge badge-warning">Bajo</span>
+                            {% endif %}
                             {% endif %}
                         </td>
                     </tr>
@@ -297,11 +308,11 @@
                         <td>{{ solicitudes_pendientes }}</td>
                         <td>
                             {% if solicitudes_pendientes > 10 %}
-                                <span class="badge badge-danger">Alto</span>
+                            <span class="badge badge-danger">Alto</span>
                             {% elif solicitudes_pendientes > 5 %}
-                                <span class="badge badge-warning">Moderado</span>
+                            <span class="badge badge-warning">Moderado</span>
                             {% else %}
-                                <span class="badge badge-success">Bajo</span>
+                            <span class="badge badge-success">Bajo</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -310,11 +321,11 @@
                         <td>{{ permisos_pendientes }}</td>
                         <td>
                             {% if permisos_pendientes > 15 %}
-                                <span class="badge badge-danger">Alto</span>
+                            <span class="badge badge-danger">Alto</span>
                             {% elif permisos_pendientes > 8 %}
-                                <span class="badge badge-warning">Moderado</span>
+                            <span class="badge badge-warning">Moderado</span>
                             {% else %}
-                                <span class="badge badge-success">Bajo</span>
+                            <span class="badge badge-success">Bajo</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -323,11 +334,11 @@
                         <td>{{ nominas_pendientes }}</td>
                         <td>
                             {% if nominas_pendientes > 20 %}
-                                <span class="badge badge-danger">Alto</span>
+                            <span class="badge badge-danger">Alto</span>
                             {% elif nominas_pendientes > 10 %}
-                                <span class="badge badge-warning">Moderado</span>
+                            <span class="badge badge-warning">Moderado</span>
                             {% else %}
-                                <span class="badge badge-success">Bajo</span>
+                            <span class="badge badge-success">Bajo</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -348,4 +359,9 @@
         </div>
     </section>
 </main>
+<script>
+    document.querySelectorAll('.barra-progreso').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+    });
+</script>
 {% endblock %}

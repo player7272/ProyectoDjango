@@ -146,18 +146,22 @@ def mis_permisos(request):
         if not empleado.datos_completados:
             return redirect('completar_datos')
         
-        permisos = empleado.permisos.all().order_by('-fecha_solicitud')
+        permisos = empleado.permisos.all().select_related('tipo_permiso').order_by('-fecha_solicitud')
+        
+        # Obtener tipos de permisos disponibles
+        from core2.models import TipoPermiso
+        tipos_permisos = TipoPermiso.objects.all()
         
         context = {
             'empleado': empleado,
             'permisos': permisos,
+            'tipos_permisos': tipos_permisos,
         }
         
         return render(request, 'core2/mis_permisos.html', context)
     except Empleado.DoesNotExist:
         messages.error(request, 'Debes completar tu perfil primero')
         return redirect('completar_datos')
-
 
 @login_required
 def solicitar_permiso(request):

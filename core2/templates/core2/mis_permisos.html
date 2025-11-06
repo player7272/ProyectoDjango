@@ -1,7 +1,7 @@
 {% extends 'core2/base.html' %}
 {% load static %}
 
-{% block title %}Solicitar Permiso - Portal Empleados{% endblock %}
+{% block title %}Mis Permisos - Portal Empleados{% endblock %}
 
 {% block content %}
 <main class="main-content">
@@ -14,116 +14,138 @@
     {% endif %}
 
     <section class="seccion texto-centro">
-        <h2>Solicitar Permiso</h2>
-        <p>Complete el formulario para solicitar un permiso. Su solicitud será revisada por recursos humanos.</p>
+        <h2>Mis Permisos</h2>
+        <p>Consulta el estado de tus solicitudes de permisos y solicita nuevos</p>
     </section>
 
+    <!-- Botón para solicitar nuevo permiso -->
+    <section class="seccion texto-centro">
+        <a href="{% url 'solicitar_permiso' %}" class="button green">📝 Solicitar Nuevo Permiso</a>
+    </section>
+
+    <!-- Historial de Permisos -->
     <section class="seccion">
-        <div class="form-section">
-            <form method="POST" class="form verde">
-                {% csrf_token %}
-                
-                {% if form.errors %}
-                <div style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                    <strong>Por favor, corrija los siguientes errores:</strong>
-                    {{ form.non_field_errors }}
-                </div>
-                {% endif %}
-
-                <h3 style="text-align: center; margin-bottom: 30px;">Datos del Permiso</h3>
-                
-                <div>
-                    <label for="{{ form.tipo_permiso.id_for_label }}">Tipo de Permiso *</label>
-                    {{ form.tipo_permiso }}
-                    {% if form.tipo_permiso.errors %}
-                        <span style="color: #f5576c;">{{ form.tipo_permiso.errors.0 }}</span>
-                    {% endif %}
-                    <small style="display: block; margin-top: 5px; color: #888;">
-                        Seleccione el tipo de permiso que desea solicitar
-                    </small>
-                </div>
-
-                <div>
-                    <label for="{{ form.fecha_inicio.id_for_label }}">Fecha de Inicio *</label>
-                    {{ form.fecha_inicio }}
-                    {% if form.fecha_inicio.errors %}
-                        <span style="color: #f5576c;">{{ form.fecha_inicio.errors.0 }}</span>
-                    {% endif %}
-                </div>
-
-                <div>
-                    <label for="{{ form.fecha_fin.id_for_label }}">Fecha de Fin *</label>
-                    {{ form.fecha_fin }}
-                    {% if form.fecha_fin.errors %}
-                        <span style="color: #f5576c;">{{ form.fecha_fin.errors.0 }}</span>
-                    {% endif %}
-                </div>
-
-                <div>
-                    <label for="{{ form.motivo.id_for_label }}">Motivo de la Solicitud *</label>
-                    {{ form.motivo }}
-                    {% if form.motivo.errors %}
-                        <span style="color: #f5576c;">{{ form.motivo.errors.0 }}</span>
-                    {% endif %}
-                    <small style="display: block; margin-top: 5px; color: #888;">
-                        Describa brevemente el motivo de su solicitud de permiso
-                    </small>
-                </div>
-
-                <div style="background: rgba(79, 172, 254, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
-                    <strong>📋 Información Importante:</strong>
-                    <ul style="margin-top: 10px; padding-left: 20px;">
-                        <li>Su solicitud quedará en estado <strong>PENDIENTE</strong> hasta ser revisada</li>
-                        <li>Recibirá una notificación cuando su permiso sea procesado</li>
-                        <li>Los permisos deben solicitarse con anticipación cuando sea posible</li>
-                        <li>Puede consultar el estado de sus solicitudes en "Mis Permisos"</li>
-                    </ul>
-                </div>
-
-                <button type="submit" class="buttonformB">Enviar Solicitud</button>
-                <a href="{% url 'mis_permisos' %}" class="buttonformB" style="background: rgba(245, 87, 108, 0.2); border-color: #f5576c; text-decoration: none; display: block;">
-                    Cancelar
-                </a>
-            </form>
+        <h3>Historial de Solicitudes</h3>
+        {% if permisos %}
+        <div style="overflow-x: auto;">
+            <table class="table table--striped table--hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo de Permiso</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Días Solicitados</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for permiso in permisos %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <strong>{{ permiso.tipo_permiso.nombre }}</strong>
+                            {% if permiso.tipo_permiso.descripcion %}
+                                <br><small>{{ permiso.tipo_permiso.descripcion|truncatewords:8 }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ permiso.fecha_inicio|date:"d/m/Y" }}</td>
+                        <td>{{ permiso.fecha_fin|date:"d/m/Y" }}</td>
+                        <td><strong>{{ permiso.dias_solicitados }}</strong> día{{ permiso.dias_solicitados|pluralize }}</td>
+                        <td>{{ permiso.motivo|truncatewords:10 }}</td>
+                        <td>
+                            {% if permiso.estado == 'PENDIENTE' %}
+                                <span style="color: #ffc107; font-weight: bold;">⏳ Pendiente</span>
+                            {% elif permiso.estado == 'APROBADO' %}
+                                <span style="color: #43e97b; font-weight: bold;">✓ Aprobado</span>
+                            {% elif permiso.estado == 'RECHAZADO' %}
+                                <span style="color: #f5576c; font-weight: bold;">✗ Rechazado</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ permiso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if permiso.observaciones %}
+                                {{ permiso.observaciones|truncatewords:15 }}
+                            {% else %}
+                                <em style="color: #888;">-</em>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+
+        <!-- Estadísticas -->
+        <div class="cards-container" style="margin-top: 30px;">
+            <div class="card">
+                <h4 class="card-title">📊 Total de Solicitudes</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold;">
+                    {{ permisos|length }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">⏳ Pendientes</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #ffc107;">
+                    {{ permisos|length }}
+                    {# Este filtro debe hacerse en la vista para contar correctamente #}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">✓ Aprobados</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #43e97b;">
+                    0
+                    {# Este filtro debe hacerse en la vista #}
+                </p>
+            </div>
+        </div>
+        {% else %}
+        <div class="texto-centro">
+            <p>No has solicitado ningún permiso aún.</p>
+            <p>Puedes solicitar permisos para vacaciones, citas médicas, asuntos personales y más.</p>
+            <a href="{% url 'solicitar_permiso' %}" class="button green" style="margin-top: 20px;">
+                Solicitar Mi Primer Permiso
+            </a>
+        </div>
+        {% endif %}
     </section>
 
-    <!-- Información sobre los tipos de permisos -->
+    <!-- Información sobre Tipos de Permisos -->
+    {% if tipos_permisos %}
     <section class="seccion">
-        <h3>Guía de Tipos de Permisos</h3>
+        <h3>📚 Tipos de Permisos Disponibles</h3>
         <div class="cards-container">
+            {% for tipo in tipos_permisos %}
             <div class="card">
-                <h4 class="card-title">🏥 Permiso Médico</h4>
+                <h4 class="card-title">{{ tipo.nombre }}</h4>
                 <p class="card-content">
-                    Para asistir a citas médicas, procedimientos o recuperación de enfermedad.
-                    Puede requerir certificado médico.
+                    {% if tipo.descripcion %}
+                        {{ tipo.descripcion }}
+                    {% else %}
+                        Tipo de permiso {{ tipo.nombre|lower }}
+                    {% endif %}
+                </p>
+                <p class="card-content">
+                    {% if tipo.dias_maximos > 0 %}
+                        <strong>Días máximos:</strong> {{ tipo.dias_maximos }}<br>
+                    {% endif %}
+                    <strong>Requiere aprobación:</strong> {% if tipo.requiere_aprobacion %}Sí{% else %}No{% endif %}
                 </p>
             </div>
-
-            <div class="card">
-                <h4 class="card-title">🏖️ Vacaciones</h4>
-                <p class="card-content">
-                    Días de descanso acumulados. Se recomienda solicitarlas con al menos
-                    2 semanas de anticipación.
-                </p>
-            </div>
-
-            <div class="card">
-                <h4 class="card-title">👪 Permiso Personal</h4>
-                <p class="card-content">
-                    Para atender asuntos personales o familiares urgentes.
-                    Sujeto a disponibilidad y aprobación.
-                </p>
-            </div>
-
-            <div class="card">
-                <h4 class="card-title">📚 Permiso de Estudio</h4>
-                <p class="card-content">
-                    Para asistir a capacitaciones, seminarios o continuar estudios formales.
-                    Apoyamos el desarrollo profesional.
-                </p>
-            </div>
+            {% endfor %}
         </div>
+    </section>
+    {% endif %}
+
+    <!-- Botones de acción -->
+    <section class="seccion texto-centro">
+        <a href="{% url 'solicitar_permiso' %}" class="button green">Solicitar Nuevo Permiso</a>
+        <a href="{% url 'dashboard_empleado' %}" class="button">Volver al Dashboard</a>
     </section>
 </main>
 {% endblock %}

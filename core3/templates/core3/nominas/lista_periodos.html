@@ -10,7 +10,7 @@
     <section class="seccion">
         {% if periodos %}
         <table class="table table--striped">
-            <thead>
+            <tbody>
                 <tr>
                     <th>Periodo</th>
                     <th>Tipo</th>
@@ -21,8 +21,6 @@
                     <th>Nóminas</th>
                     <th>Acciones</th>
                 </tr>
-            </thead>
-            <tbody>
                 {% for periodo in periodos %}
                 <tr>
                     <td><strong>{{ periodo }}</strong></td>
