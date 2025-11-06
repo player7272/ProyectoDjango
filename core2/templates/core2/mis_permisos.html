@@ -29,7 +29,7 @@
         {% if permisos %}
         <div style="overflow-x: auto;">
             <table class="table table--striped table--hover">
-                <thead>
+                <tbody>
                     <tr>
                         <th>#</th>
                         <th>Tipo de Permiso</th>
@@ -41,8 +41,6 @@
                         <th>Fecha Solicitud</th>
                         <th>Observaciones</th>
                     </tr>
-                </thead>
-                <tbody>
                     {% for permiso in permisos %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
