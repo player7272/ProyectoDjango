@@ -1,0 +1,129 @@
+{% extends 'core2/base.html' %}
+{% load static %}
+
+{% block title %}Solicitar Permiso - Portal Empleados{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    {% if messages %}
+    {% for message in messages %}
+    <section class="seccion {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% else %}msg-info{% endif %}">
+        {{ message }}
+    </section>
+    {% endfor %}
+    {% endif %}
+
+    <section class="seccion texto-centro">
+        <h2>Solicitar Permiso</h2>
+        <p>Complete el formulario para solicitar un permiso. Su solicitud será revisada por recursos humanos.</p>
+    </section>
+
+    <section class="seccion">
+        <div class="form-section">
+            <form method="POST" class="form verde">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>Por favor, corrija los siguientes errores:</strong>
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <h3 style="text-align: center; margin-bottom: 30px;">Datos del Permiso</h3>
+                
+                <div>
+                    <label for="{{ form.tipo_permiso.id_for_label }}">Tipo de Permiso *</label>
+                    {{ form.tipo_permiso }}
+                    {% if form.tipo_permiso.errors %}
+                        <span style="color: #f5576c;">{{ form.tipo_permiso.errors.0 }}</span>
+                    {% endif %}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Seleccione el tipo de permiso que desea solicitar
+                    </small>
+                </div>
+
+                <div>
+                    <label for="{{ form.fecha_inicio.id_for_label }}">Fecha de Inicio *</label>
+                    {{ form.fecha_inicio }}
+                    {% if form.fecha_inicio.errors %}
+                        <span style="color: #f5576c;">{{ form.fecha_inicio.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.fecha_fin.id_for_label }}">Fecha de Fin *</label>
+                    {{ form.fecha_fin }}
+                    {% if form.fecha_fin.errors %}
+                        <span style="color: #f5576c;">{{ form.fecha_fin.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.motivo.id_for_label }}">Motivo de la Solicitud *</label>
+                    {{ form.motivo }}
+                    {% if form.motivo.errors %}
+                        <span style="color: #f5576c;">{{ form.motivo.errors.0 }}</span>
+                    {% endif %}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Describa brevemente el motivo de su solicitud de permiso
+                    </small>
+                </div>
+
+                <div style="background: rgba(79, 172, 254, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>📋 Información Importante:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Su solicitud quedará en estado <strong>PENDIENTE</strong> hasta ser revisada</li>
+                        <li>Recibirá una notificación cuando su permiso sea procesado</li>
+                        <li>Los permisos deben solicitarse con anticipación cuando sea posible</li>
+                        <li>Puede consultar el estado de sus solicitudes en "Mis Permisos"</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="buttonformB">Enviar Solicitud</button>
+                <a href="{% url 'mis_permisos' %}" class="buttonformB" style="background: rgba(245, 87, 108, 0.2); border-color: #f5576c; text-decoration: none; display: block;">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </section>
+
+    <!-- Información sobre los tipos de permisos -->
+    <section class="seccion">
+        <h3>Guía de Tipos de Permisos</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">🏥 Permiso Médico</h4>
+                <p class="card-content">
+                    Para asistir a citas médicas, procedimientos o recuperación de enfermedad.
+                    Puede requerir certificado médico.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">🏖️ Vacaciones</h4>
+                <p class="card-content">
+                    Días de descanso acumulados. Se recomienda solicitarlas con al menos
+                    2 semanas de anticipación.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">👪 Permiso Personal</h4>
+                <p class="card-content">
+                    Para atender asuntos personales o familiares urgentes.
+                    Sujeto a disponibilidad y aprobación.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📚 Permiso de Estudio</h4>
+                <p class="card-content">
+                    Para asistir a capacitaciones, seminarios o continuar estudios formales.
+                    Apoyamos el desarrollo profesional.
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

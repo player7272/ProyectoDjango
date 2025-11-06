@@ -1,0 +1,201 @@
+{% extends 'core2/base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil - Portal Empleados{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    {% if messages %}
+    {% for message in messages %}
+    <section class="seccion {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% else %}msg-info{% endif %}">
+        {{ message }}
+    </section>
+    {% endfor %}
+    {% endif %}
+
+    <section class="seccion texto-centro">
+        <h2>Mi Perfil</h2>
+        <p>Consulta y actualiza tu información personal</p>
+    </section>
+
+    <!-- Información Actual -->
+    <section class="seccion">
+        <h3>Información Actual</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Datos Personales</h4>
+                <p class="card-content">
+                    <strong>Nombre Completo:</strong> {{ empleado.nombre }} {{ empleado.apellido }}<br>
+                    <strong>Cédula:</strong> {{ empleado.cedula }}<br>
+                    <strong>Fecha de Nacimiento:</strong> {{ empleado.fecha_nacimiento|date:"d/m/Y"|default:"No registrada" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📧 Contacto</h4>
+                <p class="card-content">
+                    <strong>Correo:</strong> {{ empleado.correo }}<br>
+                    <strong>Teléfono:</strong> {{ empleado.telefono|default:"No registrado" }}<br>
+                    <strong>Dirección:</strong> {{ empleado.direccion|default:"No registrada" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💼 Información Laboral</h4>
+                <p class="card-content">
+                    <strong>Categoría:</strong> {{ empleado.categoria.nombre|default:"No asignada" }}<br>
+                    <strong>Fecha de Ingreso:</strong> {{ empleado.fecha_ingreso|date:"d/m/Y" }}<br>
+                    <strong>Años en la empresa:</strong> {{ empleado.anos_en_empresa }}<br>
+                    <strong>Días laborados:</strong> {{ empleado.dias_en_empresa }}
+                </p>
+            </div>
+
+            {% if empleado.categoria %}
+            <div class="card">
+                <h4 class="card-title">💰 Información Salarial</h4>
+                <p class="card-content">
+                    <strong>Salario Base:</strong> ${{ empleado.categoria.salario_base|floatformat:2 }}<br>
+                    <strong>Descripción:</strong> {{ empleado.categoria.descripcion|truncatewords:20 }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Formulario de Actualización -->
+    <section class="seccion">
+        <h3>Actualizar Información</h3>
+        <div class="form-section">
+            <form method="POST" class="form azul">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>Por favor, corrija los siguientes errores:</strong>
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <h4 style="text-align: center; margin-bottom: 30px;">Datos Personales</h4>
+                
+                <div>
+                    <label for="{{ form.nombre.id_for_label }}">Nombre *</label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}
+                        <span style="color: #f5576c;">{{ form.nombre.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.apellido.id_for_label }}">Apellido *</label>
+                    {{ form.apellido }}
+                    {% if form.apellido.errors %}
+                        <span style="color: #f5576c;">{{ form.apellido.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.cedula.id_for_label }}">Cédula *</label>
+                    {{ form.cedula }}
+                    {% if form.cedula.errors %}
+                        <span style="color: #f5576c;">{{ form.cedula.errors.0 }}</span>
+                    {% endif %}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Si necesita cambiar su cédula, contacte a recursos humanos
+                    </small>
+                </div>
+
+                <div>
+                    <label for="{{ form.correo.id_for_label }}">Correo Electrónico *</label>
+                    {{ form.correo }}
+                    {% if form.correo.errors %}
+                        <span style="color: #f5576c;">{{ form.correo.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.telefono.id_for_label }}">Teléfono</label>
+                    {{ form.telefono }}
+                    {% if form.telefono.errors %}
+                        <span style="color: #f5576c;">{{ form.telefono.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.direccion.id_for_label }}">Dirección</label>
+                    {{ form.direccion }}
+                    {% if form.direccion.errors %}
+                        <span style="color: #f5576c;">{{ form.direccion.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento</label>
+                    {{ form.fecha_nacimiento }}
+                    {% if form.fecha_nacimiento.errors %}
+                        <span style="color: #f5576c;">{{ form.fecha_nacimiento.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.categoria.id_for_label }}">Categoría</label>
+                    {{ form.categoria }}
+                    {% if form.categoria.errors %}
+                        <span style="color: #f5576c;">{{ form.categoria.errors.0 }}</span>
+                    {% endif %}
+                    <small style="display: block; margin-top: 5px; color: #888;">
+                        Solo recursos humanos puede cambiar la categoría
+                    </small>
+                </div>
+
+                <div style="background: rgba(79, 172, 254, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>ℹ️ Nota:</strong>
+                    <p style="margin-top: 10px;">
+                        Algunos campos como la categoría solo pueden ser modificados por el
+                        departamento de recursos humanos. Si necesita cambiar información
+                        que no puede editar, por favor contacte al administrador.
+                    </p>
+                </div>
+
+                <button type="submit" class="buttonformB">Actualizar Información</button>
+                <a href="{% url 'dashboard_empleado' %}" class="buttonformB" style="background: rgba(108, 117, 125, 0.2); border-color: #6c757d; text-decoration: none; display: block;">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </section>
+
+    <!-- Estadísticas -->
+    <section class="seccion">
+        <h3>Mis Estadísticas</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">⏱️ Antigüedad</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #4facfe;">
+                    {{ empleado.anos_en_empresa }}
+                </p>
+                <p class="card-content">años en la empresa</p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📅 Días Laborados</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #43e97b;">
+                    {{ empleado.dias_en_empresa }}
+                </p>
+                <p class="card-content">días desde tu ingreso</p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado</h4>
+                <p class="card-content">
+                    {% if empleado.activo %}
+                        <span style="font-size: 2rem; color: #43e97b;">✓ Activo</span>
+                    {% else %}
+                        <span style="font-size: 2rem; color: #f5576c;">○ Inactivo</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends 'core2/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Portal Empleados{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    {% if messages %}
+    {% for message in messages %}
+    <section class="seccion {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% else %}msg-info{% endif %}">
+        {{ message }}
+    </section>
+    {% endfor %}
+    {% endif %}
+
+    <section class="seccion">
+        <h2>Bienvenido, {{ empleado.nombre }} {{ empleado.apellido }}</h2>
+        <p>Dashboard de empleado - BMS Soluciones Tecnológicas</p>
+    </section>
+
+    <!-- Estadísticas Rápidas -->
+    <section class="seccion">
+        <h2>Resumen General</h2>
+        <div class="cards-container">
+            <div class="card">
+                <h3 class="card-title">⏱️ Tiempo en la Empresa</h3>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold;">{{ anos_empresa }} años</p>
+                <p class="card-content">{{ dias_empresa }} días trabajados</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">💼 Categoría</h3>
+                <p class="card-content" style="font-size: 1.5rem; font-weight: bold;">
+                    {% if empleado.categoria %}
+                        {{ empleado.categoria.nombre }}
+                    {% else %}
+                        No asignada
+                    {% endif %}
+                </p>
+                {% if empleado.categoria %}
+                <p class="card-content">Salario base: ${{ empleado.categoria.salario_base|floatformat:2 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">📋 Permisos</h3>
+                <p class="card-content">
+                    <strong>Pendientes:</strong> {{ permisos_pendientes }}<br>
+                    <strong>Aprobados:</strong> {{ permisos_aprobados }}
+                </p>
+                <a href="{% url 'solicitar_permiso' %}" class="button green">Solicitar Permiso</a>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">💰 Última Nómina</h3>
+                {% if ultimas_nominas %}
+                    <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #43e97b;">
+                        ${{ ultimas_nominas.0.neto_pagar|floatformat:2 }}
+                    </p>
+                    <p class="card-content">{{ ultimas_nominas.0.periodo }}</p>
+                {% else %}
+                    <p class="card-content">No hay nóminas registradas</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Últimas Nóminas -->
+    <section class="seccion">
+        <h2>Últimas Nóminas</h2>
+        {% if ultimas_nominas %}
+        <table class="table table--striped">
+            <thead>
+                <tr>
+                    <th>Periodo</th>
+                    <th>Tipo</th>
+                    <th>Fecha Pago</th>
+                    <th>Total Devengado</th>
+                    <th>Deducciones</th>
+                    <th>Neto a Pagar</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nomina in ultimas_nominas %}
+                <tr>
+                    <td>{{ nomina.periodo.fecha_inicio|date:"d/m/Y" }} - {{ nomina.periodo.fecha_fin|date:"d/m/Y" }}</td>
+                    <td>{{ nomina.periodo.get_tipo_display }}</td>
+                    <td>{{ nomina.periodo.fecha_pago|date:"d/m/Y" }}</td>
+                    <td>${{ nomina.total_devengado|floatformat:2 }}</td>
+                    <td>${{ nomina.total_deducciones|floatformat:2 }}</td>
+                    <td><strong>${{ nomina.neto_pagar|floatformat:2 }}</strong></td>
+                    <td>
+                        {% if nomina.pagado %}
+                            <span style="color: #43e97b;">✓ Pagado</span>
+                        {% else %}
+                            <span style="color: #f5576c;">○ Pendiente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'detalle_nomina' nomina.id %}" class="button blue">Ver Detalle</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'mis_nominas' %}" class="button">Ver Todas las Nóminas</a>
+        </div>
+        {% else %}
+        <p class="texto-centro">No tienes nóminas registradas aún.</p>
+        {% endif %}
+    </section>
+
+    <!-- Últimos Permisos -->
+    <section class="seccion">
+        <h2>Últimos Permisos Solicitados</h2>
+        {% if ultimos_permisos %}
+        <table class="table table--striped">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Días</th>
+                    <th>Estado</th>
+                    <th>Fecha Solicitud</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permiso in ultimos_permisos %}
+                <tr>
+                    <td>{{ permiso.tipo_permiso.nombre }}</td>
+                    <td>{{ permiso.fecha_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ permiso.fecha_fin|date:"d/m/Y" }}</td>
+                    <td>{{ permiso.dias_solicitados }}</td>
+                    <td>
+                        {% if permiso.estado == 'APROBADO' %}
+                            <span style="color: #43e97b; font-weight: bold;">✓ Aprobado</span>
+                        {% elif permiso.estado == 'RECHAZADO' %}
+                            <span style="color: #f5576c; font-weight: bold;">✗ Rechazado</span>
+                        {% else %}
+                            <span style="color: #4facfe; font-weight: bold;">○ Pendiente</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ permiso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'mis_permisos' %}" class="button">Ver Todos los Permisos</a>
+            <a href="{% url 'solicitar_permiso' %}" class="button green">Solicitar Nuevo Permiso</a>
+        </div>
+        {% else %}
+        <p class="texto-centro">No has solicitado permisos aún.</p>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'solicitar_permiso' %}" class="button green">Solicitar Permiso</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Información Personal -->
+    <section class="seccion">
+        <h2>Mi Información</h2>
+        <div class="cards-container">
+            <div class="card">
+                <h3 class="card-title">📧 Contacto</h3>
+                <p class="card-content">
+                    <strong>Correo:</strong> {{ empleado.correo }}<br>
+                    <strong>Teléfono:</strong> {{ empleado.telefono|default:"No registrado" }}<br>
+                    <strong>Cédula:</strong> {{ empleado.cedula }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🏠 Dirección</h3>
+                <p class="card-content">
+                    {{ empleado.direccion|default:"No registrada" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">📅 Fechas Importantes</h3>
+                <p class="card-content">
+                    <strong>Fecha de Ingreso:</strong> {{ empleado.fecha_ingreso|date:"d/m/Y" }}<br>
+                    {% if empleado.fecha_nacimiento %}
+                    <strong>Fecha de Nacimiento:</strong> {{ empleado.fecha_nacimiento|date:"d/m/Y" }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'perfil_empleado' %}" class="button">Editar Mi Perfil</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

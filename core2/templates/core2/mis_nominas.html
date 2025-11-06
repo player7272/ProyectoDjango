@@ -1,0 +1,99 @@
+{% extends 'core2/base.html' %}
+{% load static %}
+
+{% block title %}Mis Nóminas - Portal Empleados{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>Mis Nóminas</h2>
+        <p>Consulta el histórico completo de tus pagos y liquidaciones.</p>
+    </section>
+
+    <section class="seccion">
+        {% if nominas %}
+        <div style="overflow-x: auto;">
+            <table class="table table--striped table--hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Periodo</th>
+                        <th>Tipo</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Fecha Pago</th>
+                        <th>Salario Base</th>
+                        <th>Total Devengado</th>
+                        <th>Deducciones</th>
+                        <th>Neto a Pagar</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nomina in nominas %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ nomina.periodo }}</td>
+                        <td>{{ nomina.periodo.get_tipo_display }}</td>
+                        <td>{{ nomina.periodo.fecha_inicio|date:"d/m/Y" }}</td>
+                        <td>{{ nomina.periodo.fecha_fin|date:"d/m/Y" }}</td>
+                        <td>{{ nomina.periodo.fecha_pago|date:"d/m/Y" }}</td>
+                        <td>${{ nomina.salario_base|floatformat:2 }}</td>
+                        <td>${{ nomina.total_devengado|floatformat:2 }}</td>
+                        <td>${{ nomina.total_deducciones|floatformat:2 }}</td>
+                        <td><strong style="color: #43e97b;">${{ nomina.neto_pagar|floatformat:2 }}</strong></td>
+                        <td>
+                            {% if nomina.pagado %}
+                                <span style="color: #43e97b; font-weight: bold;">✓ Pagado</span>
+                            {% else %}
+                                <span style="color: #f5576c; font-weight: bold;">○ Pendiente</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'detalle_nomina' nomina.id %}" class="button blue" style="padding: 8px 16px; font-size: 14px;">Ver Detalle</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Resumen Total -->
+        <div class="cards-container" style="margin-top: 40px;">
+            <div class="card">
+                <h3 class="card-title">📊 Nóminas Procesadas</h3>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold;">
+                    {{ nominas|length }}
+                </p>
+                <p class="card-content">Registros totales</p>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">⏳ Última Actualización</h3>
+                <p class="card-content">
+                    {{ nominas.0.fecha_generacion|date:"d/m/Y H:i" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">💼 Estado Laboral</h3>
+                <p class="card-content" style="font-size: 1.5rem; font-weight: bold; color: #43e97b;">
+                    ✓ Activo
+                </p>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="texto-centro">
+            <p>No tienes nóminas registradas aún.</p>
+            <p>Las nóminas serán generadas por el departamento de recursos humanos.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="seccion texto-centro">
+        <a href="{% url 'dashboard_empleado' %}" class="button">Volver al Dashboard</a>
+    </section>
+</main>
+{% endblock %}

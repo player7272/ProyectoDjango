@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - BMS</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/button.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" type="image/png" href="{% static 'img/Logo.jpg' %}">
+</head>
+<body class="light-mode">
+    <header class="header">
+        <div class="header-content">
+            <div class="header-logo">
+                <img src="{% static 'img/Logo.jpg' %}" alt="Logo" class="logo">
+                <h1>BMS Soluciones Tecnológicas</h1>
+            </div>
+            <nav class="header-nav">
+                <a href="{% url 'index' %}">Volver al Inicio</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="seccion texto-centro" style="margin-top: 150px;">
+            <h2>Iniciar Sesión</h2>
+            <p>Portal de Empleados - BMS</p>
+        </section>
+
+        <section class="seccion">
+            <div class="form-section">
+                <form method="POST" class="form azul">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                        <strong>Error:</strong> Usuario o contraseña incorrectos.
+                    </div>
+                    {% endif %}
+
+                    <div>
+                        <label for="id_username">Usuario:</label>
+                        <input type="text" name="username" id="id_username" class="input" required autofocus placeholder="Nombre de usuario">
+                    </div>
+
+                    <div>
+                        <label for="id_password">Contraseña:</label>
+                        <input type="password" name="password" id="id_password" class="input" required placeholder="Contraseña">
+                    </div>
+
+                    <input type="hidden" name="next" value="{% url 'dashboard_empleado' %}">
+
+                    <button type="submit" class="buttonformB">Iniciar Sesión</button>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="{% url 'index' %}" class="aSimple">Volver al inicio</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <h3>Información de Acceso</h3>
+            <div class="cards-container">
+                <div class="card">
+                    <h4 class="card-title">👤 ¿No tienes cuenta?</h4>
+                    <p class="card-content">
+                        Contacta con el departamento de recursos humanos para obtener tus credenciales de acceso.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h4 class="card-title">🔒 Seguridad</h4>
+                    <p class="card-content">
+                        Tu información está protegida. No compartas tus credenciales con nadie.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h4 class="card-title">❓ ¿Problemas?</h4>
+                    <p class="card-content">
+                        Si tienes problemas para acceder, comunícate con soporte técnico.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 BMS Soluciones Tecnológicas. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        const btnTema = document.createElement("button");
+        btnTema.style.position = "fixed";
+        btnTema.style.bottom = "20px";
+        btnTema.style.right = "20px";
+        btnTema.style.zIndex = "9999";
+        btnTema.style.padding = "10px 14px";
+        btnTema.style.borderRadius = "50%";
+        btnTema.style.border = "none";
+        btnTema.style.cursor = "pointer";
+        btnTema.style.fontSize = "22px";
+        btnTema.style.background = "#555";
+        btnTema.style.color = "#fff";
+        btnTema.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
+        btnTema.style.transition = "transform 0.3s, background 0.3s, color 0.3s";
+        btnTema.innerHTML = "<i class='bx bx-sun'></i>";
+        document.body.appendChild(btnTema);
+
+        const icono = btnTema.querySelector("i");
+        const temaGuardado = localStorage.getItem("tema");
+
+        if (temaGuardado === "claro") {
+            document.body.classList.add("light-mode");
+            icono.classList.replace("bx-sun", "bx-moon");
+            btnTema.style.background = "#ddd";
+            btnTema.style.color = "#333";
+        } else {
+            document.body.classList.remove("light-mode");
+            icono.classList.replace("bx-moon", "bx-sun");
+            btnTema.style.background = "#555";
+            btnTema.style.color = "#fff";
+        }
+
+        btnTema.addEventListener("click", () => {
+            const modoClaro = document.body.classList.toggle("light-mode");
+            if (modoClaro) {
+                icono.classList.replace("bx-sun", "bx-moon");
+                btnTema.style.background = "#ddd";
+                btnTema.style.color = "#333";
+                localStorage.setItem("tema", "claro");
+            } else {
+                icono.classList.replace("bx-moon", "bx-sun");
+                btnTema.style.background = "#555";
+                btnTema.style.color = "#fff";
+                localStorage.setItem("tema", "oscuro");
+            }
+        });
+
+        btnTema.addEventListener("mouseenter", () => btnTema.style.transform = "scale(1.1)");
+        btnTema.addEventListener("mouseleave", () => btnTema.style.transform = "scale(1)");
+    </script>
+</body>
+</html>
