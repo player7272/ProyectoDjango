@@ -1,0 +1,160 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Confirmar Desactivación - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>Confirmar Cambio de Estado del Empleado</h2>
+        <p>Estás a punto de cambiar el estado del empleado</p>
+    </section>
+
+    <!-- Información del Empleado -->
+    <section class="seccion">
+        <h3>Información del Empleado</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Datos Personales</h4>
+                <p class="card-content">
+                    <strong>Nombre:</strong> {{ empleado.nombre }} {{ empleado.apellido }}<br>
+                    <strong>Cédula:</strong> {{ empleado.cedula }}<br>
+                    <strong>Correo:</strong> {{ empleado.correo }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💼 Información Laboral</h4>
+                <p class="card-content">
+                    <strong>Categoría:</strong> {{ empleado.categoria.nombre|default:"No asignada" }}<br>
+                    <strong>Fecha de Ingreso:</strong> {{ empleado.fecha_ingreso|date:"d/m/Y" }}<br>
+                    <strong>Años en la empresa:</strong> {{ empleado.anos_en_empresa }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado Actual</h4>
+                <p class="card-content">
+                    {% if empleado.activo %}
+                    <span style="font-size: 2rem; color: #43e97b;">✓ Activo</span>
+                    {% else %}
+                    <span style="font-size: 2rem; color: #f5576c;">○ Inactivo</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advertencia de Acción -->
+    <section class="seccion">
+        <div style="background: rgba(255, 193, 7, 0.1); padding: 30px; border-radius: 12px;">
+            <h3 style="text-align: center; margin-top: 0;">
+                {% if empleado.activo %}
+                    ⚠️ Desactivar Empleado
+                {% else %}
+                    ✓ Activar Empleado
+                {% endif %}
+            </h3>
+            
+            {% if empleado.activo %}
+                <p style="text-align: center; font-size: 1.1rem;">
+                    ¿Estás seguro de que deseas <strong>DESACTIVAR</strong> a este empleado?
+                </p>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Consecuencias de la desactivación:</h4>
+                    <ul style="line-height: 1.8;">
+                        <li>El empleado no podrá acceder al sistema</li>
+                        <li>No se generarán nóminas automáticas para este empleado</li>
+                        <li>Sus permisos pendientes quedarán en estado actual</li>
+                        <li>El historial de nóminas y permisos se mantendrá</li>
+                        <li>Esta acción es reversible - puedes reactivar el empleado cuando lo necesites</li>
+                    </ul>
+                </div>
+            {% else %}
+                <p style="text-align: center; font-size: 1.1rem;">
+                    ¿Estás seguro de que deseas <strong>ACTIVAR</strong> a este empleado?
+                </p>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Efectos de la activación:</h4>
+                    <ul style="line-height: 1.8;">
+                        <li>El empleado podrá acceder nuevamente al sistema</li>
+                        <li>Se incluirá en la generación automática de nóminas</li>
+                        <li>Podrá solicitar permisos y gestionar sus datos</li>
+                        <li>Su historial anterior se mantendrá intacto</li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Estadísticas del Empleado -->
+    <section class="seccion">
+        <h3>Estadísticas del Empleado</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <h4 class="card-title">💰 Nóminas Procesadas</h4>
+                <div class="stat-number">{{ empleado.nominas.count }}</div>
+                <div class="stat-label">Total de nóminas</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">⏰ Permisos Solicitados</h4>
+                <div class="stat-number">{{ empleado.permisos.count }}</div>
+                <div class="stat-label">Total de permisos</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">📅 Antigüedad</h4>
+                <div class="stat-number">{{ empleado.dias_en_empresa }}</div>
+                <div class="stat-label">Días en la empresa</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Confirmación -->
+    <section class="seccion texto-centro">
+        <form method="POST" style="display: inline-block;">
+            {% csrf_token %}
+            
+            {% if empleado.activo %}
+                <button type="submit" class="button red" style="padding: 16px 48px; font-size: 18px; margin: 10px;">
+                    Confirmar Desactivación
+                </button>
+            {% else %}
+                <button type="submit" class="button green" style="padding: 16px 48px; font-size: 18px; margin: 10px;">
+                    Confirmar Activación
+                </button>
+            {% endif %}
+            
+            <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" 
+               class="button" 
+               style="padding: 16px 48px; font-size: 18px; margin: 10px; text-decoration: none; display: inline-block;">
+                Cancelar
+            </a>
+        </form>
+    </section>
+
+    <!-- Información Adicional -->
+    <section class="seccion">
+        <h3>ℹ️ Información Importante</h3>
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
+            <h4 style="margin-top: 0;">Buenas Prácticas:</h4>
+            <ul style="line-height: 1.8;">
+                <li><strong>Documentación:</strong> Asegúrate de tener documentación sobre la razón del cambio de estado</li>
+                <li><strong>Comunicación:</strong> Notifica al empleado sobre cualquier cambio en su estatus</li>
+                <li><strong>Revisión:</strong> Revisa si hay permisos pendientes o nóminas sin procesar</li>
+                <li><strong>Seguimiento:</strong> Mantén un registro de los cambios de estado para auditorías</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Botones de Navegación -->
+    <section class="seccion texto-centro">
+        <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" class="button">Ver Perfil del Empleado</a>
+        <a href="{% url 'lista_empleados_rrhh' %}" class="button blue">Volver a Lista de Empleados</a>
+        <a href="{% url 'dashboard_rrhh' %}" class="button green">Ir al Dashboard</a>
+    </section>
+</main>
+{% endblock %}

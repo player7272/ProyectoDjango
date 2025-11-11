@@ -1,0 +1,270 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Editar Empleado - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>Editar Información del Empleado</h2>
+        <p>Actualiza los datos personales y laborales del empleado</p>
+    </section>
+
+    <!-- Información Actual del Empleado -->
+    <section class="seccion">
+        <h3>Información Actual</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Empleado</h4>
+                <p class="card-content">
+                    <strong>{{ empleado.nombre }} {{ empleado.apellido }}</strong><br>
+                    <small>{{ empleado.cedula }}</small>
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📧 Contacto</h4>
+                <p class="card-content">
+                    {{ empleado.correo }}<br>
+                    {{ empleado.telefono|default:"Sin teléfono" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💼 Categoría</h4>
+                <p class="card-content">
+                    {{ empleado.categoria.nombre|default:"No asignada" }}
+                    {% if empleado.categoria %}
+                    <br><small>${{ empleado.categoria.salario_base|floatformat:2 }}</small>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado</h4>
+                <p class="card-content">
+                    {% if empleado.activo %}
+                        <span style="color: #43e97b; font-size: 1.5rem;">✓ Activo</span>
+                    {% else %}
+                        <span style="color: #f5576c; font-size: 1.5rem;">○ Inactivo</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Edición -->
+    <section class="seccion">
+        <div class="form-section">
+            <form method="POST" class="form azul">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>Por favor, corrija los siguientes errores:</strong>
+                    {{ form.non_field_errors }}
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <br>• {{ field }}: {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <h3 style="text-align: center; margin-bottom: 30px;">Datos Personales</h3>
+
+                <!-- Datos Personales Básicos -->
+                <fieldset style="border: 2px solid rgba(102, 126, 234, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #667eea;">Información Personal</legend>
+                    
+                    <div>
+                        <label for="{{ form.nombre.id_for_label }}">Nombre *</label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <span style="color: #f5576c;">{{ form.nombre.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.apellido.id_for_label }}">Apellido *</label>
+                        {{ form.apellido }}
+                        {% if form.apellido.errors %}
+                            <span style="color: #f5576c;">{{ form.apellido.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.cedula.id_for_label }}">Cédula *</label>
+                        {{ form.cedula }}
+                        {% if form.cedula.errors %}
+                            <span style="color: #f5576c;">{{ form.cedula.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Verifica que la cédula sea correcta antes de guardar
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento</label>
+                        {{ form.fecha_nacimiento }}
+                        {% if form.fecha_nacimiento.errors %}
+                            <span style="color: #f5576c;">{{ form.fecha_nacimiento.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </fieldset>
+
+                <!-- Información de Contacto -->
+                <fieldset style="border: 2px solid rgba(67, 227, 123, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #43e97b;">Información de Contacto</legend>
+                    
+                    <div>
+                        <label for="{{ form.correo.id_for_label }}">Correo Electrónico *</label>
+                        {{ form.correo }}
+                        {% if form.correo.errors %}
+                            <span style="color: #f5576c;">{{ form.correo.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Este correo también se usa como nombre de usuario
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.telefono.id_for_label }}">Teléfono</label>
+                        {{ form.telefono }}
+                        {% if form.telefono.errors %}
+                            <span style="color: #f5576c;">{{ form.telefono.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.direccion.id_for_label }}">Dirección</label>
+                        {{ form.direccion }}
+                        {% if form.direccion.errors %}
+                            <span style="color: #f5576c;">{{ form.direccion.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </fieldset>
+
+                <!-- Información Laboral -->
+                <fieldset style="border: 2px solid rgba(245, 87, 108, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #f5576c;">Información Laboral</legend>
+                    
+                    <div>
+                        <label for="{{ form.fecha_ingreso.id_for_label }}">Fecha de Ingreso</label>
+                        {{ form.fecha_ingreso }}
+                        {% if form.fecha_ingreso.errors %}
+                            <span style="color: #f5576c;">{{ form.fecha_ingreso.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Fecha en la que el empleado comenzó a trabajar en la empresa
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.categoria.id_for_label }}">Categoría</label>
+                        {{ form.categoria }}
+                        {% if form.categoria.errors %}
+                            <span style="color: #f5576c;">{{ form.categoria.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            La categoría determina el salario base del empleado
+                        </small>
+                    </div>
+                </fieldset>
+
+                <!-- Información Importante -->
+                <div style="background: rgba(79, 172, 254, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>ℹ️ Información Importante:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Los cambios en la categoría afectarán las futuras nóminas del empleado</li>
+                        <li>El cambio de correo también modificará el nombre de usuario</li>
+                        <li>Los datos históricos (nóminas, permisos) se mantendrán sin cambios</li>
+                        <li>Es recomendable notificar al empleado sobre cambios significativos</li>
+                    </ul>
+                </div>
+
+                <!-- Campos Calculados (Solo lectura) -->
+                <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <h4 style="margin-top: 0;">📊 Información Calculada (No Editable)</h4>
+                    <p style="margin: 5px 0;">
+                        <strong>Días en la empresa:</strong> {{ empleado.dias_en_empresa }} días
+                    </p>
+                    <p style="margin: 5px 0;">
+                        <strong>Años de antigüedad:</strong> {{ empleado.anos_en_empresa }} años
+                    </p>
+                    <p style="margin: 5px 0;">
+                        <strong>Nóminas procesadas:</strong> {{ empleado.nominas.count }}
+                    </p>
+                    <p style="margin: 5px 0;">
+                        <strong>Permisos solicitados:</strong> {{ empleado.permisos.count }}
+                    </p>
+                </div>
+
+                <button type="submit" class="buttonformB">Guardar Cambios</button>
+                <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" 
+                   class="buttonformB" 
+                   style="background: rgba(108, 117, 125, 0.2); border-color: #6c757d; text-decoration: none; display: block;">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </section>
+
+    <!-- Guía de Campos -->
+    <section class="seccion">
+        <h3>📚 Guía de Campos</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Datos Personales</h4>
+                <p class="card-content">
+                    <strong>Nombre y Apellido:</strong> Nombres completos del empleado<br>
+                    <strong>Cédula:</strong> Documento de identidad único<br>
+                    <strong>Fecha de Nacimiento:</strong> Para cálculos de edad y beneficios
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📧 Contacto</h4>
+                <p class="card-content">
+                    <strong>Correo:</strong> Usado para acceso al sistema y notificaciones<br>
+                    <strong>Teléfono:</strong> Contacto directo con el empleado<br>
+                    <strong>Dirección:</strong> Domicilio del empleado
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💼 Información Laboral</h4>
+                <p class="card-content">
+                    <strong>Fecha de Ingreso:</strong> Define antigüedad y beneficios<br>
+                    <strong>Categoría:</strong> Determina salario y posición<br>
+                    <strong>Estado:</strong> Activo/Inactivo (cambiar desde opciones)
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">⚠️ Consideraciones</h4>
+                <p class="card-content">
+                    • Verifica que todos los datos sean correctos<br>
+                    • Los cambios en categoría afectan nóminas futuras<br>
+                    • Cambios importantes deben ser notificados<br>
+                    • Mantén documentación de los cambios realizados
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acciones Rápidas -->
+    <section class="seccion texto-centro">
+        <h3>Acciones Rápidas</h3>
+        <div class="btn-group">
+            <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" class="button">Ver Perfil Completo</a>
+            <a href="{% url 'desactivar_empleado' empleado.id %}" 
+               class="button {% if empleado.activo %}red{% else %}green{% endif %}">
+                {% if empleado.activo %}Desactivar{% else %}Activar{% endif %} Empleado
+            </a>
+            <a href="{% url 'lista_empleados_rrhh' %}" class="button blue">Ver Todos los Empleados</a>
+            <a href="{% url 'dashboard_rrhh' %}" class="button green">Ir al Dashboard</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

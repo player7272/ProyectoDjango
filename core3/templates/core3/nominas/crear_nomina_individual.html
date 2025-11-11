@@ -1,0 +1,248 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Crear Nómina Individual - Recursos Humanos{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>Crear Nómina Individual</h2>
+        <p>Genera una nómina específica para {{ empleado.nombre }} {{ empleado.apellido }}</p>
+    </section>
+
+    <!-- Información del Empleado -->
+    <section class="seccion">
+        <h3>Información del Empleado</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Empleado</h4>
+                <p class="card-content">
+                    <strong>{{ empleado.nombre }} {{ empleado.apellido }}</strong><br>
+                    <strong>Cédula:</strong> {{ empleado.cedula }}<br>
+                    <strong>Categoría:</strong> {{ empleado.categoria.nombre|default:"No asignada" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💰 Salario Base</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #43e97b;">
+                    {% if empleado.categoria %}
+                        ${{ empleado.categoria.salario_base|floatformat:2 }}
+                    {% else %}
+                        <span style="color: #f5576c; font-size: 1.2rem;">Sin categoría asignada</span>
+                    {% endif %}
+                </p>
+                <p class="card-content">
+                    <small>Este será el salario base de la nómina</small>
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado</h4>
+                <p class="card-content">
+                    {% if empleado.activo %}
+                        <span style="color: #43e97b; font-size: 1.5rem;">✓ Activo</span>
+                    {% else %}
+                        <span style="color: #f5576c; font-size: 1.5rem;">○ Inactivo</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📋 Nóminas Previas</h4>
+                <p class="card-content">
+                    <strong>Total:</strong> {{ empleado.nominas.count }}<br>
+                    <strong>Pagadas:</strong> {{ empleado.nominas.filter.count }}<br>
+                    <strong>Pendientes:</strong> {{ nominas_pendientes }}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Verificaciones -->
+    {% if not empleado.categoria %}
+    <section class="seccion">
+        <div style="background: rgba(245, 87, 108, 0.2); padding: 20px; border-radius: 12px;">
+            <h3 style="color: #f5576c;">⚠️ No se puede crear la nómina</h3>
+            <p>Este empleado no tiene una categoría asignada. Debes asignar una categoría antes de crear una nómina.</p>
+            <a href="{% url 'editar_empleado_rrhh' empleado.id %}" class="button blue">Asignar Categoría</a>
+            <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" class="button">Volver al Perfil</a>
+        </div>
+    </section>
+    {% else %}
+
+    <!-- Selección de Periodo -->
+    <section class="seccion">
+        <h3>Seleccionar Periodo de Nómina</h3>
+        
+        {% if periodos_disponibles %}
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <p><strong>Opción 1:</strong> Selecciona un periodo existente donde este empleado aún no tiene nómina</p>
+        </div>
+
+        <table class="table table--striped table--hover">
+            <thead>
+                <tr>
+                    <th>Periodo</th>
+                    <th>Tipo</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Fecha Pago</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for periodo in periodos_disponibles %}
+                <tr>
+                    <td><strong>{{ periodo }}</strong></td>
+                    <td>{{ periodo.get_tipo_display }}</td>
+                    <td>{{ periodo.fecha_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ periodo.fecha_fin|date:"d/m/Y" }}</td>
+                    <td>{{ periodo.fecha_pago|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if periodo.cerrado %}
+                            <span class="badge badge-secondary">Cerrado</span>
+                        {% else %}
+                            <span class="badge badge-success">Abierto</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="periodo_id" value="{{ periodo.id }}">
+                            <button type="submit" class="button green" style="padding: 6px 12px; font-size: 13px;">
+                                Usar Este Periodo
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="background: rgba(67, 227, 123, 0.1); padding: 20px; border-radius: 12px; margin-top: 30px;">
+            <p><strong>Opción 2:</strong> O crea un nuevo periodo de nómina</p>
+            <a href="{% url 'crear_periodo_nomina' %}" class="button blue">Crear Nuevo Periodo</a>
+        </div>
+
+        {% else %}
+        <div style="background: rgba(255, 193, 7, 0.1); padding: 20px; border-radius: 12px;">
+            <h4 style="margin-top: 0;">No hay periodos disponibles</h4>
+            <p>No existen periodos donde este empleado no tenga nómina, o no hay periodos creados.</p>
+            <p><strong>Opciones:</strong></p>
+            <ul>
+                <li>Crea un nuevo periodo de nómina</li>
+                <li>Verifica las nóminas existentes del empleado</li>
+            </ul>
+            <div style="margin-top: 15px;">
+                <a href="{% url 'crear_periodo_nomina' %}" class="button green">Crear Nuevo Periodo</a>
+                <a href="{% url 'ver_todas_nominas_empleado' empleado.id %}" class="button blue">Ver Nóminas Existentes</a>
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Información sobre el proceso -->
+    <section class="seccion">
+        <h3>📋 Proceso de Creación de Nómina</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">1️⃣ Seleccionar Periodo</h4>
+                <p class="card-content">
+                    Elige un periodo existente o crea uno nuevo. El periodo define las fechas de pago y el tipo de nómina.
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">2️⃣ Generación Automática</h4>
+                <p class="card-content">
+                    La nómina se creará automáticamente con:<br>
+                    • Salario base de la categoría<br>
+                    • Deducciones según configuración<br>
+                    • Estado: Pendiente de pago
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">3️⃣ Edición y Ajustes</h4>
+                <p class="card-content">
+                    Después de crear la nómina, podrás:<br>
+                    • Agregar bonificaciones<br>
+                    • Modificar deducciones<br>
+                    • Agregar horas extra<br>
+                    • Añadir conceptos adicionales
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">4️⃣ Visibilidad</h4>
+                <p class="card-content">
+                    Una vez creada, la nómina será visible:<br>
+                    • Para el empleado en su portal<br>
+                    • En el listado de nóminas de RRHH<br>
+                    • En el detalle del periodo
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Configuración Actual -->
+    {% if configuracion %}
+    <section class="seccion">
+        <h3>⚙️ Configuración de Nómina Actual</h3>
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
+            <p><strong>La nómina se creará con los siguientes parámetros:</strong></p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div>
+                    <strong>Salario Base:</strong><br>
+                    ${{ empleado.categoria.salario_base|floatformat:2 }}
+                </div>
+                <div>
+                    <strong>Seguridad Social ({{ configuracion.porcentaje_seguridad_social }}%):</strong><br>
+                    ${% widthratio empleado.categoria.salario_base 100 configuracion.porcentaje_seguridad_social %}
+                </div>
+                <div>
+                    <strong>Salud ({{ configuracion.porcentaje_salud }}%):</strong><br>
+                    ${% widthratio empleado.categoria.salario_base 100 configuracion.porcentaje_salud %}
+                </div>
+                <div>
+                    <strong>Pensión ({{ configuracion.porcentaje_pension }}%):</strong><br>
+                    ${% widthratio empleado.categoria.salario_base 100 configuracion.porcentaje_pension %}
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid rgba(102, 126, 234, 0.3);">
+                <strong>Total Deducciones Estimadas:</strong>
+                <span style="color: #f5576c; font-size: 1.2rem; font-weight: bold;">
+                    -${{ total_deducciones_estimadas|floatformat:2 }}
+                </span>
+            </div>
+            <div style="margin-top: 10px;">
+                <strong>Neto Estimado a Pagar:</strong>
+                <span style="color: #43e97b; font-size: 1.5rem; font-weight: bold;">
+                    ${{ neto_estimado|floatformat:2 }}
+                </span>
+            </div>
+        </div>
+    </section>
+    {% else %}
+    <section class="seccion">
+        <div style="background: rgba(255, 193, 7, 0.1); padding: 20px; border-radius: 12px;">
+            <h4 style="margin-top: 0;">⚠️ No hay configuración de nómina activa</h4>
+            <p>Se creará la nómina con deducciones en $0.00. Puedes configurar los parámetros de nómina antes de continuar.</p>
+            <a href="{% url 'configuracion_nomina' %}" class="button blue">Configurar Nómina</a>
+        </div>
+    </section>
+    {% endif %}
+
+    {% endif %}
+
+    <!-- Botones de Navegación -->
+    <section class="seccion texto-centro">
+        <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" class="button">Volver al Perfil del Empleado</a>
+        <a href="{% url 'lista_empleados_rrhh' %}" class="button blue">Ver Todos los Empleados</a>
+        <a href="{% url 'dashboard_rrhh' %}" class="button green">Ir al Dashboard</a>
+    </section>
+</main>
+{% endblock %}

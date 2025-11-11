@@ -19,6 +19,9 @@ urlpatterns = [
     path('empleados/<int:empleado_id>/', views.detalle_empleado_rrhh, name='detalle_empleado_rrhh'),
     path('empleados/<int:empleado_id>/editar/', views.editar_empleado_rrhh, name='editar_empleado_rrhh'),
     path('empleados/<int:empleado_id>/desactivar/', views.desactivar_empleado, name='desactivar_empleado'),
+    path('empleados/<int:empleado_id>/nominas/', views.ver_todas_nominas_empleado, name='ver_todas_nominas_empleado'),
+    path('empleados/<int:empleado_id>/nomina/crear/', views.crear_nomina_individual, name='crear_nomina_individual'),
+    path('empleados/<int:empleado_id>/nomina/seleccionar-periodo/', views.seleccionar_periodo_nomina, name='seleccionar_periodo_nomina'),
     
     # Gestión de Nóminas
     path('nominas/', views.lista_nominas_rrhh, name='lista_nominas_rrhh'),

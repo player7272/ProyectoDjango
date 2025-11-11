@@ -80,9 +80,104 @@
                     <strong>Descripción:</strong> {{ empleado.categoria.descripcion|truncatewords:20 }}
                 </p>
             </div>
+
+            <div class="card">
+                <h4 class="card-title">💵 Última Nómina</h4>
+                <p class="card-content">
+                    {% if empleado.nominas.first %}
+                        <strong style="color: #43e97b; font-size: 1.5rem;">
+                            ${{ empleado.nominas.first.neto_pagar|floatformat:2 }}
+                        </strong><br>
+                        <small>{{ empleado.nominas.first.periodo }}</small>
+                    {% else %}
+                        <em style="color: #888;">Sin nóminas registradas</em>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Total Pagado</h4>
+                <p class="card-content">
+                    {% if total_pagado %}
+                        <strong style="color: #4facfe; font-size: 1.5rem;">
+                            ${{ total_pagado|floatformat:2 }}
+                        </strong><br>
+                        <small>Total histórico</small>
+                    {% else %}
+                        <em style="color: #888;">$0.00</em>
+                    {% endif %}
+                </p>
+            </div>
         </div>
     </section>
     {% endif %}
+
+    <!-- Sección de Gestión de Nómina Individual -->
+    <section class="seccion">
+        <h3>💰 Gestión de Nómina Individual</h3>
+        
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <h4 style="margin-top: 0;">Crear Nómina Individual para Este Empleado</h4>
+            <p>Puedes crear una nómina individual para este empleado seleccionando un periodo existente o crear un nuevo periodo.</p>
+        </div>
+
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">➕ Nueva Nómina</h4>
+                <p class="card-content">
+                    Crea una nómina individual para este empleado en un periodo específico.
+                    Esta opción es útil para ajustes, bonos o pagos extraordinarios.
+                </p>
+                <a href="{% url 'crear_nomina_individual' empleado.id %}" class="button green">
+                    Crear Nómina Individual
+                </a>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📋 Periodos Disponibles</h4>
+                <p class="card-content">
+                    {% if periodos_disponibles %}
+                        Hay <strong>{{ periodos_disponibles|length }}</strong> periodos disponibles donde este empleado no tiene nómina.
+                    {% else %}
+                        No hay periodos disponibles sin nómina para este empleado.
+                    {% endif %}
+                </p>
+                {% if periodos_disponibles %}
+                <a href="{% url 'seleccionar_periodo_nomina' empleado.id %}" class="button blue">
+                    Seleccionar Periodo
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">⚙️ Nóminas Automáticas</h4>
+                <p class="card-content">
+                    Este empleado {% if empleado.activo %}será{% else %}NO será{% endif %} incluido en la generación automática de nóminas.
+                </p>
+                <p class="card-content">
+                    <small>
+                        {% if not empleado.activo %}
+                            Para incluir al empleado en nóminas automáticas, primero debes activarlo.
+                        {% elif not empleado.categoria %}
+                            Para incluir al empleado en nóminas automáticas, asigna una categoría.
+                        {% else %}
+                            El empleado está listo para nóminas automáticas.
+                        {% endif %}
+                    </small>
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estadísticas de Nómina</h4>
+                <p class="card-content">
+                    <strong>Total Nóminas:</strong> {{ empleado.nominas.count }}<br>
+                    <strong>Pagadas:</strong> {{ empleado.nominas.filter.count }}<br>
+                    <strong>Pendientes:</strong> {{ nominas_pendientes }}<br>
+                    <strong>Total Devengado:</strong> ${{ total_devengado|floatformat:2|default:"0.00" }}
+                </p>
+            </div>
+        </div>
+    </section>
 
     <!-- Nóminas Recientes -->
     <section class="seccion">
@@ -100,6 +195,7 @@
                     <th>Deducciones</th>
                     <th>Neto a Pagar</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -120,12 +216,25 @@
                         <span class="badge badge-warning">○ Pendiente</span>
                         {% endif %}
                     </td>
+                    <td>
+                        <a href="{% url 'editar_nomina' nomina.id %}" 
+                           class="button blue" 
+                           style="padding: 6px 12px; font-size: 13px;">
+                            Editar
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'ver_todas_nominas_empleado' empleado.id %}" class="button">Ver Todas las Nóminas</a>
+        </div>
         {% else %}
         <p class="texto-centro">No hay nóminas registradas para este empleado.</p>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'crear_nomina_individual' empleado.id %}" class="button green">Crear Primera Nómina</a>
+        </div>
         {% endif %}
     </section>
 
@@ -144,6 +253,7 @@
                     <th>Estado</th>
                     <th>Fecha Solicitud</th>
                     <th>Observaciones</th>
+                    <th>Acciones</th>
                 </tr>
                 {% for permiso in permisos %}
                 <tr>
@@ -163,6 +273,17 @@
                     </td>
                     <td>{{ permiso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
                     <td>{{ permiso.observaciones|truncatewords:10|default:"-" }}</td>
+                    <td>
+                        {% if permiso.estado == 'PENDIENTE' %}
+                        <a href="{% url 'revisar_permiso' permiso.id %}" 
+                           class="button blue" 
+                           style="padding: 6px 12px; font-size: 13px;">
+                            Revisar
+                        </a>
+                        {% else %}
+                        <span style="color: #888; font-size: 13px;">Revisado</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -177,6 +298,7 @@
         <h3>Acciones</h3>
         <div class="btn-group">
             <a href="{% url 'editar_empleado_rrhh' empleado.id %}" class="button blue">Editar Información</a>
+            <a href="{% url 'crear_nomina_individual' empleado.id %}" class="button green">Crear Nómina</a>
 
             {% if empleado.activo %}
             <a href="{% url 'desactivar_empleado' empleado.id %}" class="button red">Desactivar Empleado</a>
@@ -207,7 +329,7 @@
 
             <div class="card stat-card">
                 <h4 class="card-title">✓ Permisos Aprobados</h4>
-                <div class="stat-number">{{ empleado.permisos.filter.count }}</div>
+                <div class="stat-number">{{ permisos_aprobados }}</div>
                 <div class="stat-label">Permisos aprobados</div>
             </div>
 

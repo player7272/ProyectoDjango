@@ -342,17 +342,111 @@ def detalle_empleado_rrhh(request, empleado_id):
     """Ver detalle completo de un empleado"""
     empleado = get_object_or_404(Empleado, id=empleado_id)
     
-    # Obtener información relacionada
-    nominas = empleado.nominas.all()[:10]
-    permisos = empleado.permisos.all().order_by('-fecha_solicitud')[:10]
-    
+    # --- PERMISOS ---
+    # Primero obtenemos todos los permisos ordenados (sin cortar aún)
+    permisos_qs = empleado.permisos.all().order_by('-fecha_solicitud')
+
+    # Contamos los aprobados antes del slice (para evitar el error)
+    permisos_aprobados = permisos_qs.filter(estado='APROBADO').count()
+
+    # Ahora sí tomamos los 10 más recientes para mostrar en la tabla
+    permisos = permisos_qs[:10]
+
+    # --- NÓMINAS ---
+    nominas_todas = empleado.nominas.all()
+    nominas = nominas_todas[:10]  # las 10 más recientes para mostrar
+
+    # Cálculos de estadísticas
+    total_pagado = (
+        nominas_todas.filter(pagado=True)
+        .aggregate(Sum('neto_pagar'))['neto_pagar__sum'] or Decimal('0.00')
+    )
+    total_devengado = (
+        nominas_todas.aggregate(Sum('total_devengado'))['total_devengado__sum'] or Decimal('0.00')
+    )
+    nominas_pendientes = nominas_todas.filter(pagado=False).count()
+
+    # --- PERIODOS DISPONIBLES ---
+    periodos_con_nomina = nominas_todas.values_list('periodo_id', flat=True)
+    periodos_disponibles = list(
+        PeriodoNomina.objects
+        .exclude(id__in=periodos_con_nomina)
+        .order_by('-fecha_inicio')[:5]
+    )
+
+    # --- CONTEXTO ---
     context = {
         'empleado': empleado,
         'nominas': nominas,
         'permisos': permisos,
+        'total_pagado': total_pagado,
+        'total_devengado': total_devengado,
+        'nominas_pendientes': nominas_pendientes,
+        'permisos_aprobados': permisos_aprobados,
+        'periodos_disponibles': periodos_disponibles,
     }
     
     return render(request, 'core3/empleados/detalle.html', context)
+
+@login_required
+@user_passes_test(es_rrhh)
+def ver_todas_nominas_empleado(request, empleado_id):
+    """Ver todas las nóminas de un empleado específico"""
+    empleado = get_object_or_404(Empleado, id=empleado_id)
+    
+    # Obtener todas las nóminas del empleado, ordenadas por fecha del periodo
+    nominas = Nomina.objects.filter(empleado=empleado).select_related('periodo').order_by('-periodo__fecha_inicio')
+
+    # Totales de referencia
+    total_devengado = nominas.aggregate(Sum('total_devengado'))['total_devengado__sum'] or 0
+    total_deducciones = nominas.aggregate(Sum('total_deducciones'))['total_deducciones__sum'] or 0
+    total_pagado = nominas.filter(pagado=True).aggregate(Sum('neto_pagar'))['neto_pagar__sum'] or 0
+
+    context = {
+        'empleado': empleado,
+        'nominas': nominas,
+        'total_devengado': total_devengado,
+        'total_deducciones': total_deducciones,
+        'total_pagado': total_pagado,
+    }
+    
+    return render(request, 'core3/nominas/ver_todas_nominas_empleado.html', context)
+
+@login_required
+@user_passes_test(es_rrhh)
+def crear_nomina_individual(request, empleado_id):
+    """Permite crear una nómina individual para un empleado específico"""
+    empleado = get_object_or_404(Empleado, id=empleado_id)
+    periodos = PeriodoNomina.objects.all().order_by('-fecha_inicio')
+
+    if request.method == 'POST':
+        periodo_id = request.POST.get('periodo')
+        periodo = get_object_or_404(PeriodoNomina, id=periodo_id)
+
+        # Verificar si ya existe una nómina para ese empleado y periodo
+        if Nomina.objects.filter(empleado=empleado, periodo=periodo).exists():
+            messages.warning(request, f"Ya existe una nómina para {empleado.nombre} en el periodo seleccionado.")
+            return redirect('ver_todas_nominas_empleado', empleado_id=empleado.id)
+
+        # Crear la nueva nómina
+        nomina = Nomina.objects.create(
+            empleado=empleado,
+            periodo=periodo,
+            salario_base=empleado.salario,
+            total_devengado=0,
+            total_deducciones=0,
+            neto_pagar=0,
+            pagado=False
+        )
+
+        messages.success(request, f"Nómina creada para {empleado.nombre} ({periodo}).")
+        return redirect('detalle_nomina', nomina_id=nomina.id)
+
+    context = {
+        'empleado': empleado,
+        'periodos': periodos,
+    }
+    return render(request, 'core3/nominas/crear_nomina_individual.html', context)
 
 
 @login_required
@@ -520,6 +614,28 @@ def generar_nominas(request, periodo_id):
     }
     
     return render(request, 'core3/nominas/generar_nominas.html', context)
+
+@login_required
+@user_passes_test(es_rrhh)
+def seleccionar_periodo_nomina(request, empleado_id):
+    """Permite seleccionar un periodo antes de crear una nómina individual"""
+    empleado = get_object_or_404(Empleado, id=empleado_id)
+    periodos = PeriodoNomina.objects.all().order_by('-fecha_inicio')
+
+    if request.method == 'POST':
+        periodo_id = request.POST.get('periodo')
+        if not periodo_id:
+            messages.warning(request, "Debes seleccionar un periodo de nómina.")
+            return redirect('seleccionar_periodo_nomina', empleado_id=empleado.id)
+
+        return redirect('crear_nomina_individual', empleado_id=empleado.id)
+
+    context = {
+        'empleado': empleado,
+        'periodos': periodos,
+    }
+    return render(request, 'core3/nominas/seleccionar_periodo_nomina.html', context)
+
 
 
 @login_required

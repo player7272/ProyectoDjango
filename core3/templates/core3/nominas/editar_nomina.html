@@ -1,0 +1,335 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+
+{% block title %}Editar Nómina - Recursos Humanos{% endblock %}
+
+{% block content %}
+<style>
+    .devengado {
+        color: #43e97b;
+    }
+
+    .deduccion {
+        color: #f5576c;
+    }
+</style>
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>Editar Nómina</h2>
+        <p>Ajusta los valores de la nómina de {{ nomina.empleado.nombre }} {{ nomina.empleado.apellido }}</p>
+    </section>
+
+    <!-- Información General -->
+    <section class="seccion">
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Empleado</h4>
+                <p class="card-content">
+                    <strong>{{ nomina.empleado.nombre }} {{ nomina.empleado.apellido }}</strong><br>
+                    Cédula: {{ nomina.empleado.cedula }}<br>
+                    Categoría: {{ nomina.empleado.categoria.nombre|default:"N/A" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📅 Periodo</h4>
+                <p class="card-content">
+                    <strong>{{ nomina.periodo }}</strong><br>
+                    Tipo: {{ nomina.periodo.get_tipo_display }}<br>
+                    Fecha Pago: {{ nomina.periodo.fecha_pago|date:"d/m/Y" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado</h4>
+                <p class="card-content">
+                    {% if nomina.pagado %}
+                    <span style="color: #43e97b; font-size: 1.5rem;">✓ PAGADO</span>
+                    {% else %}
+                    <span style="color: #ffc107; font-size: 1.5rem;">○ PENDIENTE</span>
+                    {% endif %}
+                </p>
+                <p class="card-content">
+                    <small>Generado: {{ nomina.fecha_generacion|date:"d/m/Y H:i" }}</small>
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💰 Neto a Pagar</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #43e97b;">
+                    ${{ nomina.neto_pagar|floatformat:2 }}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    {% if nomina.pagado %}
+    <!-- Advertencia de Nómina Pagada -->
+    <section class="seccion">
+        <div style="background: rgba(255, 193, 7, 0.2); padding: 20px; border-radius: 12px; text-align: center;">
+            <h3 style="margin-top: 0;">⚠️ Esta nómina ya fue pagada</h3>
+            <p>No se pueden realizar modificaciones a una nómina que ya ha sido pagada.</p>
+            <p>Si necesitas hacer ajustes, considera crear una nómina correctiva en un nuevo periodo.</p>
+        </div>
+    </section>
+    {% else %}
+
+    <!-- Formulario de Edición -->
+    <section class="seccion">
+        <h3>Editar Valores de la Nómina</h3>
+        <div class="form-section">
+            <form method="POST" class="form azul">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div
+                    style="background: rgba(245, 87, 108, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>Por favor, corrija los siguientes errores:</strong>
+                    {{ form.non_field_errors }}
+                    {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <br>• {{ field }}: {{ error }}
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <h4 style="text-align: center; margin-bottom: 30px;">Ajustar Valores</h4>
+
+                <!-- Salario Base (solo lectura) -->
+                <fieldset
+                    style="border: 2px solid rgba(102, 126, 234, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #667eea;">Salario Base</legend>
+
+                    <div style="background: rgba(79, 172, 254, 0.1); padding: 15px; border-radius: 8px;">
+                        <p style="margin: 0; font-size: 1.3rem; font-weight: bold;">
+                            ${{ nomina.salario_base|floatformat:2 }}
+                        </p>
+                        <small>El salario base se define por la categoría del empleado y no se puede editar
+                            aquí.</small>
+                    </div>
+                </fieldset>
+
+                <!-- Bonificaciones y Horas Extra -->
+                <fieldset
+                    style="border: 2px solid rgba(67, 227, 123, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #43e97b;">Bonificaciones</legend>
+
+                    <div>
+                        <label for="{{ form.bonificaciones.id_for_label }}">Bonificaciones ($)</label>
+                        {{ form.bonificaciones }}
+                        {% if form.bonificaciones.errors %}
+                        <span style="color: #f5576c;">{{ form.bonificaciones.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Bonos, incentivos o pagos adicionales
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.horas_extra.id_for_label }}">Horas Extra (Cantidad)</label>
+                        {{ form.horas_extra }}
+                        {% if form.horas_extra.errors %}
+                        <span style="color: #f5576c;">{{ form.horas_extra.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Número de horas extra trabajadas
+                        </small>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.valor_hora_extra.id_for_label }}">Valor por Hora Extra ($)</label>
+                        {{ form.valor_hora_extra }}
+                        {% if form.valor_hora_extra.errors %}
+                        <span style="color: #f5576c;">{{ form.valor_hora_extra.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Valor que se paga por cada hora extra
+                        </small>
+                    </div>
+                </fieldset>
+
+                <!-- Deducciones -->
+                <fieldset
+                    style="border: 2px solid rgba(245, 87, 108, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <legend style="font-weight: bold; color: #f5576c;">Deducciones</legend>
+
+                    <div>
+                        <label for="{{ form.deducciones.id_for_label }}">Deducciones Generales ($)</label>
+                        {{ form.deducciones }}
+                        {% if form.deducciones.errors %}
+                        <span style="color: #f5576c;">{{ form.deducciones.errors.0 }}</span>
+                        {% endif %}
+                        <small style="display: block; margin-top: 5px; color: #888;">
+                            Seguridad social, salud, pensión, etc. (calculadas automáticamente según configuración)
+                        </small>
+                    </div>
+                </fieldset>
+
+                <!-- Cálculo Automático -->
+                <div style="background: rgba(79, 172, 254, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>ℹ️ Cálculo Automático:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Al guardar, se recalcularán automáticamente los totales</li>
+                        <li><strong>Total Devengado</strong> = Salario Base + Bonificaciones + (Horas Extra × Valor Hora
+                            Extra)</li>
+                        <li><strong>Total Deducciones</strong> = Deducciones Generales + Conceptos de Deducción</li>
+                        <li><strong>Neto a Pagar</strong> = Total Devengado - Total Deducciones</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="buttonformB">Guardar Cambios</button>
+                <a href="{% url 'detalle_periodo_nomina' nomina.periodo.id %}" class="buttonformB"
+                    style="background: rgba(108, 117, 125, 0.2); border-color: #6c757d; text-decoration: none; display: block;">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </section>
+
+    <!-- Conceptos Adicionales -->
+    <section class="seccion">
+        <h3>Conceptos Adicionales</h3>
+
+        {% if conceptos %}
+        <table class="table table--striped">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Concepto</th>
+                    <th>Valor</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for concepto in conceptos %}
+                <tr>
+                    <td>
+                        {% if concepto.tipo == 'DEVENGADO' %}
+                        <span class="badge badge-success">Devengado</span>
+                        {% else %}
+                        <span class="badge badge-danger">Deducción</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ concepto.concepto }}</strong></td>
+                    <td class="{% if concepto.tipo == 'DEVENGADO' %}devengado{% else %}deduccion{% endif %}">
+                        {% if concepto.tipo == 'DEVENGADO' %}+{% else %}-{% endif %}${{ concepto.valor|floatformat:2 }}
+                    </td>
+                    <td>{{ concepto.descripcion|truncatewords:20 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="texto-centro">No hay conceptos adicionales agregados.</p>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'agregar_concepto' nomina.id %}" class="button green">Agregar Concepto Adicional</a>
+        </div>
+    </section>
+
+    {% endif %}
+
+    <!-- Resumen de la Nómina -->
+    <section class="seccion">
+        <h3>📊 Resumen de la Nómina</h3>
+        <table class="table table--bordered">
+            <tbody>
+                <tr>
+                    <td><strong>Salario Base:</strong></td>
+                    <td style="text-align: right;">${{ nomina.salario_base|floatformat:2 }}</td>
+                </tr>
+                {% if nomina.bonificaciones > 0 %}
+                <tr>
+                    <td>Bonificaciones:</td>
+                    <td style="text-align: right; color: #43e97b;">+${{ nomina.bonificaciones|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                {% if nomina.horas_extra > 0 %}
+                <tr>
+                    <td>Horas Extra ({{ nomina.horas_extra }} hrs × ${{ nomina.valor_hora_extra|floatformat:2 }}):</td>
+                    <td style="text-align: right; color: #43e97b;">
+                        +${% widthratio nomina.horas_extra 1 nomina.valor_hora_extra|floatformat:2 %}
+                    </td>
+                </tr>
+                {% endif %}
+
+                <!-- Conceptos de Devengado -->
+                {% for concepto in conceptos %}
+                {% if concepto.tipo == 'DEVENGADO' %}
+                <tr>
+                    <td>{{ concepto.concepto }}:</td>
+                    <td style="text-align: right; color: #43e97b;">+${{ concepto.valor|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+
+                <tr style="background: rgba(67, 227, 123, 0.1); font-weight: bold;">
+                    <td><strong>Total Devengado:</strong></td>
+                    <td style="text-align: right;"><strong style="color: #43e97b;">${{
+                            nomina.total_devengado|floatformat:2 }}</strong></td>
+                </tr>
+
+                <tr style="height: 10px; background: transparent;">
+                    <td colspan="2"></td>
+                </tr>
+
+                {% if nomina.deducciones > 0 %}
+                <tr>
+                    <td>Deducciones Generales:</td>
+                    <td style="text-align: right; color: #f5576c;">-${{ nomina.deducciones|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+
+                <!-- Conceptos de Deducción -->
+                {% for concepto in conceptos %}
+                {% if concepto.tipo == 'DEDUCCION' %}
+                <tr>
+                    <td>{{ concepto.concepto }}:</td>
+                    <td style="text-align: right; color: #f5576c;">-${{ concepto.valor|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+
+                <tr style="background: rgba(245, 87, 108, 0.1); font-weight: bold;">
+                    <td><strong>Total Deducciones:</strong></td>
+                    <td style="text-align: right;"><strong style="color: #f5576c;">-${{
+                            nomina.total_deducciones|floatformat:2 }}</strong></td>
+                </tr>
+
+                <tr style="height: 10px; background: transparent;">
+                    <td colspan="2"></td>
+                </tr>
+
+                <tr
+                    style="background: linear-gradient(135deg, rgba(67, 227, 123, 0.2), rgba(56, 249, 215, 0.2)); font-size: 1.2rem; font-weight: bold;">
+                    <td><strong>NETO A PAGAR:</strong></td>
+                    <td style="text-align: right;"><strong style="color: #43e97b; font-size: 1.4rem;">${{
+                            nomina.neto_pagar|floatformat:2 }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Acciones -->
+    <section class="seccion texto-centro">
+        <h3>Acciones</h3>
+        <div class="btn-group">
+            {% if not nomina.pagado %}
+            <form method="POST" action="{% url 'marcar_pagado' nomina.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="button green">Marcar como Pagado</button>
+            </form>
+            <a href="{% url 'agregar_concepto' nomina.id %}" class="button blue">Agregar Concepto</a>
+            {% else %}
+            <span class="button" style="opacity: 0.6; cursor: not-allowed;">Nómina Pagada</span>
+            {% endif %}
+
+            <a href="{% url 'detalle_empleado_rrhh' nomina.empleado.id %}" class="button">Ver Empleado</a>
+            <a href="{% url 'detalle_periodo_nomina' nomina.periodo.id %}" class="button">Ver Periodo</a>
+            <a href="{% url 'dashboard_rrhh' %}" class="button">Dashboard</a>
+        </div>
+    </section>
+</main>
+{% endblock %}
