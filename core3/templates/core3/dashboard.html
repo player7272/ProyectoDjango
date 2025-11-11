@@ -4,6 +4,39 @@
 {% block title %}Dashboard - Recursos Humanos{% endblock %}
 
 {% block content %}
+<style>
+    .card.stat-card {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card.stat-card a.button {
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+        pointer-events: auto;
+        /* asegura que se pueda hacer clic */
+    }
+
+    .card {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card a.button {
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+        pointer-events: auto;
+    }
+
+    .card::before,
+    .card::after {
+        pointer-events: none;
+        /* evita que decoraciones bloqueen clics */
+    }
+</style>
+
 <main class="main-content">
     <section class="seccion">
         <h2>Dashboard de Recursos Humanos</h2>
@@ -18,21 +51,24 @@
                 <i class='bx bx-file' style="font-size: 3rem; color: #4facfe;"></i>
                 <div class="stat-number" style="color: #4facfe;">{{ solicitudes_pendientes }}</div>
                 <div class="stat-label">Solicitudes Pendientes</div>
-                <a href="{% url 'lista_solicitudes_rrhh' %}?estado=pendientes" class="button blue" style="margin-top: 15px;">Revisar</a>
+                <a href="{% url 'lista_solicitudes_rrhh' %}?estado=pendientes" class="button blue"
+                    style="margin-top: 15px;">Revisar</a>
             </div>
 
             <div class="card stat-card">
                 <i class='bx bx-time' style="font-size: 3rem; color: #ffc107;"></i>
                 <div class="stat-number" style="color: #ffc107;">{{ permisos_pendientes }}</div>
                 <div class="stat-label">Permisos Pendientes</div>
-                <a href="{% url 'lista_permisos_rrhh' %}?estado=pendientes" class="button" style="margin-top: 15px; background: rgba(255, 193, 7, 0.2); border-color: #ffc107;">Revisar</a>
+                <a href="{% url 'lista_permisos_rrhh' %}?estado=pendientes" class="button"
+                    style="margin-top: 15px; background: rgba(255, 193, 7, 0.2); border-color: #ffc107;">Revisar</a>
             </div>
 
             <div class="card stat-card">
                 <i class='bx bx-user-check' style="font-size: 3rem; color: #43e97b;"></i>
                 <div class="stat-number" style="color: #43e97b;">{{ empleados_activos }}</div>
                 <div class="stat-label">Empleados Activos</div>
-                <a href="{% url 'lista_empleados_rrhh' %}?estado=activos" class="button green" style="margin-top: 15px;">Ver</a>
+                <a href="{% url 'lista_empleados_rrhh' %}?estado=activos" class="button green"
+                    style="margin-top: 15px;">Ver</a>
             </div>
 
             <div class="card stat-card">
@@ -99,23 +135,25 @@
                     <td>{{ solicitud.categoria.nombre|default:"N/A" }}</td>
                     <td>
                         {% if solicitud.estado.nombre == 'Pendiente' %}
-                            <span class="badge badge-warning">Pendiente</span>
+                        <span class="badge badge-warning">Pendiente</span>
                         {% elif solicitud.estado.nombre == 'Aprobado' %}
-                            <span class="badge badge-success">Aprobado</span>
+                        <span class="badge badge-success">Aprobado</span>
                         {% elif solicitud.estado.nombre == 'Rechazado' %}
-                            <span class="badge badge-danger">Rechazado</span>
+                        <span class="badge badge-danger">Rechazado</span>
                         {% else %}
-                            <span class="badge badge-secondary">{{ solicitud.estado.nombre }}</span>
+                        <span class="badge badge-secondary">{{ solicitud.estado.nombre }}</span>
                         {% endif %}
                     </td>
                     <td>{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}</td>
                     <td>
                         {% if solicitud.estado.nombre == 'Pendiente' %}
-                            <a href="{% url 'revisar_solicitud' solicitud.id %}" class="button blue" style="padding: 6px 12px; font-size: 13px;">Revisar</a>
+                        <a href="{% url 'revisar_solicitud' solicitud.id %}" class="button blue"
+                            style="padding: 6px 12px; font-size: 13px;">Revisar</a>
                         {% elif solicitud.estado.nombre == 'Aprobado' %}
-                            <a href="{% url 'contratar_empleado' solicitud.id %}" class="button green" style="padding: 6px 12px; font-size: 13px;">Contratar</a>
+                        <a href="{% url 'contratar_empleado' solicitud.id %}" class="button green"
+                            style="padding: 6px 12px; font-size: 13px;">Contratar</a>
                         {% else %}
-                            <span style="color: #888; font-size: 13px;">-</span>
+                        <span style="color: #888; font-size: 13px;">-</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -156,18 +194,19 @@
                     <td>{{ permiso.dias_solicitados }}</td>
                     <td>
                         {% if permiso.estado == 'PENDIENTE' %}
-                            <span class="badge badge-warning">Pendiente</span>
+                        <span class="badge badge-warning">Pendiente</span>
                         {% elif permiso.estado == 'APROBADO' %}
-                            <span class="badge badge-success">Aprobado</span>
+                        <span class="badge badge-success">Aprobado</span>
                         {% else %}
-                            <span class="badge badge-danger">Rechazado</span>
+                        <span class="badge badge-danger">Rechazado</span>
                         {% endif %}
                     </td>
                     <td>
                         {% if permiso.estado == 'PENDIENTE' %}
-                            <a href="{% url 'revisar_permiso' permiso.id %}" class="button blue" style="padding: 6px 12px; font-size: 13px;">Revisar</a>
+                        <a href="{% url 'revisar_permiso' permiso.id %}" class="button blue"
+                            style="padding: 6px 12px; font-size: 13px;">Revisar</a>
                         {% else %}
-                            <span style="color: #888; font-size: 13px;">-</span>
+                        <span style="color: #888; font-size: 13px;">-</span>
                         {% endif %}
                     </td>
                 </tr>

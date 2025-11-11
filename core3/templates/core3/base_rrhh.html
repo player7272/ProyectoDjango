@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,19 +18,23 @@
             padding: 10px;
             border-radius: 6px;
         }
+
         .seccion.msg-success {
             background: rgba(67, 227, 123, 0.2);
         }
+
         .seccion.msg-error {
             background: rgba(245, 87, 108, 0.2);
         }
+
         .seccion.msg-info {
             background: rgba(79, 172, 254, 0.2);
         }
+
         .seccion.msg-warning {
             background: rgba(255, 193, 7, 0.2);
         }
-        
+
         .badge {
             display: inline-block;
             padding: 4px 12px;
@@ -37,51 +42,76 @@
             font-size: 12px;
             font-weight: 600;
         }
-        .badge-success { background: rgba(67, 227, 123, 0.2); color: #43e97b; }
-        .badge-danger { background: rgba(245, 87, 108, 0.2); color: #f5576c; }
-        .badge-warning { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
-        .badge-info { background: rgba(79, 172, 254, 0.2); color: #4facfe; }
-        .badge-secondary { background: rgba(108, 117, 125, 0.2); color: #6c757d; }
-        
+
+        .badge-success {
+            background: rgba(67, 227, 123, 0.2);
+            color: #43e97b;
+        }
+
+        .badge-danger {
+            background: rgba(245, 87, 108, 0.2);
+            color: #f5576c;
+        }
+
+        .badge-warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .badge-info {
+            background: rgba(79, 172, 254, 0.2);
+            color: #4facfe;
+        }
+
+        .badge-secondary {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+        }
+
         .stat-card {
             text-align: center;
             padding: 20px;
         }
+
         .stat-number {
             font-size: 2.5rem;
             font-weight: bold;
             margin: 10px 0;
         }
+
         .stat-label {
             font-size: 0.9rem;
             color: #888;
         }
-        
+
         .decision-radio {
             margin: 10px 0;
         }
+
         .decision-radio input[type="radio"] {
             margin-right: 8px;
         }
-        
+
         .filtros {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
-        
+
         .busqueda-form {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
         }
+
         .busqueda-form input {
             flex: 1;
             min-width: 200px;
         }
     </style>
 </head>
+
 <body class="light-mode">
     <header class="header">
         <div class="header-content">
@@ -108,7 +138,8 @@
     <main>
         {% if messages %}
         {% for message in messages %}
-        <section class="seccion {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% elif message.tags == 'warning' %}msg-warning{% else %}msg-info{% endif %}">
+        <section
+            class="seccion {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% elif message.tags == 'warning' %}msg-warning{% else %}msg-info{% endif %}">
             {{ message }}
         </section>
         {% endfor %}
@@ -175,4 +206,5 @@
         btnTema.addEventListener("mouseleave", () => btnTema.style.transform = "scale(1)");
     </script>
 </body>
+
 </html>
