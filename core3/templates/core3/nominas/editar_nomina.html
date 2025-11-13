@@ -267,8 +267,10 @@
 
                 <tr style="background: rgba(67, 227, 123, 0.1); font-weight: bold;">
                     <td><strong>Total Devengado:</strong></td>
-                    <td style="text-align: right;"><strong style="color: #43e97b;">${{
-                            nomina.total_devengado|floatformat:2 }}</strong></td>
+                    <td style="text-align: right;">
+                        <strong style="color: #43e97b;">${{ nomina.total_devengado|add:0|floatformat:2 }}</strong>
+                    </td>
+
                 </tr>
 
                 <tr style="height: 10px; background: transparent;">
@@ -278,7 +280,7 @@
                 {% if nomina.deducciones > 0 %}
                 <tr>
                     <td>Deducciones Generales:</td>
-                    <td style="text-align: right; color: #f5576c;">-${{ nomina.deducciones|floatformat:2 }}</td>
+                    <td style="text-align: right; color: #f5576c;">- ${{ nomina.deducciones|floatformat:2 }}</td>
                 </tr>
                 {% endif %}
 
@@ -287,15 +289,20 @@
                 {% if concepto.tipo == 'DEDUCCION' %}
                 <tr>
                     <td>{{ concepto.concepto }}:</td>
-                    <td style="text-align: right; color: #f5576c;">-${{ concepto.valor|floatformat:2 }}</td>
+                    <td style="text-align: right; color: #f5576c;">
+                        - ${{ concepto.valor|add:0|floatformat:2 }}
+                    </td>
+
                 </tr>
                 {% endif %}
                 {% endfor %}
 
                 <tr style="background: rgba(245, 87, 108, 0.1); font-weight: bold;">
                     <td><strong>Total Deducciones:</strong></td>
-                    <td style="text-align: right;"><strong style="color: #f5576c;">-${{
-                            nomina.total_deducciones|floatformat:2 }}</strong></td>
+                    <td style="text-align: right;">
+                        <strong style="color: #f5576c;">-${{ nomina.total_deducciones|add:0|floatformat:2 }}</strong>
+                    </td>
+
                 </tr>
 
                 <tr style="height: 10px; background: transparent;">
@@ -305,8 +312,12 @@
                 <tr
                     style="background: linear-gradient(135deg, rgba(67, 227, 123, 0.2), rgba(56, 249, 215, 0.2)); font-size: 1.2rem; font-weight: bold;">
                     <td><strong>NETO A PAGAR:</strong></td>
-                    <td style="text-align: right;"><strong style="color: #43e97b; font-size: 1.4rem;">${{
-                            nomina.neto_pagar|floatformat:2 }}</strong></td>
+                    <td style="text-align: right;">
+                        <strong style="color: #43e97b; font-size: 1.4rem;">
+                            ${{ nomina.neto_pagar|add:0|floatformat:2 }}
+                        </strong>
+                    </td>
+
                 </tr>
             </tbody>
         </table>

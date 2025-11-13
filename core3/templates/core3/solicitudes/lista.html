@@ -37,7 +37,7 @@
         {% if solicitudes %}
         <div style="overflow-x: auto;">
             <table class="table table--striped table--hover">
-                <thead>
+                <tbody>
                     <tr>
                         <th>#</th>
                         <th>Nombre Completo</th>
@@ -49,8 +49,6 @@
                         <th>Fecha Solicitud</th>
                         <th>Acciones</th>
                     </tr>
-                </thead>
-                <tbody>
                     {% for solicitud in solicitudes %}
                     <tr>
                         <td>{{ forloop.counter }}</td>

@@ -40,29 +40,35 @@ def aplicar(request):
     if request.method == 'POST':
         persona_form = PersonaForm(request.POST)
         solicitud_form = SolicitudForm(request.POST)
-        categoria_id = request.POST.get('categoria')  # <-- capturamos la categoría seleccionada
+        categoria_id = request.POST.get('categoria')
 
         if persona_form.is_valid() and solicitud_form.is_valid() and categoria_id:
             correo = persona_form.cleaned_data['correo']
             cedula = persona_form.cleaned_data['cedula']
 
-            # Buscar persona existente por correo o cédula
             persona = Persona.objects.filter(correo=correo, cedula=cedula).first()
-
             if not persona:
-                persona = persona_form.save(commit=False)
-                persona.save()
+                persona = persona_form.save()
 
-            # Crear solicitud asociada
             solicitud = solicitud_form.save(commit=False)
             solicitud.persona = persona
-            solicitud.categoria_id = categoria_id  # <-- asignamos la categoría
+            solicitud.categoria_id = categoria_id
             solicitud.save()
 
-            print("Solicitud registrada correctamente")
             return redirect('index')
-    
+
+        # ❌ Si hay errores, volvemos a mostrar el formulario con los mensajes
+        categorias = Categoria.objects.all()
+        context = {
+            'categorias': categorias,
+            'persona_form': persona_form,      # <-- formulario con errores
+            'solicitud_form': solicitud_form,  # <-- formulario con errores
+            'mostrar_resultado_busqueda': False
+        }
+        return render(request, 'index.html', context)
+
     return redirect('index')
+
 
 
 def estado(request):

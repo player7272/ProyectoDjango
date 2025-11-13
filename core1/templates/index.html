@@ -107,34 +107,66 @@
                 <form method="POST" action="{% url 'aplicar' %}" class="form">
                     {% csrf_token %}
 
+                    <!-- Errores generales (no asociados a un campo específico) -->
                     {{ persona_form.non_field_errors }}
                     {{ solicitud_form.non_field_errors }}
 
+                    <!-- Campo: Nombre -->
                     <label for="{{ persona_form.nombre.id_for_label }}">Nombre:</label>
                     {{ persona_form.nombre }}
+                    {% for error in persona_form.nombre.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
 
+                    <!-- Campo: Apellido -->
                     <label for="{{ persona_form.apellido.id_for_label }}">Apellido:</label>
                     {{ persona_form.apellido }}
+                    {% for error in persona_form.apellido.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
 
+                    <!-- Campo: Cédula -->
                     <label for="{{ persona_form.cedula.id_for_label }}">Cédula:</label>
                     {{ persona_form.cedula }}
+                    {% for error in persona_form.cedula.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
 
+                    <!-- Campo: Correo -->
                     <label for="{{ persona_form.correo.id_for_label }}">Correo:</label>
                     {{ persona_form.correo }}
+                    {% for error in persona_form.correo.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
 
+                    <!-- Campo: Mensaje -->
                     <label for="{{ solicitud_form.mensaje.id_for_label }}">Capacidades y experiencia:</label>
                     {{ solicitud_form.mensaje }}
+                    {% for error in solicitud_form.mensaje.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
 
+                    <!-- Campo: Categoría -->
                     <label for="categoria">Categoría:</label>
                     <select name="categoria" id="categoria" required>
                         <option value="">Selecciona una categoría</option>
                         {% for categoria in categorias %}
-                        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                        <option value="{{ categoria.id }}" {% if request.POST.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+
+
                         {% endfor %}
                     </select>
 
+                    <!-- Si deseas mostrar un error manual si no selecciona categoría -->
+                    {% if not request.POST.categoria and request.method == "POST" %}
+                    <div class="error-message">Debes seleccionar una categoría.</div>
+                    {% endif %}
+
                     <button type="submit" class="buttonformB">Enviar solicitud</button>
                 </form>
+
             </div>
         </div>
     </section>

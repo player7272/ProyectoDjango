@@ -301,6 +301,19 @@ def revisar_permiso(request, permiso_id):
     
     return render(request, 'core3/permisos/revisar.html', context)
 
+@login_required
+@user_passes_test(es_rrhh)
+def cerrar_periodo(request, periodo_id):
+    """Cerrar un periodo de nómina para que no se puedan hacer más cambios"""
+    periodo = get_object_or_404(PeriodoNomina, id=periodo_id)
+    if request.method == 'POST':
+        periodo.cerrado = True
+        periodo.save()
+        messages.success(request, f'Periodo {periodo} cerrado exitosamente.')
+        return redirect('detalle_periodo_nomina', periodo_id=periodo.id)
+
+    context = {'periodo': periodo}
+    return render(request, 'core3/nominas/confirmar_cierre.html', context)
 
 # ========== GESTIÓN DE EMPLEADOS ==========
 @login_required
@@ -501,23 +514,62 @@ def lista_nominas_rrhh(request):
     context = {'periodos': periodos}
     return render(request, 'core3/nominas/lista_periodos.html', context)
 
-
 @login_required
 @user_passes_test(es_rrhh)
 def crear_periodo_nomina(request):
-    """Crear un nuevo periodo de nómina"""
+    """Crear un nuevo periodo de nómina y generar automáticamente las nóminas"""
     if request.method == 'POST':
         form = PeriodoNominaForm(request.POST)
-        if form.is_valid():
+        if form.is_valid():  # 👈 debe estar dentro del bloque POST
             periodo = form.save()
-            messages.success(request, f'Periodo de nómina creado: {periodo}')
+
+            # ✅ GENERAR AUTOMÁTICAMENTE LAS NÓMINAS
+            empleados_activos = Empleado.objects.filter(activo=True, categoria__isnull=False)
+            nominas_creadas = 0
+
+            # Obtener configuración de nómina
+            config = ConfiguracionNomina.objects.filter(activo=True).first()
+
+            for empleado in empleados_activos:
+                salario_base = empleado.categoria.salario_base
+
+                # Calcular deducciones básicas si hay configuración
+                deducciones = Decimal('0.00')
+                if config:
+                    deducciones = (
+                        salario_base * (config.porcentaje_seguridad_social / 100) +
+                        salario_base * (config.porcentaje_salud / 100) +
+                        salario_base * (config.porcentaje_pension / 100)
+                    )
+
+                Nomina.objects.create(
+                    empleado=empleado,
+                    periodo=periodo,
+                    salario_base=salario_base,
+                    deducciones=deducciones,
+                    bonificaciones=Decimal('0.00'),
+                    horas_extra=Decimal('0.00'),
+                    valor_hora_extra=Decimal('0.00'),
+                    total_devengado=salario_base,
+                    total_deducciones=deducciones,
+                    neto_pagar=salario_base - deducciones,
+                    pagado=False
+                )
+
+                nominas_creadas += 1
+
+            messages.success(
+                request,
+                f'✅ Periodo de nómina creado: {periodo}. '
+                f'Se generaron {nominas_creadas} nóminas automáticamente.'
+            )
             return redirect('detalle_periodo_nomina', periodo_id=periodo.id)
     else:
+        # 👇 Esto se ejecuta si el método es GET (cuando entras al formulario)
         form = PeriodoNominaForm()
-    
+
     context = {'form': form}
     return render(request, 'core3/nominas/crear_periodo.html', context)
-
 
 @login_required
 @user_passes_test(es_rrhh)

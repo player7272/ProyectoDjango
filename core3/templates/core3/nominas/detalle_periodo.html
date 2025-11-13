@@ -1,0 +1,268 @@
+{% extends 'core3/base_rrhh.html' %}
+{% load static %}
+{% block title %}Detalle del Periodo - Recursos Humanos{% endblock %}
+{% block content %}
+<main class="main-content">
+    <section class="seccion texto-centro">
+        <h2>📅 Detalle del Periodo de Nómina</h2>
+        <p>{{ periodo }}</p>
+    </section><!-- Información del Periodo -->
+    <section class="seccion">
+        <h3>Información del Periodo</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">📊 Tipo</h4>
+                <p class="card-content" style="font-size: 1.5rem; font-weight: bold; color: #4facfe;">
+                    {{ periodo.get_tipo_display }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📅 Fechas</h4>
+                <p class="card-content">
+                    <strong>Inicio:</strong> {{ periodo.fecha_inicio|date:"d/m/Y" }}<br>
+                    <strong>Fin:</strong> {{ periodo.fecha_fin|date:"d/m/Y" }}<br>
+                    <strong>Pago:</strong> {{ periodo.fecha_pago|date:"d/m/Y" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📊 Estado</h4>
+                <p class="card-content">
+                    {% if periodo.cerrado %}
+                    <span style="font-size: 1.5rem; color: #f5576c;">🔒 Cerrado</span>
+                    {% else %}
+                    <span style="font-size: 1.5rem; color: #43e97b;">🔓 Abierto</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">👥 Nóminas</h4>
+                <p class="card-content" style="font-size: 2rem; font-weight: bold; color: #667eea;">
+                    {{ nominas|length }}
+                </p>
+                <p class="card-content">Total de nóminas procesadas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resumen Financiero -->
+    <section class="seccion">
+        <h3>💰 Resumen Financiero</h3>
+        <div class="cards-container">
+            <div class="card stat-card">
+                <h4 class="card-title">💵 Total Devengado</h4>
+                <div class="stat-number" style="color: #43e97b;">
+                    ${{ total_devengado|floatformat:2 }}
+                </div>
+                <div class="stat-label">Suma de todos los devengos</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">📉 Total Deducciones</h4>
+                <div class="stat-number" style="color: #f5576c;">
+                    ${{ total_deducciones|floatformat:2 }}
+                </div>
+                <div class="stat-label">Suma de todas las deducciones</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">💰 Neto a Pagar</h4>
+                <div class="stat-number" style="color: #4facfe;">
+                    ${{ total_neto|floatformat:2 }}
+                </div>
+                <div class="stat-label">Total a pagar a empleados</div>
+            </div>
+
+            <div class="card stat-card">
+                <h4 class="card-title">✅ Pagadas</h4>
+                <div class="stat-number" style="color: #43e97b;">
+                    {{ nominas_pagadas }}
+                </div>
+                <div class="stat-label">de {{ nominas|length }} nóminas</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acciones Rápidas -->
+    {% if not periodo.cerrado %}
+    <section class="seccion texto-centro">
+        <h3>⚡ Acciones Rápidas</h3>
+        <div class="btn-group">
+            <a href="{% url 'generar_nominas' periodo.id %}" class="button green">
+                🔄 Generar/Actualizar Nóminas
+            </a>
+            <form method="POST" action="{% url 'cerrar_periodo' periodo.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="button red"
+                    onclick="return confirm('¿Estás seguro de cerrar este periodo? No se podrán hacer más cambios.')">
+                    🔒 Cerrar Periodo
+                </button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Lista de Nóminas -->
+    <section class="seccion">
+        <h3>📋 Nóminas del Periodo</h3>
+
+        {% if nominas %}
+        <div style="overflow-x: auto;">
+            <table class="table table--striped table--hover">
+                <tbody>
+                    <tr>
+                        <th>#</th>
+                        <th>Empleado</th>
+                        <th>Cédula</th>
+                        <th>Categoría</th>
+                        <th>Salario Base</th>
+                        <th>Bonificaciones</th>
+                        <th>Deducciones</th>
+                        <th>Neto a Pagar</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    {% for nomina in nominas %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <strong>{{ nomina.empleado.nombre }} {{ nomina.empleado.apellido }}</strong>
+                        </td>
+                        <td>{{ nomina.empleado.cedula }}</td>
+                        <td>{{ nomina.empleado.categoria.nombre|default:"N/A" }}</td>
+                        <td>${{ nomina.salario_base|floatformat:2 }}</td>
+                        <td style="color: #43e97b;">+${{ nomina.bonificaciones|floatformat:2 }}</td>
+                        <td style="color: #f5576c;">-${{ nomina.total_deducciones|floatformat:2 }}</td>
+                        <td>
+                            <strong style="color: #4facfe; font-size: 1.1rem;">
+                                ${{ nomina.neto_pagar|floatformat:2 }}
+                            </strong>
+                        </td>
+                        <td>
+                            {% if nomina.pagado %}
+                            <span class="badge badge-success">✓ Pagado</span>
+                            {% else %}
+                            <span class="badge badge-warning">○ Pendiente</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'editar_nomina' nomina.id %}" class="button blue"
+                                style="padding: 6px 12px; font-size: 13px;">
+                                Ver/Editar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background: rgba(102, 126, 234, 0.1);">
+                        <td colspan="4" style="text-align: right; padding-right: 20px;">TOTALES:</td>
+                        <td>${{ total_salarios|floatformat:2 }}</td>
+                        <td style="color: #43e97b;">+${{ total_bonificaciones|floatformat:2 }}</td>
+                        <td style="color: #f5576c;">-${{ total_deducciones|floatformat:2 }}</td>
+                        <td>
+                            <strong style="color: #4facfe; font-size: 1.2rem;">
+                                ${{ total_neto|floatformat:2 }}
+                            </strong>
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Estadísticas Adicionales -->
+        <div class="cards-container" style="margin-top: 30px;">
+            <div class="card">
+                <h4 class="card-title">📊 Estadísticas de Pago</h4>
+                <p class="card-content">
+                    <strong>Pagadas:</strong> {{ nominas_pagadas }} ({{ porcentaje_pagadas }}%)<br>
+                    <strong>Pendientes:</strong> {{ nominas_pendientes }} ({{ porcentaje_pendientes }}%)
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💵 Promedio por Empleado</h4>
+                <p class="card-content" style="font-size: 1.5rem; font-weight: bold; color: #4facfe;">
+                    ${{ promedio_neto|floatformat:2 }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📈 Mayor Nómina</h4>
+                <p class="card-content">
+                    {% if nomina_mayor %}
+                    <strong>{{ nomina_mayor.empleado.nombre }}</strong><br>
+                    ${{ nomina_mayor.neto_pagar|floatformat:2 }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📉 Menor Nómina</h4>
+                <p class="card-content">
+                    {% if nomina_menor %}
+                    <strong>{{ nomina_menor.empleado.nombre }}</strong><br>
+                    ${{ nomina_menor.neto_pagar|floatformat:2 }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="texto-centro">
+            <p style="font-size: 1.2rem; margin: 40px 0;">
+                No hay nóminas generadas para este periodo.
+            </p>
+            <a href="{% url 'generar_nominas' periodo.id %}" class="button green" style="font-size: 1.1rem;">
+                🔄 Generar Nóminas Ahora
+            </a>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Información Adicional -->
+    <section class="seccion">
+        <h3>ℹ️ Información Importante</h3>
+        <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
+            <h4 style="margin-top: 0;">Sobre este periodo:</h4>
+            <ul style="line-height: 1.8;">
+                <li><strong>Duración:</strong> {{ dias_periodo }} días</li>
+                <li><strong>Empleados incluidos:</strong> {{ nominas|length }}</li>
+                <li><strong>Estado:</strong> {% if periodo.cerrado %}Cerrado - No se pueden hacer cambios{% else
+                    %}Abierto - Puedes editar las nóminas{% endif %}</li>
+                <li><strong>Total a desembolsar:</strong> ${{ total_neto|floatformat:2 }}</li>
+            </ul>
+
+            {% if not periodo.cerrado %}
+            <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <strong>⚠️ Recordatorio:</strong>
+                <p style="margin-top: 10px;">
+                    Antes de cerrar el periodo, asegúrate de:<br>
+                    • Revisar todas las nóminas<br>
+                    • Verificar bonificaciones y deducciones<br>
+                    • Confirmar que todos los valores son correctos<br>
+                    • Marcar como pagadas las nóminas procesadas
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Botones de Navegación -->
+    <section class="seccion texto-centro">
+        <h3>Navegación</h3>
+        <div class="btn-group">
+            <a href="{% url 'lista_nominas_rrhh' %}" class="button">Ver Todos los Periodos</a>
+            <a href="{% url 'crear_periodo_nomina' %}" class="button blue">Crear Nuevo Periodo</a>
+            <a href="{% url 'dashboard_rrhh' %}" class="button green">Ir al Dashboard</a>
+        </div>
+    </section>
+    </main>
+{% endblock %}

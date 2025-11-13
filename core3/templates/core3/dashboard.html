@@ -115,7 +115,7 @@
         <h3>Últimas Solicitudes de Empleo</h3>
         {% if ultimas_solicitudes %}
         <table class="table table--striped">
-            <thead>
+            <tbody>
                 <tr>
                     <th>Nombre</th>
                     <th>Cédula</th>
@@ -125,8 +125,6 @@
                     <th>Fecha</th>
                     <th>Acciones</th>
                 </tr>
-            </thead>
-            <tbody>
                 {% for solicitud in ultimas_solicitudes %}
                 <tr>
                     <td>{{ solicitud.persona.nombre }} {{ solicitud.persona.apellido }}</td>
