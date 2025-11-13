@@ -8,17 +8,6 @@
 
 <main class="main-content smooth-scroll">
 
-    <!-- NAVEGACIÓN FLOTANTE -->
-    <!-- <div class="nav-links">
-        <a href="#hero" class="nav-link" title="Inicio"></a>
-        <a href="#sobre" class="nav-link" title="Sobre nosotros"></a>
-        <a href="#servicios" class="nav-link" title="Servicios"></a>
-        <a href="#categorias" class="nav-link" title="Categorías"></a>
-        <a href="#aplicar" class="nav-link" title="Aplicar"></a>
-        <a href="#consultar" class="nav-link" title="Consultar"></a>
-    </div> -->
-
-    <!-- HERO SECTION -->
     <section id="hero" class="hero-section section-container">
         <div class="hero-content">
             <h1>BMS Soluciones Tecnológicas</h1>
@@ -33,7 +22,6 @@
         </div>
     </section>
 
-    <!-- SOBRE NOSOTROS -->
     <section id="sobre" class="seccion section-container">
         <h2 class="section-title">Sobre nosotros</h2>
         <p>
@@ -49,7 +37,6 @@
         </p>
     </section>
 
-    <!-- SERVICIOS -->
     <section id="servicios" class="seccion section-container">
         <h2 class="section-title">Nuestros servicios</h2>
         <div class="services-grid">
@@ -73,7 +60,6 @@
         </div>
     </section>
 
-    <!-- CATEGORÍAS -->
     <section id="categorias" class="seccion section-container">
         <h2 class="section-title">Categorías disponibles</h2>
         <p class="texto-centro">Conoce las áreas en las que puedes desarrollarte profesionalmente</p>
@@ -94,7 +80,6 @@
         {% endif %}
     </section>
 
-    <!-- FORMULARIO DE APLICACIÓN -->
     <section id="aplicar" class="section-container">
         <div class="seccion">
             <h2 class="section-title">Postúlate ahora</h2>
@@ -107,46 +92,39 @@
                 <form method="POST" action="{% url 'aplicar' %}" class="form">
                     {% csrf_token %}
 
-                    <!-- Errores generales (no asociados a un campo específico) -->
                     {{ persona_form.non_field_errors }}
                     {{ solicitud_form.non_field_errors }}
 
-                    <!-- Campo: Nombre -->
                     <label for="{{ persona_form.nombre.id_for_label }}">Nombre:</label>
                     {{ persona_form.nombre }}
                     {% for error in persona_form.nombre.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
 
-                    <!-- Campo: Apellido -->
                     <label for="{{ persona_form.apellido.id_for_label }}">Apellido:</label>
                     {{ persona_form.apellido }}
                     {% for error in persona_form.apellido.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
 
-                    <!-- Campo: Cédula -->
                     <label for="{{ persona_form.cedula.id_for_label }}">Cédula:</label>
                     {{ persona_form.cedula }}
                     {% for error in persona_form.cedula.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
 
-                    <!-- Campo: Correo -->
                     <label for="{{ persona_form.correo.id_for_label }}">Correo:</label>
                     {{ persona_form.correo }}
                     {% for error in persona_form.correo.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
 
-                    <!-- Campo: Mensaje -->
                     <label for="{{ solicitud_form.mensaje.id_for_label }}">Capacidades y experiencia:</label>
                     {{ solicitud_form.mensaje }}
                     {% for error in solicitud_form.mensaje.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
 
-                    <!-- Campo: Categoría -->
                     <label for="categoria">Categoría:</label>
                     <select name="categoria" id="categoria" required>
                         <option value="">Selecciona una categoría</option>
@@ -159,7 +137,6 @@
                         {% endfor %}
                     </select>
 
-                    <!-- Si deseas mostrar un error manual si no selecciona categoría -->
                     {% if not request.POST.categoria and request.method == "POST" %}
                     <div class="error-message">Debes seleccionar una categoría.</div>
                     {% endif %}
@@ -170,8 +147,6 @@
             </div>
         </div>
     </section>
-
-    <!-- CONSULTAR ESTADO -->
     <section id="consultar" class="section-container">
         <div class="seccion">
             <h2 class="section-title">Consulta tu solicitud</h2>
@@ -239,7 +214,6 @@
         </div>
     </section>
 
-    <!-- FOOTER INFO -->
     <section class="seccion texto-centro" style="margin-top: 80px;">
         <h3>¿Listo para dar el siguiente paso?</h3>
         <p>Contáctanos y descubre cómo podemos ayudarte a transformar digitalmente tu empresa.</p>
@@ -252,7 +226,6 @@
 </main>
 
 <script>
-    // Activar navegación de puntos según scroll
     window.addEventListener('scroll', () => {
         const sections = document.querySelectorAll('.section-container');
         const navLinks = document.querySelectorAll('.nav-link');
@@ -274,7 +247,6 @@
         });
     });
 
-    // Smooth scroll para los enlaces
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();

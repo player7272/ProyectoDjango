@@ -37,7 +37,6 @@ class Solicitud(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Asignar estado "Pendiente" si no se define
         if not self.estado:
             pendiente, _ = Estado.objects.get_or_create(nombre="Pendiente")
             self.estado = pendiente

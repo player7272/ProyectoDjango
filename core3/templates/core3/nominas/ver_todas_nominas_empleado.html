@@ -10,7 +10,6 @@
         <p>Historial completo de nóminas procesadas</p>
     </section>
 
-    <!-- Información del Empleado -->
     <section class="seccion">
         <div class="cards-container">
             <div class="card">
@@ -46,7 +45,6 @@
         </div>
     </section>
 
-    <!-- Tabla de Nóminas -->
     <section class="seccion">
         {% if nominas %}
         <div style="overflow-x: auto;">
@@ -114,7 +112,6 @@
             </table>
         </div>
 
-        <!-- Estadísticas Adicionales -->
         <div class="cards-container" style="margin-top: 30px;">
             <div class="card">
                 <h4 class="card-title">📊 Estadísticas por Estado</h4>
@@ -167,7 +164,6 @@
         {% endif %}
     </section>
 
-    <!-- Gráfico de Evolución (Concepto) -->
     {% if nominas %}
     <section class="seccion">
         <h3>📈 Evolución de Nóminas</h3>
@@ -177,7 +173,6 @@
                 <small>(Esta funcionalidad puede implementarse con bibliotecas de gráficos como Chart.js)</small>
             </p>
             
-            <!-- Representación textual de tendencia -->
             <div style="margin-top: 20px;">
                 <h4>Últimas 5 Nóminas:</h4>
                 {% for nomina in nominas|slice:":5" %}
@@ -191,7 +186,7 @@
     </section>
     {% endif %}
 
-    <!-- Acciones -->
+
     <section class="seccion texto-centro">
         <h3>Acciones Disponibles</h3>
         <div class="btn-group">

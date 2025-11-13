@@ -3,21 +3,15 @@ from .forms import PersonaForm, SolicitudForm
 from .models import Categoria, Persona
 
 def inicio(request):
-    """Vista unificada que contiene todo el contenido en una sola página"""
-    
-    # Obtener todas las categorías para mostrarlas
     categorias = Categoria.objects.all()
     
-    # Inicializar formularios
     persona_form = PersonaForm()
     solicitud_form = SolicitudForm()
     
-    # Variables para el estado de solicitud
     persona_estado = None
     solicitudes = None
     error_estado = None
     
-    # Variables de control
     mostrar_gracias = False
     mostrar_resultado_busqueda = False
     
@@ -36,7 +30,6 @@ def inicio(request):
 
 
 def aplicar(request):
-    """Procesa el formulario de aplicación"""
     if request.method == 'POST':
         persona_form = PersonaForm(request.POST)
         solicitud_form = SolicitudForm(request.POST)
@@ -57,12 +50,11 @@ def aplicar(request):
 
             return redirect('index')
 
-        # ❌ Si hay errores, volvemos a mostrar el formulario con los mensajes
         categorias = Categoria.objects.all()
         context = {
             'categorias': categorias,
-            'persona_form': persona_form,      # <-- formulario con errores
-            'solicitud_form': solicitud_form,  # <-- formulario con errores
+            'persona_form': persona_form, 
+            'solicitud_form': solicitud_form, 
             'mostrar_resultado_busqueda': False
         }
         return render(request, 'index.html', context)
@@ -72,19 +64,15 @@ def aplicar(request):
 
 
 def estado(request):
-    """Procesa la búsqueda de estado de solicitudes"""
     if request.method == "POST":
         correo = request.POST.get("email")
         cedula = request.POST.get("cedula")
 
         try:
-            # Buscar persona con esos datos
             persona = Persona.objects.get(correo=correo, cedula=cedula)
 
-            # Obtener todas sus solicitudes relacionadas
             solicitudes = persona.solicitudes.all().select_related('estado')
 
-            # Renderizar con los resultados
             categorias = Categoria.objects.all()
             context = {
                 'categorias': categorias,
@@ -111,7 +99,6 @@ def estado(request):
     return redirect('index')
 
 
-# Mantener vistas antiguas por compatibilidad (pueden eliminarse después)
 def categorias(request):
     return redirect('index')
 

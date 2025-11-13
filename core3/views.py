@@ -15,16 +15,12 @@ from .forms import (
     ConfiguracionNominaForm
 )
 
-# Decorador para verificar si el usuario es staff (RRHH)
 def es_rrhh(user):
     return user.is_staff or user.is_superuser
 
-# ========== DASHBOARD ==========
 @login_required
 @user_passes_test(es_rrhh)
 def dashboard_rrhh(request):
-    """Dashboard principal de Recursos Humanos"""
-    # Estadísticas generales
     solicitudes_pendientes = Solicitud.objects.filter(
         estado__nombre='Pendiente'
     ).count()
@@ -36,11 +32,9 @@ def dashboard_rrhh(request):
     empleados_activos = Empleado.objects.filter(activo=True).count()
     empleados_totales = Empleado.objects.count()
     
-    # Últimas actividades
     ultimas_solicitudes = Solicitud.objects.all().order_by('-fecha_creacion')[:5]
     ultimos_permisos = Permiso.objects.all().order_by('-fecha_solicitud')[:5]
     
-    # Nóminas pendientes de pago
     nominas_pendientes = Nomina.objects.filter(pagado=False).count()
     
     context = {
@@ -56,11 +50,9 @@ def dashboard_rrhh(request):
     return render(request, 'core3/dashboard.html', context)
 
 
-# ========== GESTIÓN DE SOLICITUDES ==========
 @login_required
 @user_passes_test(es_rrhh)
 def lista_solicitudes(request):
-    """Lista todas las solicitudes de empleo"""
     filtro = request.GET.get('estado', 'todas')
     
     solicitudes = Solicitud.objects.all().select_related('persona', 'estado', 'categoria')
@@ -85,10 +77,9 @@ def lista_solicitudes(request):
 @login_required
 @user_passes_test(es_rrhh)
 def revisar_solicitud(request, solicitud_id):
-    """Revisar y aprobar/rechazar una solicitud"""
     solicitud = get_object_or_404(Solicitud, id=solicitud_id)
     
-    # Crear o obtener proceso de contratación
+
     proceso, created = ProcesoContratacion.objects.get_or_create(
         solicitud=solicitud,
         defaults={'revisado_por': request.user}
@@ -104,7 +95,6 @@ def revisar_solicitud(request, solicitud_id):
             
             if decision == 'APROBAR':
                 proceso.estado_proceso = 'APROBADO'
-                # Cambiar estado de la solicitud
                 estado_aprobado, _ = Estado.objects.get_or_create(nombre='Aprobado')
                 solicitud.estado = estado_aprobado
                 solicitud.save()
@@ -136,7 +126,6 @@ def revisar_solicitud(request, solicitud_id):
 @login_required
 @user_passes_test(es_rrhh)
 def contratar_empleado(request, solicitud_id):
-    """Crear empleado y usuario desde una solicitud aprobada"""
     solicitud = get_object_or_404(Solicitud, id=solicitud_id)
     proceso = get_object_or_404(ProcesoContratacion, solicitud=solicitud)
     
@@ -149,7 +138,6 @@ def contratar_empleado(request, solicitud_id):
         return redirect('detalle_empleado_rrhh', empleado_id=proceso.empleado_creado.id)
     
     if request.method == 'POST':
-        # Pre-cargar datos de la solicitud
         datos_iniciales = {
             'nombre': solicitud.persona.nombre,
             'apellido': solicitud.persona.apellido,
@@ -161,17 +149,13 @@ def contratar_empleado(request, solicitud_id):
         form = ContratacionForm(request.POST, initial=datos_iniciales)
         
         if form.is_valid():
-            # Crear usuario (correo como username, cédula como contraseña)
             username = form.cleaned_data['correo']
             password = form.cleaned_data['cedula']
             
             try:
-                # Verificar si ya existe un usuario con ese correo
                 if User.objects.filter(username=username).exists():
                     messages.error(request, 'Ya existe un usuario con ese correo.')
                     return render(request, 'core3/solicitudes/contratar.html', {'form': form, 'solicitud': solicitud})
-                
-                # Crear usuario
                 user = User.objects.create_user(
                     username=username,
                     email=username,
@@ -180,14 +164,12 @@ def contratar_empleado(request, solicitud_id):
                     last_name=form.cleaned_data['apellido']
                 )
                 
-                # Crear empleado
                 empleado = form.save(commit=False)
                 empleado.user = user
                 empleado.activo = True
                 empleado.datos_completados = True
                 empleado.save()
                 
-                # Actualizar proceso de contratación
                 proceso.estado_proceso = 'CONTRATADO'
                 proceso.empleado_creado = empleado
                 proceso.save()
@@ -204,7 +186,6 @@ def contratar_empleado(request, solicitud_id):
                 messages.error(request, f'Error al crear el empleado: {str(e)}')
     
     else:
-        # Pre-cargar el formulario con datos de la solicitud
         form = ContratacionForm(initial={
             'nombre': solicitud.persona.nombre,
             'apellido': solicitud.persona.apellido,
@@ -222,7 +203,6 @@ def contratar_empleado(request, solicitud_id):
     return render(request, 'core3/solicitudes/contratar.html', context)
 
 
-# ========== GESTIÓN DE PERMISOS ==========
 @login_required
 @user_passes_test(es_rrhh)
 def lista_permisos(request):
@@ -240,13 +220,11 @@ def lista_permisos(request):
     
     permisos = permisos.order_by('-fecha_solicitud')
 
-    # 🔹 Cálculos de estadísticas para la tabla
     total_permisos = Permiso.objects.count()
     permisos_pendientes = Permiso.objects.filter(estado='PENDIENTE').count()
     permisos_aprobados = Permiso.objects.filter(estado='APROBADO').count()
     permisos_rechazados = Permiso.objects.filter(estado='RECHAZADO').count()
 
-    # 🔹 Evitar división por cero
     if total_permisos > 0:
         porcentaje_permisos_pendientes = round((permisos_pendientes / total_permisos) * 100, 2)
         porcentaje_permisos_aprobados = round((permisos_aprobados / total_permisos) * 100, 2)
@@ -272,7 +250,6 @@ def lista_permisos(request):
 @login_required
 @user_passes_test(es_rrhh)
 def revisar_permiso(request, permiso_id):
-    """Revisar y aprobar/rechazar un permiso de empleado"""
     permiso = get_object_or_404(Permiso, id=permiso_id)
     
     if request.method == 'POST':
@@ -315,11 +292,9 @@ def cerrar_periodo(request, periodo_id):
     context = {'periodo': periodo}
     return render(request, 'core3/nominas/confirmar_cierre.html', context)
 
-# ========== GESTIÓN DE EMPLEADOS ==========
 @login_required
 @user_passes_test(es_rrhh)
 def lista_empleados(request):
-    """Lista todos los empleados"""
     busqueda = request.GET.get('buscar', '')
     filtro = request.GET.get('estado', 'todos')
     
@@ -352,24 +327,18 @@ def lista_empleados(request):
 @login_required
 @user_passes_test(es_rrhh)
 def detalle_empleado_rrhh(request, empleado_id):
-    """Ver detalle completo de un empleado"""
     empleado = get_object_or_404(Empleado, id=empleado_id)
     
-    # --- PERMISOS ---
-    # Primero obtenemos todos los permisos ordenados (sin cortar aún)
     permisos_qs = empleado.permisos.all().order_by('-fecha_solicitud')
 
-    # Contamos los aprobados antes del slice (para evitar el error)
     permisos_aprobados = permisos_qs.filter(estado='APROBADO').count()
 
-    # Ahora sí tomamos los 10 más recientes para mostrar en la tabla
     permisos = permisos_qs[:10]
 
-    # --- NÓMINAS ---
-    nominas_todas = empleado.nominas.all()
-    nominas = nominas_todas[:10]  # las 10 más recientes para mostrar
 
-    # Cálculos de estadísticas
+    nominas_todas = empleado.nominas.all()
+    nominas = nominas_todas[:10] 
+
     total_pagado = (
         nominas_todas.filter(pagado=True)
         .aggregate(Sum('neto_pagar'))['neto_pagar__sum'] or Decimal('0.00')
@@ -379,7 +348,6 @@ def detalle_empleado_rrhh(request, empleado_id):
     )
     nominas_pendientes = nominas_todas.filter(pagado=False).count()
 
-    # --- PERIODOS DISPONIBLES ---
     periodos_con_nomina = nominas_todas.values_list('periodo_id', flat=True)
     periodos_disponibles = list(
         PeriodoNomina.objects
@@ -387,7 +355,6 @@ def detalle_empleado_rrhh(request, empleado_id):
         .order_by('-fecha_inicio')[:5]
     )
 
-    # --- CONTEXTO ---
     context = {
         'empleado': empleado,
         'nominas': nominas,
@@ -404,13 +371,10 @@ def detalle_empleado_rrhh(request, empleado_id):
 @login_required
 @user_passes_test(es_rrhh)
 def ver_todas_nominas_empleado(request, empleado_id):
-    """Ver todas las nóminas de un empleado específico"""
     empleado = get_object_or_404(Empleado, id=empleado_id)
     
-    # Obtener todas las nóminas del empleado, ordenadas por fecha del periodo
     nominas = Nomina.objects.filter(empleado=empleado).select_related('periodo').order_by('-periodo__fecha_inicio')
 
-    # Totales de referencia
     total_devengado = nominas.aggregate(Sum('total_devengado'))['total_devengado__sum'] or 0
     total_deducciones = nominas.aggregate(Sum('total_deducciones'))['total_deducciones__sum'] or 0
     total_pagado = nominas.filter(pagado=True).aggregate(Sum('neto_pagar'))['neto_pagar__sum'] or 0
@@ -428,7 +392,6 @@ def ver_todas_nominas_empleado(request, empleado_id):
 @login_required
 @user_passes_test(es_rrhh)
 def crear_nomina_individual(request, empleado_id):
-    """Permite crear una nómina individual para un empleado específico"""
     empleado = get_object_or_404(Empleado, id=empleado_id)
     periodos = PeriodoNomina.objects.all().order_by('-fecha_inicio')
 
@@ -436,12 +399,10 @@ def crear_nomina_individual(request, empleado_id):
         periodo_id = request.POST.get('periodo')
         periodo = get_object_or_404(PeriodoNomina, id=periodo_id)
 
-        # Verificar si ya existe una nómina para ese empleado y periodo
         if Nomina.objects.filter(empleado=empleado, periodo=periodo).exists():
             messages.warning(request, f"Ya existe una nómina para {empleado.nombre} en el periodo seleccionado.")
             return redirect('ver_todas_nominas_empleado', empleado_id=empleado.id)
 
-        # Crear la nueva nómina
         nomina = Nomina.objects.create(
             empleado=empleado,
             periodo=periodo,
@@ -465,7 +426,6 @@ def crear_nomina_individual(request, empleado_id):
 @login_required
 @user_passes_test(es_rrhh)
 def editar_empleado_rrhh(request, empleado_id):
-    """Editar información de un empleado"""
     from core2.forms import EmpleadoForm
     empleado = get_object_or_404(Empleado, id=empleado_id)
     
@@ -489,7 +449,6 @@ def editar_empleado_rrhh(request, empleado_id):
 @login_required
 @user_passes_test(es_rrhh)
 def desactivar_empleado(request, empleado_id):
-    """Activar/Desactivar un empleado"""
     empleado = get_object_or_404(Empleado, id=empleado_id)
     
     if request.method == 'POST':
@@ -504,11 +463,9 @@ def desactivar_empleado(request, empleado_id):
     return render(request, 'core3/empleados/confirmar_desactivar.html', context)
 
 
-# ========== GESTIÓN DE NÓMINAS ==========
 @login_required
 @user_passes_test(es_rrhh)
 def lista_nominas_rrhh(request):
-    """Lista todos los periodos de nómina"""
     periodos = PeriodoNomina.objects.all().order_by('-fecha_inicio')
     
     context = {'periodos': periodos}
@@ -517,23 +474,19 @@ def lista_nominas_rrhh(request):
 @login_required
 @user_passes_test(es_rrhh)
 def crear_periodo_nomina(request):
-    """Crear un nuevo periodo de nómina y generar automáticamente las nóminas"""
     if request.method == 'POST':
         form = PeriodoNominaForm(request.POST)
-        if form.is_valid():  # 👈 debe estar dentro del bloque POST
+        if form.is_valid():  
             periodo = form.save()
 
-            # ✅ GENERAR AUTOMÁTICAMENTE LAS NÓMINAS
             empleados_activos = Empleado.objects.filter(activo=True, categoria__isnull=False)
             nominas_creadas = 0
 
-            # Obtener configuración de nómina
             config = ConfiguracionNomina.objects.filter(activo=True).first()
 
             for empleado in empleados_activos:
                 salario_base = empleado.categoria.salario_base
 
-                # Calcular deducciones básicas si hay configuración
                 deducciones = Decimal('0.00')
                 if config:
                     deducciones = (
@@ -565,7 +518,6 @@ def crear_periodo_nomina(request):
             )
             return redirect('detalle_periodo_nomina', periodo_id=periodo.id)
     else:
-        # 👇 Esto se ejecuta si el método es GET (cuando entras al formulario)
         form = PeriodoNominaForm()
 
     context = {'form': form}
@@ -574,7 +526,6 @@ def crear_periodo_nomina(request):
 @login_required
 @user_passes_test(es_rrhh)
 def detalle_periodo_nomina(request, periodo_id):
-    """Ver detalle de un periodo de nómina"""
     periodo = get_object_or_404(PeriodoNomina, id=periodo_id)
     nominas = periodo.nominas.all().select_related('empleado')
     
@@ -597,7 +548,6 @@ def detalle_periodo_nomina(request, periodo_id):
 @login_required
 @user_passes_test(es_rrhh)
 def generar_nominas(request, periodo_id):
-    """Generar nóminas para todos los empleados activos en un periodo"""
     periodo = get_object_or_404(PeriodoNomina,id=periodo_id)
     
     if periodo.cerrado:
@@ -609,21 +559,17 @@ def generar_nominas(request, periodo_id):
         nominas_creadas = 0
         nominas_existentes = 0
         
-        # Obtener configuración de nómina
         config = ConfiguracionNomina.objects.filter(activo=True).first()
         
         for empleado in empleados_activos:
-            # Verificar si ya existe una nómina para este empleado en este periodo
             nomina_existe = Nomina.objects.filter(empleado=empleado, periodo=periodo).exists()
             
             if nomina_existe:
                 nominas_existentes += 1
                 continue
             
-            # Crear nómina
             salario_base = empleado.categoria.salario_base
             
-            # Calcular deducciones básicas si hay configuración
             deducciones = Decimal('0.00')
             if config:
                 deducciones = (
@@ -655,7 +601,6 @@ def generar_nominas(request, periodo_id):
         )
         return redirect('detalle_periodo_nomina', periodo_id=periodo.id)
     
-    # GET - Mostrar confirmación
     empleados_activos = Empleado.objects.filter(activo=True, categoria__isnull=False)
     nominas_existentes = Nomina.objects.filter(periodo=periodo).count()
     
@@ -670,7 +615,6 @@ def generar_nominas(request, periodo_id):
 @login_required
 @user_passes_test(es_rrhh)
 def seleccionar_periodo_nomina(request, empleado_id):
-    """Permite seleccionar un periodo antes de crear una nómina individual"""
     empleado = get_object_or_404(Empleado, id=empleado_id)
     periodos = PeriodoNomina.objects.all().order_by('-fecha_inicio')
 
@@ -693,7 +637,6 @@ def seleccionar_periodo_nomina(request, empleado_id):
 @login_required
 @user_passes_test(es_rrhh)
 def editar_nomina(request, nomina_id):
-    """Editar manualmente una nómina"""
     nomina = get_object_or_404(Nomina, id=nomina_id)
     
     if nomina.pagado:
@@ -711,7 +654,6 @@ def editar_nomina(request, nomina_id):
     else:
         form = NominaManualForm(instance=nomina)
     
-    # Obtener conceptos adicionales
     conceptos = nomina.conceptos.all()
     
     context = {
@@ -726,7 +668,6 @@ def editar_nomina(request, nomina_id):
 @login_required
 @user_passes_test(es_rrhh)
 def agregar_concepto(request, nomina_id):
-    """Agregar un concepto adicional a una nómina"""
     nomina = get_object_or_404(Nomina, id=nomina_id)
     
     if nomina.pagado:
@@ -740,7 +681,6 @@ def agregar_concepto(request, nomina_id):
             concepto.nomina = nomina
             concepto.save()
             
-            # Actualizar totales de la nómina
             if concepto.tipo == 'DEVENGADO':
                 nomina.bonificaciones += concepto.valor
             else:
@@ -780,11 +720,9 @@ def marcar_pagado(request, nomina_id):
     return render(request, 'core3/nominas/confirmar_pago.html', context)
 
 
-# ========== CONFIGURACIÓN ==========
 @login_required
 @user_passes_test(es_rrhh)
 def configuracion_nomina(request):
-    """Configurar parámetros generales de nómina"""
     config = ConfiguracionNomina.objects.filter(activo=True).first()
     
     if request.method == 'POST':
@@ -794,10 +732,8 @@ def configuracion_nomina(request):
             form = ConfiguracionNominaForm(request.POST)
         
         if form.is_valid():
-            # Desactivar configuraciones anteriores
             ConfiguracionNomina.objects.all().update(activo=False)
             
-            # Guardar nueva configuración
             nueva_config = form.save(commit=False)
             nueva_config.activo = True
             nueva_config.save()
@@ -815,7 +751,6 @@ def configuracion_nomina(request):
     return render(request, 'core3/configuracion/nomina.html', context)
 
 
-# ========== REPORTES ==========
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, Sum
 from datetime import date
@@ -825,12 +760,10 @@ from datetime import date
 def reportes_rrhh(request):
     """Dashboard de reportes y estadísticas"""
 
-    # ===== Empleados =====
     total_empleados = Empleado.objects.count()
     empleados_activos = Empleado.objects.filter(activo=True).count()
     empleados_inactivos = total_empleados - empleados_activos
 
-    # ===== Solicitudes =====
     total_solicitudes = Solicitud.objects.count()
     solicitudes_pendientes = Solicitud.objects.filter(estado__nombre='Pendiente').count()
     solicitudes_aprobadas = Solicitud.objects.filter(estado__nombre='Aprobado').count()
@@ -843,7 +776,6 @@ def reportes_rrhh(request):
     else:
         porcentaje_solicitudes_pendientes = porcentaje_solicitudes_aprobadas = porcentaje_solicitudes_rechazadas = 0
 
-    # ===== Permisos =====
     total_permisos = Permiso.objects.count()
     permisos_pendientes = Permiso.objects.filter(estado='PENDIENTE').count()
     permisos_aprobados = Permiso.objects.filter(estado='APROBADO').count()
@@ -856,7 +788,6 @@ def reportes_rrhh(request):
     else:
         porcentaje_permisos_pendientes = porcentaje_permisos_aprobados = porcentaje_permisos_rechazados = 0
 
-    # ===== Nóminas =====
     total_nominas = Nomina.objects.count()
     nominas_pagadas = Nomina.objects.filter(pagado=True).count()
     nominas_pendientes = total_nominas - nominas_pagadas
@@ -867,7 +798,6 @@ def reportes_rrhh(request):
     else:
         porcentaje_nominas_pagadas = porcentaje_nominas_pendientes = 0
 
-    # ===== Últimos registros =====
     solicitudes_contratadas = ProcesoContratacion.objects.filter(
         estado_proceso='CONTRATADO'
     ).values_list('solicitud_id', flat=True)
@@ -878,14 +808,12 @@ def reportes_rrhh(request):
 
     ultimos_permisos = Permiso.objects.all().order_by('-fecha_solicitud')[:5]
 
-    # ===== Distribución por categoría =====
     empleados_por_categoria = Empleado.objects.filter(activo=True).values(
         'categoria__nombre'
     ).annotate(
         cantidad=Count('id')
     ).order_by('-cantidad')
 
-    # ===== Nómina total del mes actual =====
     mes_actual = date.today().month
     ano_actual = date.today().year
 
@@ -895,14 +823,11 @@ def reportes_rrhh(request):
     )
     total_nomina_mes = nominas_mes.aggregate(Sum('neto_pagar'))['neto_pagar__sum'] or 0
 
-    # ===== Contexto =====
     context = {
-        # Empleados
         'total_empleados': total_empleados,
         'empleados_activos': empleados_activos,
         'empleados_inactivos': empleados_inactivos,
 
-        # Solicitudes
         'total_solicitudes': total_solicitudes,
         'solicitudes_pendientes': solicitudes_pendientes,
         'solicitudes_aprobadas': solicitudes_aprobadas,
@@ -911,7 +836,6 @@ def reportes_rrhh(request):
         'porcentaje_solicitudes_aprobadas': porcentaje_solicitudes_aprobadas,
         'porcentaje_solicitudes_rechazadas': porcentaje_solicitudes_rechazadas,
 
-        # Permisos
         'total_permisos': total_permisos,
         'permisos_pendientes': permisos_pendientes,
         'permisos_aprobados': permisos_aprobados,
@@ -920,14 +844,12 @@ def reportes_rrhh(request):
         'porcentaje_permisos_aprobados': porcentaje_permisos_aprobados,
         'porcentaje_permisos_rechazados': porcentaje_permisos_rechazados,
 
-        # Nóminas
         'total_nominas': total_nominas,
         'nominas_pagadas': nominas_pagadas,
         'nominas_pendientes': nominas_pendientes,
         'porcentaje_nominas_pagadas': porcentaje_nominas_pagadas,
         'porcentaje_nominas_pendientes': porcentaje_nominas_pendientes,
 
-        # Otros
         'empleados_por_categoria': empleados_por_categoria,
         'total_nomina_mes': total_nomina_mes,
         'ultimas_solicitudes': ultimas_solicitudes,

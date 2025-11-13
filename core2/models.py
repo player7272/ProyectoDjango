@@ -22,13 +22,11 @@ class Empleado(models.Model):
         return f"{self.nombre} {self.apellido} - {self.cedula}"
     
     def dias_en_empresa(self):
-        """Calcula los días que lleva el empleado en la empresa"""
         if self.fecha_ingreso:
             return (date.today() - self.fecha_ingreso).days
         return 0
     
     def anos_en_empresa(self):
-        """Calcula los años que lleva el empleado en la empresa"""
         return self.dias_en_empresa() // 365
 
 

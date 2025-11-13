@@ -9,8 +9,6 @@
         <h2>⏰ Gestión de Permisos</h2>
         <p>Revisión y aprobación de solicitudes de permisos de empleados</p>
     </section>
-
-    <!-- Filtros -->
     <section class="seccion">
         <div class="filtros">
             <a href="{% url 'lista_permisos_rrhh' %}?estado=todos"
@@ -32,7 +30,6 @@
         </div>
     </section>
 
-    <!-- Estadísticas Rápidas -->
     <section class="seccion">
         <div class="cards-container">
             <div class="card stat-card">
@@ -69,7 +66,6 @@
         </div>
     </section>
 
-    <!-- Lista de Permisos -->
     <section class="seccion">
         {% if permisos %}
         <div style="overflow-x: auto;">
@@ -164,7 +160,6 @@
         {% endif %}
     </section>
 
-    <!-- Información sobre Tipos de Permisos -->
     <section class="seccion">
         <h3>📚 Tipos de Permisos</h3>
         <div class="cards-container">
@@ -198,7 +193,6 @@
         </div>
     </section>
 
-    <!-- Criterios de Aprobación -->
     <section class="seccion">
         <h3>✅ Criterios de Aprobación</h3>
         <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
@@ -214,7 +208,6 @@
         </div>
     </section>
 
-    <!-- Estadísticas Adicionales -->
     <section class="seccion">
         <h3>📈 Estadísticas de Permisos</h3>
         <table class="table table-bordered text-center align-middle">
@@ -251,7 +244,6 @@
 
     </section>
 
-    <!-- Acciones -->
     <section class="seccion texto-centro">
         <a href="{% url 'dashboard_rrhh' %}" class="button">Volver al Dashboard</a>
         <a href="{% url 'lista_empleados_rrhh' %}" class="button blue">Ver Empleados</a>

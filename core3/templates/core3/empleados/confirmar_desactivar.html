@@ -10,7 +10,6 @@
         <p>Estás a punto de cambiar el estado del empleado</p>
     </section>
 
-    <!-- Información del Empleado -->
     <section class="seccion">
         <h3>Información del Empleado</h3>
         <div class="cards-container">
@@ -45,7 +44,6 @@
         </div>
     </section>
 
-    <!-- Advertencia de Acción -->
     <section class="seccion">
         <div style="background: rgba(255, 193, 7, 0.1); padding: 30px; border-radius: 12px;">
             <h3 style="text-align: center; margin-top: 0;">
@@ -89,7 +87,6 @@
         </div>
     </section>
 
-    <!-- Estadísticas del Empleado -->
     <section class="seccion">
         <h3>Estadísticas del Empleado</h3>
         <div class="cards-container">
@@ -113,7 +110,6 @@
         </div>
     </section>
 
-    <!-- Formulario de Confirmación -->
     <section class="seccion texto-centro">
         <form method="POST" style="display: inline-block;">
             {% csrf_token %}
@@ -136,7 +132,6 @@
         </form>
     </section>
 
-    <!-- Información Adicional -->
     <section class="seccion">
         <h3>ℹ️ Información Importante</h3>
         <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
@@ -150,7 +145,6 @@
         </div>
     </section>
 
-    <!-- Botones de Navegación -->
     <section class="seccion texto-centro">
         <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" class="button">Ver Perfil del Empleado</a>
         <a href="{% url 'lista_empleados_rrhh' %}" class="button blue">Volver a Lista de Empleados</a>

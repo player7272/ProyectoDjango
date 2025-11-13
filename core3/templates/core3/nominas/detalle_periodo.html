@@ -6,7 +6,7 @@
     <section class="seccion texto-centro">
         <h2>📅 Detalle del Periodo de Nómina</h2>
         <p>{{ periodo }}</p>
-    </section><!-- Información del Periodo -->
+    </section>
     <section class="seccion">
         <h3>Información del Periodo</h3>
         <div class="cards-container">
@@ -47,7 +47,6 @@
         </div>
     </section>
 
-    <!-- Resumen Financiero -->
     <section class="seccion">
         <h3>💰 Resumen Financiero</h3>
         <div class="cards-container">
@@ -85,7 +84,6 @@
         </div>
     </section>
 
-    <!-- Acciones Rápidas -->
     {% if not periodo.cerrado %}
     <section class="seccion texto-centro">
         <h3>⚡ Acciones Rápidas</h3>
@@ -104,7 +102,6 @@
     </section>
     {% endif %}
 
-    <!-- Lista de Nóminas -->
     <section class="seccion">
         <h3>📋 Nóminas del Periodo</h3>
 
@@ -173,7 +170,6 @@
             </table>
         </div>
 
-        <!-- Estadísticas Adicionales -->
         <div class="cards-container" style="margin-top: 30px;">
             <div class="card">
                 <h4 class="card-title">📊 Estadísticas de Pago</h4>
@@ -227,7 +223,6 @@
         {% endif %}
     </section>
 
-    <!-- Información Adicional -->
     <section class="seccion">
         <h3>ℹ️ Información Importante</h3>
         <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
@@ -255,7 +250,6 @@
         </div>
     </section>
 
-    <!-- Botones de Navegación -->
     <section class="seccion texto-centro">
         <h3>Navegación</h3>
         <div class="btn-group">

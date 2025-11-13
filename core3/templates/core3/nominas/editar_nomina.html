@@ -19,7 +19,6 @@
         <p>Ajusta los valores de la nómina de {{ nomina.empleado.nombre }} {{ nomina.empleado.apellido }}</p>
     </section>
 
-    <!-- Información General -->
     <section class="seccion">
         <div class="cards-container">
             <div class="card">
@@ -64,7 +63,6 @@
     </section>
 
     {% if nomina.pagado %}
-    <!-- Advertencia de Nómina Pagada -->
     <section class="seccion">
         <div style="background: rgba(255, 193, 7, 0.2); padding: 20px; border-radius: 12px; text-align: center;">
             <h3 style="margin-top: 0;">⚠️ Esta nómina ya fue pagada</h3>
@@ -74,7 +72,6 @@
     </section>
     {% else %}
 
-    <!-- Formulario de Edición -->
     <section class="seccion">
         <h3>Editar Valores de la Nómina</h3>
         <div class="form-section">
@@ -96,7 +93,7 @@
 
                 <h4 style="text-align: center; margin-bottom: 30px;">Ajustar Valores</h4>
 
-                <!-- Salario Base (solo lectura) -->
+
                 <fieldset
                     style="border: 2px solid rgba(102, 126, 234, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                     <legend style="font-weight: bold; color: #667eea;">Salario Base</legend>
@@ -110,7 +107,6 @@
                     </div>
                 </fieldset>
 
-                <!-- Bonificaciones y Horas Extra -->
                 <fieldset
                     style="border: 2px solid rgba(67, 227, 123, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                     <legend style="font-weight: bold; color: #43e97b;">Bonificaciones</legend>
@@ -149,7 +145,6 @@
                     </div>
                 </fieldset>
 
-                <!-- Deducciones -->
                 <fieldset
                     style="border: 2px solid rgba(245, 87, 108, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                     <legend style="font-weight: bold; color: #f5576c;">Deducciones</legend>
@@ -166,7 +161,6 @@
                     </div>
                 </fieldset>
 
-                <!-- Cálculo Automático -->
                 <div style="background: rgba(79, 172, 254, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
                     <strong>ℹ️ Cálculo Automático:</strong>
                     <ul style="margin-top: 10px; padding-left: 20px;">
@@ -187,7 +181,6 @@
         </div>
     </section>
 
-    <!-- Conceptos Adicionales -->
     <section class="seccion">
         <h3>Conceptos Adicionales</h3>
 
@@ -231,7 +224,6 @@
 
     {% endif %}
 
-    <!-- Resumen de la Nómina -->
     <section class="seccion">
         <h3>📊 Resumen de la Nómina</h3>
         <table class="table table--bordered">
@@ -255,7 +247,6 @@
                 </tr>
                 {% endif %}
 
-                <!-- Conceptos de Devengado -->
                 {% for concepto in conceptos %}
                 {% if concepto.tipo == 'DEVENGADO' %}
                 <tr>
@@ -284,7 +275,6 @@
                 </tr>
                 {% endif %}
 
-                <!-- Conceptos de Deducción -->
                 {% for concepto in conceptos %}
                 {% if concepto.tipo == 'DEDUCCION' %}
                 <tr>
@@ -323,7 +313,6 @@
         </table>
     </section>
 
-    <!-- Acciones -->
     <section class="seccion texto-centro">
         <h3>Acciones</h3>
         <div class="btn-group">

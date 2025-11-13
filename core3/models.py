@@ -6,10 +6,6 @@ from decimal import Decimal
 from datetime import date
 
 class ProcesoContratacion(models.Model):
-    """
-    Modelo para seguimiento del proceso de contratación
-    desde la solicitud hasta la contratación final
-    """
     ESTADO_CHOICES = [
         ('EN_REVISION', 'En Revisión'),
         ('APROBADO', 'Aprobado para Contratación'),
@@ -35,9 +31,6 @@ class ProcesoContratacion(models.Model):
 
 
 class ConfiguracionNomina(models.Model):
-    """
-    Configuración general para el cálculo de nóminas
-    """
     porcentaje_seguridad_social = models.DecimalField(max_digits=5, decimal_places=2, default=4.0)
     porcentaje_salud = models.DecimalField(max_digits=5, decimal_places=2, default=4.0)
     porcentaje_pension = models.DecimalField(max_digits=5, decimal_places=2, default=4.0)

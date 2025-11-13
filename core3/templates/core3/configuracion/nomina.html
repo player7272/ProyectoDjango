@@ -10,7 +10,6 @@
         <p>Parámetros generales para el cálculo de nóminas y deducciones</p>
     </section>
 
-    <!-- Configuración Actual -->
     {% if config %}
     <section class="seccion">
         <h3>📋 Configuración Actual</h3>
@@ -55,7 +54,6 @@
     </section>
     {% endif %}
 
-    <!-- Formulario de Configuración -->
     <section class="seccion">
         <h3>{% if config %}Actualizar Configuración{% else %}Crear Configuración{% endif %}</h3>
         <div class="form-section">
@@ -75,7 +73,6 @@
 
                 <h4 style="text-align: center; margin-bottom: 30px;">Parámetros de Nómina</h4>
 
-                <!-- Porcentajes de Deducciones -->
                 <fieldset style="border: 2px solid rgba(102, 126, 234, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                     <legend style="font-weight: bold; color: #667eea;">Porcentajes de Deducciones (%)</legend>
                     
@@ -104,7 +101,6 @@
                     </div>
                 </fieldset>
 
-                <!-- Valores Fijos -->
                 <fieldset style="border: 2px solid rgba(67, 227, 123, 0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                     <legend style="font-weight: bold; color: #43e97b;">Valores de Referencia ($)</legend>
                     
@@ -125,7 +121,6 @@
                     </div>
                 </fieldset>
 
-                <!-- Información Importante -->
                 <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
                     <strong>⚠️ Importante:</strong>
                     <ul style="margin-top: 10px; padding-left: 20px;">
@@ -146,7 +141,6 @@
         </div>
     </section>
 
-    <!-- Guía de Referencia -->
     <section class="seccion">
         <h3>📚 Guía de Referencia</h3>
         <div class="cards-container">
@@ -188,7 +182,6 @@
         </div>
     </section>
 
-    <!-- Simulador de Cálculo -->
     <section class="seccion">
         <h3>🧮 Simulador de Cálculo de Nómina</h3>
         <div style="background: rgba(79, 172, 254, 0.1); padding: 30px; border-radius: 12px;">
@@ -212,7 +205,6 @@
         </div>
     </section>
 
-    <!-- Acciones -->
     <section class="seccion texto-centro">
         <a href="{% url 'dashboard_rrhh' %}" class="button">Volver al Dashboard</a>
         <a href="{% url 'lista_nominas_rrhh' %}" class="button blue">Ver Nóminas</a>
@@ -220,12 +212,11 @@
 </main>
 
 <script>
-// Simulador de cálculo
+
 document.addEventListener('DOMContentLoaded', function() {
     const simuladorInput = document.getElementById('simulador_salario');
     const resultado = document.getElementById('resultado_simulacion');
     
-    // Obtener porcentajes del formulario actual
     const porcSeguridad = parseFloat(document.querySelector('[name="porcentaje_seguridad_social"]')?.value || 4.0);
     const porcSalud = parseFloat(document.querySelector('[name="porcentaje_salud"]')?.value || 4.0);
     const porcPension = parseFloat(document.querySelector('[name="porcentaje_pension"]')?.value || 4.0);

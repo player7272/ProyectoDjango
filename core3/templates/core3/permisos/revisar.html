@@ -10,7 +10,6 @@
         <p>Revisa los detalles del permiso y toma una decisión</p>
     </section>
 
-    <!-- Información del Empleado -->
     <section class="seccion">
         <h3>Información del Empleado</h3>
         <div class="cards-container">
@@ -50,7 +49,6 @@
         </div>
     </section>
 
-    <!-- Detalles del Permiso -->
     <section class="seccion">
         <h3>Detalles de la Solicitud de Permiso</h3>
         <div class="cards-container">
@@ -101,7 +99,6 @@
         </div>
     </section>
 
-    <!-- Motivo del Permiso -->
     <section class="seccion">
         <h3>Motivo de la Solicitud</h3>
         <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
@@ -109,7 +106,6 @@
         </div>
     </section>
 
-    <!-- Historial de Permisos del Empleado -->
     <section class="seccion">
         <h3>Historial de Permisos del Empleado</h3>
         {% with permisos_previos=permiso.empleado.permisos.all|slice:":5" %}
@@ -152,7 +148,6 @@
         {% endwith %}
     </section>
 
-    <!-- Formulario de Revisión -->
     {% if permiso.estado == 'PENDIENTE' %}
     <section class="seccion">
         <h3>Tomar Decisión</h3>
@@ -244,7 +239,6 @@
     </section>
     {% endif %}
 
-    <!-- Botones de Navegación -->
     <section class="seccion texto-centro">
         <a href="{% url 'lista_permisos_rrhh' %}" class="button">Volver a Lista de Permisos</a>
         <a href="{% url 'detalle_empleado_rrhh' permiso.empleado.id %}" class="button blue">Ver Perfil del Empleado</a>

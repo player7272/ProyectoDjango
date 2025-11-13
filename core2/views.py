@@ -7,38 +7,30 @@ from datetime import date
 from django.contrib.auth import logout
 
 def cerrar_sesion(request):
-    """Cerrar sesión y redirigir al inicio"""
     logout(request)
     return redirect('index_core2')
 
 def index(request):
-    """Vista de inicio del core2"""
     return render(request, 'core2/index.html')
 
 def home_core2(request):
-    """Vista home del core2"""
     return redirect('completar_datos')
 
 @login_required
 def dashboard_empleado(request):
-    """Vista principal del dashboard del empleado"""
     try:
         empleado = request.user.empleado
         
-        # Si no ha completado sus datos, redirigir al formulario
         if not empleado.datos_completados:
             return redirect('completar_datos')
         
-        # Obtener datos para el dashboard
         permisos_pendientes = empleado.permisos.filter(estado='PENDIENTE').count()
         permisos_aprobados = empleado.permisos.filter(estado='APROBADO').count()
         dias_empresa = empleado.dias_en_empresa()
         anos_empresa = empleado.anos_en_empresa()
         
-        # Obtener últimas nóminas
         ultimas_nominas = empleado.nominas.all()[:5]
         
-        # Obtener últimos permisos
         ultimos_permisos = empleado.permisos.all().order_by('-fecha_solicitud')[:5]
         
         context = {
@@ -54,7 +46,6 @@ def dashboard_empleado(request):
         return render(request, 'core2/dashboard.html', context)
         
     except Empleado.DoesNotExist:
-        # Si no existe el empleado, crear uno y redirigir a completar datos
         empleado = Empleado.objects.create(
             user=request.user,
             nombre=request.user.first_name or '',
@@ -67,7 +58,6 @@ def dashboard_empleado(request):
 
 @login_required
 def completar_datos(request):
-    """Vista para completar los datos del empleado por primera vez"""
     empleado, created = Empleado.objects.get_or_create(
         user=request.user,
         defaults={
@@ -99,7 +89,6 @@ def completar_datos(request):
 
 @login_required
 def mis_nominas(request):
-    """Vista para ver todas las nóminas del empleado"""
     try:
         empleado = request.user.empleado
         
@@ -121,7 +110,6 @@ def mis_nominas(request):
 
 @login_required
 def detalle_nomina(request, nomina_id):
-    """Vista para ver el detalle de una nómina específica"""
     try:
         empleado = request.user.empleado
         nomina = get_object_or_404(Nomina, id=nomina_id, empleado=empleado)
@@ -139,7 +127,6 @@ def detalle_nomina(request, nomina_id):
 
 @login_required
 def mis_permisos(request):
-    """Vista para ver y gestionar permisos"""
     try:
         empleado = request.user.empleado
         
@@ -148,7 +135,6 @@ def mis_permisos(request):
         
         permisos = empleado.permisos.all().select_related('tipo_permiso').order_by('-fecha_solicitud')
         
-        # Obtener tipos de permisos disponibles
         from core2.models import TipoPermiso
         tipos_permisos = TipoPermiso.objects.all()
         
@@ -165,7 +151,6 @@ def mis_permisos(request):
 
 @login_required
 def solicitar_permiso(request):
-    """Vista para solicitar un nuevo permiso"""
     try:
         empleado = request.user.empleado
         
@@ -196,7 +181,6 @@ def solicitar_permiso(request):
 
 @login_required
 def perfil_empleado(request):
-    """Vista para ver y editar el perfil del empleado"""
     try:
         empleado = request.user.empleado
         

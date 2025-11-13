@@ -10,7 +10,6 @@
         <p>Genera una nómina específica para {{ empleado.nombre }} {{ empleado.apellido }}</p>
     </section>
 
-    <!-- Información del Empleado -->
     <section class="seccion">
         <h3>Información del Empleado</h3>
         <div class="cards-container">
@@ -59,7 +58,6 @@
         </div>
     </section>
 
-    <!-- Verificaciones -->
     {% if not empleado.categoria %}
     <section class="seccion">
         <div style="background: rgba(245, 87, 108, 0.2); padding: 20px; border-radius: 12px;">
@@ -71,7 +69,6 @@
     </section>
     {% else %}
 
-    <!-- Selección de Periodo -->
     <section class="seccion">
         <h3>Seleccionar Periodo de Nómina</h3>
         
@@ -141,7 +138,6 @@
         {% endif %}
     </section>
 
-    <!-- Información sobre el proceso -->
     <section class="seccion">
         <h3>📋 Proceso de Creación de Nómina</h3>
         <div class="cards-container">
@@ -185,7 +181,6 @@
         </div>
     </section>
 
-    <!-- Configuración Actual -->
     {% if configuracion %}
     <section class="seccion">
         <h3>⚙️ Configuración de Nómina Actual</h3>
@@ -236,7 +231,6 @@
 
     {% endif %}
 
-    <!-- Botones de Navegación -->
     <section class="seccion texto-centro">
         <a href="{% url 'detalle_empleado_rrhh' empleado.id %}" class="button">Volver al Perfil del Empleado</a>
         <a href="{% url 'lista_empleados_rrhh' %}" class="button blue">Ver Todos los Empleados</a>

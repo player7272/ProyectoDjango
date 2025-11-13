@@ -10,7 +10,6 @@
         <p>Define un nuevo periodo para el procesamiento de nóminas</p>
     </section>
 
-    <!-- Información Importante -->
     <section class="seccion">
         <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
             <h3 style="margin-top: 0;">ℹ️ Información Importante</h3>
@@ -23,7 +22,6 @@
         </div>
     </section>
 
-    <!-- Formulario -->
     <section class="seccion">
         <div class="form-section">
             <form method="POST" class="form verde">
@@ -94,7 +92,6 @@
         </div>
     </section>
 
-    <!-- Guía de Ejemplos -->
     <section class="seccion">
         <h3>📋 Ejemplos de Periodos</h3>
         <div class="cards-container">
@@ -139,7 +136,6 @@
         </div>
     </section>
 
-    <!-- Botones de Acción -->
     <section class="seccion texto-centro">
         <a href="{% url 'lista_nominas_rrhh' %}" class="button">Ver Todos los Periodos</a>
         <a href="{% url 'dashboard_rrhh' %}" class="button blue">Volver al Dashboard</a>
@@ -147,7 +143,6 @@
 </main>
 
 <script>
-// Validación de fechas en el cliente
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
     const fechaInicio = document.querySelector('[name="fecha_inicio"]');

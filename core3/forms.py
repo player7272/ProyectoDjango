@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from datetime import date
 
 class RevisionSolicitudForm(forms.ModelForm):
-    """Formulario para revisar y aprobar/rechazar solicitudes"""
     decision = forms.ChoiceField(
         choices=[
             ('APROBAR', 'Aprobar para Contratación'),
@@ -28,7 +27,6 @@ class RevisionSolicitudForm(forms.ModelForm):
 
 
 class ContratacionForm(forms.ModelForm):
-    """Formulario para crear el empleado desde una solicitud aprobada"""
     fecha_ingreso = forms.DateField(
         widget=forms.DateInput(attrs={
             'class': 'input',
@@ -54,7 +52,6 @@ class ContratacionForm(forms.ModelForm):
 
 
 class RevisionPermisoForm(forms.ModelForm):
-    """Formulario para aprobar/rechazar permisos de empleados"""
     decision = forms.ChoiceField(
         choices=[
             ('APROBADO', 'Aprobar Permiso'),
@@ -76,7 +73,6 @@ class RevisionPermisoForm(forms.ModelForm):
 
 
 class PeriodoNominaForm(forms.ModelForm):
-    """Formulario para crear un nuevo periodo de nómina"""
     class Meta:
         model = PeriodoNomina
         fields = ['tipo', 'fecha_inicio', 'fecha_fin', 'fecha_pago']
@@ -89,7 +85,6 @@ class PeriodoNominaForm(forms.ModelForm):
 
 
 class NominaManualForm(forms.ModelForm):
-    """Formulario para editar manualmente elementos de la nómina"""
     class Meta:
         model = Nomina
         fields = ['bonificaciones', 'deducciones', 'horas_extra', 'valor_hora_extra']
@@ -102,7 +97,6 @@ class NominaManualForm(forms.ModelForm):
 
 
 class ConceptoNominaForm(forms.ModelForm):
-    """Formulario para agregar conceptos adicionales a una nómina"""
     class Meta:
         model = ConceptoNomina
         fields = ['tipo', 'concepto', 'valor', 'descripcion']
@@ -115,7 +109,6 @@ class ConceptoNominaForm(forms.ModelForm):
 
 
 class ConfiguracionNominaForm(forms.ModelForm):
-    """Formulario para configurar parámetros generales de nómina"""
     class Meta:
         model = ConfiguracionNomina
         fields = ['porcentaje_seguridad_social', 'porcentaje_salud', 'porcentaje_pension',

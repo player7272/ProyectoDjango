@@ -9,8 +9,6 @@
         <h2>Revisar Solicitud de Empleo</h2>
         <p>Revisa la información del candidato y toma una decisión</p>
     </section>
-
-    <!-- Información del Candidato -->
     <section class="seccion">
         <h3>Información del Candidato</h3>
         <div class="cards-container">
@@ -58,7 +56,6 @@
         </div>
     </section>
 
-    <!-- Mensaje/Capacidades -->
     <section class="seccion">
         <h3>Capacidades y Experiencia del Candidato</h3>
         <div style="background: rgba(79, 172, 254, 0.1); padding: 20px; border-radius: 12px;">
@@ -66,7 +63,6 @@
         </div>
     </section>
 
-    <!-- Formulario de Revisión -->
     {% if solicitud.estado.nombre == 'Pendiente' %}
     <section class="seccion">
         <h3>Tomar Decisión</h3>
