@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Recursos Humanos - BMS{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <link rel="stylesheet" href="{% static 'css/cards.css' %}">
@@ -129,7 +129,11 @@
                 <a href="{% url 'configuracion_nomina' %}">Configuración</a>
                 <a href="{% url 'index' %}">Inicio</a>
                 {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="logout-btn">Cerrar sesión</a>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesion</button>
+                </form>
+                
                 {% endif %}
             </nav>
         </div>

@@ -712,6 +712,45 @@ body.light-mode .nav-link.active {
     background: rgba(30, 35, 50, 0.7);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
+/* --- Estilos para que el botón de logout sea idéntico a los links del header --- */
+.header-nav form {
+    display: inline-block; 
+    margin: 0;
+    padding: 0;
+}
+
+.header-nav form button {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+/* Línea animada igual que <a>::after */
+.header-nav form button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+}
+
+/* Hover idéntico al de los <a> */
+.header-nav form button:hover {
+    color: #ffffff;
+}
+
+.header-nav form button:hover::after {
+    width: 100%;
+}
 
 /* Ajuste del contenido principal para dejar espacio al header */
 main {

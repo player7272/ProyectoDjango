@@ -19,8 +19,12 @@ class PersonaForm(forms.ModelForm):
             'cedula': forms.TextInput(attrs={
                 'class': 'input',
                 'id': 'cedula',
-                'placeholder': 'Cédula'
+                'placeholder': 'Cédula',
+                'maxlength': '10',
+                'pattern': r'\d{6,10}',
+                'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'
             }),
+
             'correo': forms.EmailInput(attrs={
                 'class': 'input',
                 'id': 'correo',

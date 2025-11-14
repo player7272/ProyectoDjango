@@ -162,7 +162,7 @@
                     </div>
                     <div>
                         <label for="cedula">Número de Cédula:</label>
-                        <input type="text" id="cedula" name="cedula" class="input" placeholder="123456789" required>
+                        <input type="text" id="cedula"  name="cedula"  class="input"  placeholder="123456789"  maxlength="10" pattern="\d{6,10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                     </div>
                     <button type="submit" class="buttonformB">Consultar estado</button>
                 </form>
