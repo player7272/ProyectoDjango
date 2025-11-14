@@ -33,21 +33,25 @@
     <section class="seccion">
         <div class="cards-container">
             <div class="card stat-card">
-                <i class='bx bx-time' style="font-size: 3rem; color: #ffc107;"></i>
+                <i class='bx bx-list-ul' style="font-size: 3rem; color: #ffc107;"></i>
                 <div class="stat-number" style="color: #ffc107;">
-                    {{ permisos.filter.count }}
+                    {{ permisos|length }}
                 </div>
                 <div class="stat-label">Permisos en esta Vista</div>
             </div>
 
             <div class="card stat-card">
+                <i class='bx bx-time' style="font-size: 3rem; color: #ffc107;"></i>
+                <div class="stat-number" style="color: #ff9800;">
+                    {{ permisos_pendientes }}
+                </div>
+                <div class="stat-label">Pendientes</div>
+            </div>
+
+            <div class="card stat-card">
                 <i class='bx bx-user-check' style="font-size: 3rem; color: #43e97b;"></i>
                 <div class="stat-number" style="color: #43e97b;">
-                    {% if filtro_actual == 'aprobados' %}
-                    {{ permisos|length }}
-                    {% else %}
-                    -
-                    {% endif %}
+                    {{ permisos_aprobados }}
                 </div>
                 <div class="stat-label">Aprobados</div>
             </div>
@@ -55,11 +59,7 @@
             <div class="card stat-card">
                 <i class='bx bx-user-x' style="font-size: 3rem; color: #f5576c;"></i>
                 <div class="stat-number" style="color: #f5576c;">
-                    {% if filtro_actual == 'rechazados' %}
-                    {{ permisos|length }}
-                    {% else %}
-                    -
-                    {% endif %}
+                    {{ permisos_rechazados }}
                 </div>
                 <div class="stat-label">Rechazados</div>
             </div>

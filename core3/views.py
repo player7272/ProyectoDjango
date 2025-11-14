@@ -206,7 +206,6 @@ def contratar_empleado(request, solicitud_id):
 @login_required
 @user_passes_test(es_rrhh)
 def lista_permisos(request):
-    """Lista todos los permisos solicitados por empleados"""
     filtro = request.GET.get('estado', 'todos')
     
     permisos = Permiso.objects.all().select_related('empleado', 'tipo_permiso')
@@ -406,7 +405,7 @@ def crear_nomina_individual(request, empleado_id):
         nomina = Nomina.objects.create(
             empleado=empleado,
             periodo=periodo,
-            salario_base=empleado.salario,
+            salario_base=empleado.categoria.salario_base if empleado.categoria else 0,
             total_devengado=0,
             total_deducciones=0,
             neto_pagar=0,
@@ -421,6 +420,17 @@ def crear_nomina_individual(request, empleado_id):
         'periodos': periodos,
     }
     return render(request, 'core3/nominas/crear_nomina_individual.html', context)
+
+@login_required
+@user_passes_test(es_rrhh)
+def detalle_nomina(request, nomina_id):
+    nomina = get_object_or_404(Nomina, id=nomina_id)
+
+    context = {
+        'nomina': nomina
+    }
+    return render(request, 'core3/nominas/detalle_nomina.html', context)
+
 
 
 @login_required
@@ -529,7 +539,6 @@ def detalle_periodo_nomina(request, periodo_id):
     periodo = get_object_or_404(PeriodoNomina, id=periodo_id)
     nominas = periodo.nominas.all().select_related('empleado')
     
-    # Calcular totales
     total_devengado = nominas.aggregate(Sum('total_devengado'))['total_devengado__sum'] or 0
     total_deducciones = nominas.aggregate(Sum('total_deducciones'))['total_deducciones__sum'] or 0
     total_neto = nominas.aggregate(Sum('neto_pagar'))['neto_pagar__sum'] or 0
@@ -705,7 +714,6 @@ def agregar_concepto(request, nomina_id):
 @login_required
 @user_passes_test(es_rrhh)
 def marcar_pagado(request, nomina_id):
-    """Marcar una nómina como pagada"""
     nomina = get_object_or_404(Nomina, id=nomina_id)
     
     if request.method == 'POST':
@@ -758,7 +766,6 @@ from datetime import date
 @login_required
 @user_passes_test(es_rrhh)
 def reportes_rrhh(request):
-    """Dashboard de reportes y estadísticas"""
 
     total_empleados = Empleado.objects.count()
     empleados_activos = Empleado.objects.filter(activo=True).count()

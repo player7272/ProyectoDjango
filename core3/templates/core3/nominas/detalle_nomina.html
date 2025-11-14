@@ -1,0 +1,143 @@
+{% extends 'core2/base.html' %}
+{% load static %}
+
+{% block title %}Detalle de Nómina - Portal Empleados{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="seccion">
+        <h2>Detalle de Nómina</h2>
+        <p>Periodo: {{ nomina.periodo }}</p>
+    </section>
+
+    <section class="seccion">
+        <h3>Información General</h3>
+        <div class="cards-container">
+            <div class="card">
+                <h4 class="card-title">👤 Empleado</h4>
+                <p class="card-content">
+                    <strong>Nombre:</strong> {{ empleado.nombre }} {{ empleado.apellido }}<br>
+                    <strong>Cédula:</strong> {{ empleado.cedula }}<br>
+                    <strong>Categoría:</strong> {{ empleado.categoria.nombre|default:"N/A" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">📅 Periodo</h4>
+                <p class="card-content">
+                    <strong>Tipo:</strong> {{ nomina.periodo.get_tipo_display }}<br>
+                    <strong>Inicio:</strong> {{ nomina.periodo.fecha_inicio|date:"d/m/Y" }}<br>
+                    <strong>Fin:</strong> {{ nomina.periodo.fecha_fin|date:"d/m/Y" }}<br>
+                    <strong>Fecha Pago:</strong> {{ nomina.periodo.fecha_pago|date:"d/m/Y" }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title">💵 Estado</h4>
+                <p class="card-content">
+                    {% if nomina.pagado %}
+                        <span style="color: #43e97b; font-size: 2rem; font-weight: bold;">✓ PAGADO</span>
+                    {% else %}
+                        <span style="color: #f5576c; font-size: 2rem; font-weight: bold;">○ PENDIENTE</span>
+                    {% endif %}
+                </p>
+                <p class="card-content">
+                    <small>Generado: {{ nomina.fecha_generacion|date:"d/m/Y H:i" }}</small>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="seccion">
+        <h3>Devengos</h3>
+        <table class="table table--bordered">
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th style="text-align: right;">Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Salario Base</strong></td>
+                    <td style="text-align: right;">${{ nomina.salario_base|floatformat:2 }}</td>
+                </tr>
+                {% if nomina.bonificaciones > 0 %}
+                <tr>
+                    <td>Bonificaciones</td>
+                    <td style="text-align: right;">${{ nomina.bonificaciones|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                {% if nomina.horas_extra > 0 %}
+                <tr>
+                    <td>Horas Extra ({{ nomina.horas_extra }} hrs × ${{ nomina.valor_hora_extra|floatformat:2 }})</td>
+                    <td style="text-align: right;">${{ nomina.horas_extra|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                {% for concepto in nomina.conceptos.all %}
+                    {% if concepto.tipo == 'DEVENGADO' %}
+                    <tr>
+                        <td>{{ concepto.concepto }}</td>
+                        <td style="text-align: right;">${{ concepto.valor|floatformat:2 }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                <tr style="background: rgba(67, 227, 123, 0.1); font-weight: bold;">
+                    <td><strong>Total Devengado</strong></td>
+                    <td style="text-align: right;"><strong style="color: #43e97b;">${{ nomina.total_devengado|floatformat:2 }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="seccion">
+        <h3>Deducciones</h3>
+        <table class="table table--bordered">
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th style="text-align: right;">Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if nomina.deducciones > 0 %}
+                <tr>
+                    <td>Deducciones Generales</td>
+                    <td style="text-align: right;">${{ nomina.deducciones|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                {% for concepto in nomina.conceptos.all %}
+                    {% if concepto.tipo == 'DEDUCCION' %}
+                    <tr>
+                        <td>{{ concepto.concepto }}</td>
+                        <td style="text-align: right;">${{ concepto.valor|floatformat:2 }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                {% if not nomina.deducciones and not nomina.conceptos.all %}
+                <tr>
+                    <td colspan="2" style="text-align: center;"><em>Sin deducciones</em></td>
+                </tr>
+                {% endif %}
+                <tr style="background: rgba(245, 87, 108, 0.1); font-weight: bold;">
+                    <td><strong>Total Deducciones</strong></td>
+                    <td style="text-align: right;"><strong style="color: #f5576c;">${{ nomina.total_deducciones|floatformat:2 }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="seccion texto-centro" style="background: linear-gradient(135deg, rgba(67, 227, 123, 0.2), rgba(56, 249, 215, 0.2));">
+        <h2>Neto a Pagar</h2>
+        <p style="font-size: 3rem; font-weight: bold; color: #43e97b; margin: 20px 0;">
+            ${{ nomina.neto_pagar|floatformat:2 }}
+        </p>
+        <p>Total Devengado: ${{ nomina.total_devengado|floatformat:2 }} - Total Deducciones: ${{ nomina.total_deducciones|floatformat:2 }}</p>
+    </section>
+
+    <section class="seccion texto-centro">
+        <a href="{% url 'mis_nominas' %}" class="button">Volver a Mis Nóminas</a>
+        <a href="{% url 'dashboard_empleado' %}" class="button blue">Ir al Dashboard</a>
+    </section>
+</main>
+{% endblock %}

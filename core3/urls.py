@@ -23,10 +23,12 @@ urlpatterns = [
     path('nominas/periodo/nuevo/', views.crear_periodo_nomina, name='crear_periodo_nomina'),
     path('nominas/periodo/<int:periodo_id>/', views.detalle_periodo_nomina, name='detalle_periodo_nomina'),
     path('nominas/periodo/<int:periodo_id>/generar/', views.generar_nominas, name='generar_nominas'),
-    path('nominas/periodo/<int:periodo_id>/cerrar/', views.cerrar_periodo, name='cerrar_periodo'),  # ✅ NUEVA
+    path('nominas/periodo/<int:periodo_id>/cerrar/', views.cerrar_periodo, name='cerrar_periodo'),
     path('nominas/<int:nomina_id>/editar/', views.editar_nomina, name='editar_nomina'),
     path('nominas/<int:nomina_id>/agregar-concepto/', views.agregar_concepto, name='agregar_concepto'),
     path('nominas/<int:nomina_id>/marcar-pagado/', views.marcar_pagado, name='marcar_pagado'),
+    path('nominas/<int:nomina_id>/', views.detalle_nomina, name='detalle_nomina'),
+
     
     path('configuracion/', views.configuracion_nomina, name='configuracion_nomina'),
     
