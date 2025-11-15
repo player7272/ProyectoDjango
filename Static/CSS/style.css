@@ -712,7 +712,7 @@ body.light-mode .nav-link.active {
     background: rgba(30, 35, 50, 0.7);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
-/* --- Estilos para que el botón de logout sea idéntico a los links del header --- */
+/* Estilos para que el botón de logout sea idéntico a los links del header */
 .header-nav form {
     display: inline-block; 
     margin: 0;
@@ -752,6 +752,20 @@ body.light-mode .nav-link.active {
     width: 100%;
 }
 
+/* ====================================
+   🌞 MODO CLARO - Botón del formulario
+   ==================================== */
+body.light-mode .header-nav form button {
+    color: #2d3748;
+}
+
+body.light-mode .header-nav form button:hover {
+    color: #000;
+}
+
+body.light-mode .header-nav form button::after {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
 /* Ajuste del contenido principal para dejar espacio al header */
 main {
     padding-top: 100px;

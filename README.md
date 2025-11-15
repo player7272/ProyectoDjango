@@ -340,3 +340,24 @@ python manage.py runserver
 ```
 
 ¡Listo! Accede a `http://127.0.0.1:8000/` 🎉
+
+
+
+Encender el puerto para que los demas se puedan conectar
+
+```python manage.py runserver 0.0.0.0:8000```
+
+
+para acceder desde otro dispositivo en la misma red usar la ip local de la maquina donde se esta corriendo el servidor
+
+para saber la ip de la maquina en windows usar el comando
+
+```ipconfig```
+
+la ip local suele ser algo como 192.168.x.x
+en el apartado de ipv4
+Dirección IPv4. . . . . . . . . . . . . . : 192.168.5.2
+
+y acceder desde otro dispositivo a la siguiente direccion
+
+http://TU_IP_LOCAL:8000
